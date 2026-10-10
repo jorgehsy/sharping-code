@@ -12,6 +12,7 @@ Reglas del juego: [docs/game-design.md](docs/game-design.md).
 - **Comanda**: un puzzle de programación (enunciado + tests) que entra a la cocina. Tiene dificultad, puntos y un reloj. Varios jugadores pueden cocinar la misma comanda; no se bloquea.
 - **Dificultad**: fácil, media o difícil. Define los puntos base y el reloj de la comanda.
 - **Entrega**: cuando un jugador envía su solución y pasa todos los tests en el backend.
+- **Degustar** (`taste`): correr tu código contra los casos públicos de la comanda antes de entregar. Gratis: no da puntos ni multa. Pasar no garantiza pasar los casos ocultos.
 - **Plato mal hecho**: una entrega que falla los tests. Cuesta una multa fija.
 - **Cliente se va**: el reloj de la comanda llega a cero. La comanda se cierra y ya no admite entregas.
 - **Hora punta**: los últimos 3 minutos de la partida. Las comandas valen el doble.

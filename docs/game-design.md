@@ -33,6 +33,7 @@ Términos definidos en [CONTEXT.md](../CONTEXT.md).
 
 - **Entregas que bajan de valor**: 1ª entrega 100%, 2ª 60%, 3ª 30% de los puntos base.
 - **Plato mal hecho**: multa fija (ej. -10). Se puede reintentar.
+- **Degustar**: gratis. Corre solo los casos públicos; no suma ni resta.
 - **Hora punta**: x2.
 - **Empate**: gana quien llegó primero a ese puntaje.
 

@@ -20,6 +20,7 @@ Todas las acciones mandan el header `x-player-token`.
 | `GET /games/{code}` | Snapshot del estado | jugadores, puntajes, comandas abiertas (solo las que no vencieron según el server), tu comanda, tus condimentos, tu sabotaje, timestamps y `seq` |
 | `POST /games/{code}/orders/{id}/take` | Tomar comanda (suelta la anterior) | `TakeOrderResponse`: enunciado, firma, casos públicos (nunca los ocultos) |
 | `POST /games/{code}/orders/{id}/submit` | Entregar `{source}` | ver abajo |
+| `POST /games/{code}/orders/{id}/taste` | Degustar `{source}` (solo casos públicos, gratis) | ver abajo |
 | `POST /games/{code}/sabotages` | Sabotear `{targetPlayerId}` | `204` |
 
 Errores: `401` token ausente/inválido, `404` partida/comanda/objetivo inexistente, `409` regla del juego (partida no `running`, comanda vencida, sabotaje rechazado…), `422` body inválido. Cuerpo `{message}`.
@@ -42,6 +43,16 @@ Errores: `401` token ausente/inválido, `404` partida/comanda/objetivo inexisten
 - Falla en caso **oculto** → `{passed: false, hidden: true, reason, penalty, scores}`. No se muestran los datos para no filtrar los casos ocultos.
 - Cualquier fallo (compilación, sabotaje incumplido, timeout, runtime, resultado incorrecto) es **plato mal hecho**: multa de `BURNED_DISH_PENALTY` y `dish.burned`. El puntaje puede quedar negativo.
 - Orden de eventos de una entrega: `order.delivered`, `condiment.earned`, `sabotage.cleared` (un solo `emit`, `seq` consecutivos).
+
+### Taste (degustar)
+
+- Corre `{source}` contra los casos **públicos** de la comanda, en el mismo runner que la entrega y con tu sabotaje activo.
+- **Gratis**: sin multa, sin puntos, sin eventos, sin escrituras en DB.
+- Mismas validaciones que submit (`409` si no tomaste la comanda, venció o la partida no está `running`). No rechaza una comanda que ya entregaste.
+- Corre **todos** los casos (un throw en uno no corta los demás) → `{ok: true, cases: [{input, expected, actual?, error?, passed}], durationMs}`.
+- Si no se pudo correr nada (compilación, sabotaje incumplido, timeout, runtime fuera de `solve`) → `{ok: false, reason, message, durationMs}`.
+- Pasar los públicos no garantiza pasar los ocultos.
+- Límite: 1 degustación en vuelo por jugador, **solo en el cliente**.
 
 ### Sabotage
 
