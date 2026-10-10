@@ -212,6 +212,17 @@ export function createGameController({ api, realtime, store, sessions, now = Dat
     refresh: () => refresh(),
     start: () => guarded(() => api.startGame(code(), token!)),
     takeOrder: (orderId: string) => takeOrder(orderId),
+    /** Stop cooking the current order locally (it filled up or the customer left) so the player can pick another. */
+    dropOrder() {
+      set((s) => ({
+        ...s,
+        taken: null,
+        lastSubmit: null,
+        tasteResult: null,
+        actionError: null,
+        me: s.me && s.me.currentOrderId === s.taken?.orderId ? { ...s.me, currentOrderId: null } : s.me,
+      }));
+    },
     async submit(source: string) {
       const taken = store.getState().taken;
       if (!taken) return;

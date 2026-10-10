@@ -4,7 +4,10 @@ import { useApp, useGame } from './context.ts';
 import { CodeEditor } from './CodeEditor.tsx';
 import { Markdown } from './markdown.tsx';
 import { difficultyLabel, ruleLabel } from '../kitchen/labels.ts';
+import { isFull, MAX_DELIVERIES, nextPoints } from '../kitchen/points.ts';
 import { createSessionStore } from '../session.ts';
+import { formatClock, remainingMs } from '../store/time.ts';
+import { useServerNow } from './ticker.ts';
 
 const drafts = createSessionStore(globalThis.localStorage);
 
@@ -21,14 +24,19 @@ export default function EditorView({ onBack }: { onBack: () => void }) {
     );
   }
   // key: remount (fresh model + draft) when switching orders.
-  return <Cooking key={taken.orderId} />;
+  return <Cooking key={taken.orderId} onBack={onBack} />;
 }
 
-function Cooking() {
+function Cooking({ onBack }: { onBack: () => void }) {
   const { controller } = useApp();
   const taken = useGame((s) => s.taken)!;
   const code = useGame((s) => s.code)!;
-  const open = useGame((s) => s.orders.some((o) => o.orderId === taken.orderId));
+  const order = useGame((s) => s.orders.find((o) => o.orderId === taken.orderId));
+  const rush = useGame((s) => s.rush);
+  const now = useServerNow();
+  const left = order ? remainingMs(order.expiresAt, now) : 0;
+  const full = !!order && isFull(order);
+  const open = !!order && left > 0 && !full;
   const submitting = useGame((s) => s.submitting);
   const last = useGame((s) => s.lastSubmit);
   const tasting = useGame((s) => s.tasting);
@@ -46,6 +54,11 @@ function Cooking() {
   useEffect(() => {
     drafts.saveDraft(code, taken.orderId, source);
   }, [code, taken.orderId, source]);
+
+  const close = () => {
+    controller.dropOrder();
+    onBack();
+  };
 
   const canSubmit = open && !submitting;
   const submit = () => canSubmit && void controller.submit(sourceRef.current);
@@ -93,6 +106,25 @@ function Cooking() {
         </ul>
       </section>
       <section className="work">
+        {order && (
+          <div className="order-status">
+            <span>
+              Entregas {order.deliveredBy.length}/{MAX_DELIVERIES}
+            </span>
+            <span>{full ? 'Sin puntos' : `Próxima entrega: ${nextPoints(order, rush)} pts`}</span>
+            <span>Tiempo {formatClock(left)}</span>
+          </div>
+        )}
+        {!open && (
+          <div className="order-closed" role="alert">
+            <span>
+              {full
+                ? `Esta comanda ya se completó (${MAX_DELIVERIES}/${MAX_DELIVERIES}). Entregarla no da puntos.`
+                : 'Esta comanda está cerrada: el cliente se fue.'}
+            </span>
+            <button onClick={close}>Cerrar y elegir otra</button>
+          </div>
+        )}
         <div className="monaco">
           <CodeEditor path={taken.orderId} value={source} onChange={onChange} />
         </div>
@@ -103,7 +135,6 @@ function Cooking() {
           <button disabled={!canTaste} onClick={doTaste}>
             {tasting ? 'Degustando…' : "Degustar (Ctrl+')"}
           </button>
-          {!open && <span className="error">Esta comanda está cerrada.</span>}
           {error && <span className="error">{error}</span>}
         </div>
         {taste?.orderId === taken.orderId && <Taste result={taste.result} />}
