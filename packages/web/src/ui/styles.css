@@ -1,0 +1,54 @@
+/* Throwaway styling: plain and minimal. A design pass comes after the playtest. */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body { font: 15px/1.4 system-ui, sans-serif; color: #1c1c1c; background: #fafafa; }
+button { font: inherit; padding: 6px 12px; cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+button.link { background: none; border: none; text-decoration: underline; color: #04c; }
+input, select { font: inherit; padding: 6px; }
+label { display: flex; flex-direction: column; gap: 4px; }
+code, pre { font-family: ui-monospace, Menlo, monospace; }
+pre { background: #eee; padding: 8px; overflow: auto; margin: 6px 0; }
+.center { max-width: 420px; margin: 8vh auto; padding: 0 16px; }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.plain { list-style: none; padding: 0; margin: 0; }
+.plain li { padding: 3px 0; }
+.error { color: #b00020; }
+.muted { color: #666; }
+.warn { color: #b00020; font-weight: 600; }
+.code { font-size: 1.6em; letter-spacing: 0.15em; }
+.fatal { padding: 16px; color: #b00020; white-space: pre-wrap; }
+.banner { background: #fff3cd; padding: 4px 12px; text-align: center; }
+.badge { border: 1px solid #999; border-radius: 4px; padding: 0 6px; font-size: 12px; }
+.badge.bad { border-color: #b00020; color: #b00020; }
+.badge.rush { border-color: #d60; color: #d60; font-weight: 700; }
+
+.game { display: flex; flex-direction: column; height: 100%; }
+.hud { display: flex; gap: 16px; align-items: center; padding: 8px 16px; background: #222; color: #eee; }
+.hud .spacer { flex: 1; }
+.hud .clock { font: 700 20px ui-monospace, monospace; }
+.hud .link { color: #9cf; }
+.view { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+.view > * { flex: 1; min-height: 0; }
+
+.kitchen { display: grid; grid-template-columns: 1fr 280px; gap: 24px; padding: 16px; }
+.order { display: flex; justify-content: space-between; align-items: center; padding: 10px; margin-bottom: 8px; background: #fff; border: 1px solid #ddd; border-left: 6px solid #999; }
+.order.easy { border-left-color: #2a2; }
+.order.medium { border-left-color: #ca0; }
+.order.hard { border-left-color: #c22; }
+
+.editor-view { display: grid; grid-template-columns: 360px 1fr; }
+.statement { padding: 12px 16px; overflow: auto; border-right: 1px solid #ddd; }
+.work { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.monaco { flex: 1; min-height: 200px; }
+.actions { display: flex; gap: 12px; align-items: center; padding: 8px 12px; }
+.result { padding: 8px 12px; border-top: 1px solid #ddd; max-height: 30%; overflow: auto; }
+.result.good { background: #e6f6e6; }
+.result.bad { background: #fdeaea; }
+.md p, .md ul { margin: 6px 0; }
+.md h3 { margin: 10px 0 4px; }
+
+.toasts { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 6px; width: 280px; z-index: 10; }
+.toast { background: #333; color: #fff; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+.toast.good { background: #1b6e1b; }
+.toast.bad { background: #8e1a1a; }

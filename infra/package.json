@@ -1,0 +1,20 @@
+{
+  "name": "@sharping/infra",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "synth": "cdk synth",
+    "cdk:deploy": "cdk deploy",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "aws-cdk": "^2.1145.0",
+    "esbuild": "^0.28.2"
+  },
+  "dependencies": {
+    "@sharping/shared": "workspace:*",
+    "aws-cdk-lib": "^2.273.0",
+    "constructs": "^10.8.1"
+  }
+}

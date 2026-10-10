@@ -1,0 +1,318 @@
+{
+  "public": [
+    {
+      "input": [
+        [
+          "salsa",
+          "pasta",
+          "servir"
+        ],
+        [
+          [
+            "pasta",
+            "servir"
+          ],
+          [
+            "salsa",
+            "servir"
+          ]
+        ]
+      ],
+      "output": [
+        "pasta",
+        "salsa",
+        "servir"
+      ]
+    },
+    {
+      "input": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "b",
+            "a"
+          ]
+        ]
+      ],
+      "output": null
+    },
+    {
+      "input": [
+        [
+          "cortar",
+          "lavar",
+          "freir",
+          "emplatar"
+        ],
+        [
+          [
+            "lavar",
+            "cortar"
+          ],
+          [
+            "cortar",
+            "freir"
+          ],
+          [
+            "freir",
+            "emplatar"
+          ]
+        ]
+      ],
+      "output": [
+        "lavar",
+        "cortar",
+        "freir",
+        "emplatar"
+      ]
+    }
+  ],
+  "hidden": [
+    {
+      "input": [
+        [],
+        []
+      ],
+      "output": []
+    },
+    {
+      "input": [
+        [
+          "solo"
+        ],
+        []
+      ],
+      "output": [
+        "solo"
+      ]
+    },
+    {
+      "input": [
+        [
+          "c",
+          "b",
+          "a"
+        ],
+        []
+      ],
+      "output": [
+        "a",
+        "b",
+        "c"
+      ]
+    },
+    {
+      "input": [
+        [
+          "x",
+          "y"
+        ],
+        [
+          [
+            "x",
+            "y"
+          ],
+          [
+            "x",
+            "y"
+          ]
+        ]
+      ],
+      "output": [
+        "x",
+        "y"
+      ]
+    },
+    {
+      "input": [
+        [
+          "a",
+          "b",
+          "c"
+        ],
+        [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "b",
+            "c"
+          ],
+          [
+            "c",
+            "a"
+          ]
+        ]
+      ],
+      "output": null
+    },
+    {
+      "input": [
+        [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "c",
+            "d"
+          ],
+          [
+            "d",
+            "c"
+          ]
+        ]
+      ],
+      "output": null
+    },
+    {
+      "input": [
+        [
+          "z",
+          "a",
+          "m",
+          "b"
+        ],
+        [
+          [
+            "z",
+            "a"
+          ]
+        ]
+      ],
+      "output": [
+        "b",
+        "m",
+        "z",
+        "a"
+      ]
+    },
+    {
+      "input": [
+        [
+          "B",
+          "a",
+          "A",
+          "b"
+        ],
+        []
+      ],
+      "output": [
+        "A",
+        "B",
+        "a",
+        "b"
+      ]
+    },
+    {
+      "input": [
+        [
+          "e",
+          "d",
+          "c",
+          "b",
+          "a"
+        ],
+        [
+          [
+            "e",
+            "a"
+          ],
+          [
+            "d",
+            "a"
+          ],
+          [
+            "c",
+            "b"
+          ],
+          [
+            "b",
+            "a"
+          ]
+        ]
+      ],
+      "output": [
+        "c",
+        "b",
+        "d",
+        "e",
+        "a"
+      ]
+    },
+    {
+      "input": [
+        [
+          "horno",
+          "masa",
+          "salsa",
+          "queso",
+          "pizza"
+        ],
+        [
+          [
+            "masa",
+            "pizza"
+          ],
+          [
+            "salsa",
+            "pizza"
+          ],
+          [
+            "queso",
+            "pizza"
+          ],
+          [
+            "horno",
+            "pizza"
+          ],
+          [
+            "masa",
+            "salsa"
+          ]
+        ]
+      ],
+      "output": [
+        "horno",
+        "masa",
+        "queso",
+        "salsa",
+        "pizza"
+      ]
+    },
+    {
+      "input": [
+        [
+          "s1",
+          "s2",
+          "s10"
+        ],
+        [
+          [
+            "s10",
+            "s1"
+          ]
+        ]
+      ],
+      "output": [
+        "s10",
+        "s1",
+        "s2"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@sharping/clock",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@aws/durable-execution-sdk-js-testing": "^1.3.0"
+  },
+  "dependencies": {
+    "@aws/durable-execution-sdk-js": "^2.6.0",
+    "@sharping/game": "workspace:*",
+    "@sharping/platform": "workspace:*",
+    "@sharping/shared": "workspace:*"
+  }
+}

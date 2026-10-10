@@ -1,0 +1,13 @@
+.remember/
+
+# CDK outputs (may contain API keys)
+outputs.json
+cdk.out/
+node_modules/
+dist/
+
+# Vite local env (API keys)
+*.local
+
+# IDE
+.idea/

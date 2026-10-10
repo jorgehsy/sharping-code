@@ -1,0 +1,7 @@
+packages:
+  - packages/*
+  - infra
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@types/node@26.6.5'

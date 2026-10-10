@@ -1,0 +1,25 @@
+{
+  "name": "sharping-code",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "gen:catalog": "tsx scripts/gen-catalog.ts",
+    "validate:puzzles": "tsx scripts/validate-puzzles.ts",
+    "cdk:synth": "pnpm gen:catalog && pnpm --filter @sharping/infra run synth",
+    "cdk:deploy": "pnpm gen:catalog && pnpm --filter @sharping/infra run cdk:deploy"
+  },
+  "devDependencies": {
+    "@sharping/shared": "workspace:*",
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3",
+    "yaml": "^2.9.1"
+  }
+}
