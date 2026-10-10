@@ -17,7 +17,7 @@ import {
   type SabotageRefusal,
 } from '@sharping/game';
 import type { emit as platformEmit, GameMeta, OrderItem } from '@sharping/platform';
-import type { OrderSummary, RunnerEvent, SabotageRule, SubmitResponse, TakeOrderResponse } from '@sharping/shared';
+import type { OrderSummary, RunnerEvent, RunnerResult, SabotageRule, SubmitResponse, TakeOrderResponse, TasteResponse } from '@sharping/shared';
 import { z } from 'zod';
 import { ConflictError, NotImplementedError } from './errors.ts';
 import type { Repo } from './repo.ts';
@@ -267,7 +267,7 @@ export function createApp(deps: Deps): Router {
         cases: [...puzzle.cases.public, ...puzzle.cases.hidden.map((c) => ({ ...c, hidden: true }))],
         ...(me.sabotage ? { sabotage: me.sabotage as SabotageRule } : {}),
       };
-      const result = await lambdas.runCode(runnerEvent);
+      const result = (await lambdas.runCode(runnerEvent)) as RunnerResult; // submit mode never yields a TasteResult
 
       if (!result.passed) {
         await repo.applyPenalty(code, playerId, BURNED_DISH_PENALTY, t);
@@ -316,6 +316,36 @@ export function createApp(deps: Deps): Router {
 
       const body: SubmitResponse = { passed: true, rank, points, scores };
       return ok(body);
+    },
+    { validation: { req: { path: orderParams, body: submitBody } } },
+  );
+
+  app.post(
+    '/games/:code/orders/:id/taste',
+    async (reqCtx) => {
+      const { code, id } = reqCtx.valid.req.path;
+      const { source } = reqCtx.valid.req.body;
+      const playerId = await authenticate(reqCtx.req, code);
+      const t = now();
+      await requireRunning(code, t);
+      const order = await repo.getOrder(code, id);
+      if (!order) throw new NotFoundError('order not found');
+      if (t >= order.expiresAt) throw new ConflictError('order expired');
+      const me = await repo.getPlayer(code, playerId);
+      if (!me) throw new UnauthorizedError('invalid token');
+      if (me.currentOrderId !== id) throw new ConflictError('take the order before tasting');
+      const puzzle = getPuzzle(order.puzzleId);
+      if (!puzzle) throw new Error(`puzzle ${order.puzzleId} missing from the catalog`);
+
+      // Tasting is free: public cases only, no DB writes, no events.
+      const result = (await lambdas.runCode({
+        source,
+        entry: 'solve',
+        cases: [...puzzle.cases.public],
+        mode: 'taste',
+        ...(me.sabotage ? { sabotage: me.sabotage as SabotageRule } : {}),
+      })) as TasteResponse;
+      return ok(result);
     },
     { validation: { req: { path: orderParams, body: submitBody } } },
   );

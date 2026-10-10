@@ -65,7 +65,7 @@ function Hud({ view, setView, canEdit }: { view: View; setView: (v: View) => voi
       <button onClick={() => setView(view === 'kitchen' ? 'editor' : 'kitchen')} disabled={view === 'kitchen' && !canEdit}>
         {view === 'kitchen' ? 'Editor' : 'Kitchen'} (Alt+K)
       </button>
-      <button className="link" onClick={() => controller.leave()}>
+      <button className="link" onClick={() => window.confirm('Leave the game? Your progress on the current order is lost.') && controller.leave()}>
         Leave
       </button>
     </header>

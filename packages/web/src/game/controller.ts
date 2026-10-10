@@ -35,6 +35,8 @@ export function createGameController({ api, realtime, store, sessions, now = Dat
   let inFlight = 0;
   let nickname = '';
 
+  /** Bumped by submit so a taste finishing afterwards doesn't resurrect stale output. */
+  let submitEpoch = 0;
   const set = store.setState;
   const code = () => store.getState().code!;
 
@@ -147,6 +149,7 @@ export function createGameController({ api, realtime, store, sessions, now = Dat
         ...s,
         taken,
         lastSubmit: s.lastSubmit?.orderId === orderId ? s.lastSubmit : null,
+        tasteResult: s.tasteResult?.orderId === orderId ? s.tasteResult : null,
         me: s.me ? { ...s.me, currentOrderId: orderId } : s.me,
       }));
       return taken;
@@ -182,12 +185,27 @@ export function createGameController({ api, realtime, store, sessions, now = Dat
     async submit(source: string) {
       const taken = store.getState().taken;
       if (!taken) return;
-      set((s) => ({ ...s, submitting: true }));
+      submitEpoch++;
+      set((s) => ({ ...s, submitting: true, tasteResult: null }));
       const result = await guarded(() => api.submit(code(), taken.orderId, source, token!));
       set((s) => ({
         ...s,
         submitting: false,
         lastSubmit: result ? { orderId: taken.orderId, result } : s.lastSubmit,
+      }));
+    },
+    /** Free run of the public cases. One at a time; a second call while one is in flight is ignored. */
+    async taste(source: string) {
+      const s0 = store.getState();
+      if (!s0.taken || s0.tasting) return;
+      const orderId = s0.taken.orderId;
+      const epoch = submitEpoch;
+      set((s) => ({ ...s, tasting: true }));
+      const result = await guarded(() => api.taste(code(), orderId, source, token!));
+      set((s) => ({
+        ...s,
+        tasting: false,
+        tasteResult: result && epoch === submitEpoch && s.taken?.orderId === orderId ? { orderId, result } : s.tasteResult,
       }));
     },
     sabotage: (targetPlayerId: string) => guarded(() => api.sabotage(code(), targetPlayerId, token!)),

@@ -15,7 +15,7 @@ const enc = (v) => {
 (async () => {
   const chunks = [];
   for await (const c of process.stdin) chunks.push(c);
-  const { js, entry, inputs, nonce } = JSON.parse(Buffer.concat(chunks).toString("utf8"));
+  const { js, entry, inputs, nonce, taste } = JSON.parse(Buffer.concat(chunks).toString("utf8"));
   const send = (o) => writeOut("\n" + nonce + JSON.stringify(o) + "\n");
   let fn;
   try { fn = (0, eval)(js + "\n;typeof " + entry + " === 'function' ? " + entry + " : undefined"); }
@@ -24,7 +24,10 @@ const enc = (v) => {
   const actuals = [];
   for (let i = 0; i < inputs.length; i++) {
     try { actuals.push(enc(await fn(...structuredClone(inputs[i])))); }
-    catch (e) { return send({ status: "runtime", index: i, message: String(e && e.message || e) }); }
+    catch (e) {
+      if (taste) { actuals.push({ $: "x", v: String(e && e.message || e) }); continue; }
+      return send({ status: "runtime", index: i, message: String(e && e.message || e) });
+    }
   }
   send({ status: "ok", actuals });
 })().then(() => process.exit(0), (e) => { console.error(e); process.exit(1); });

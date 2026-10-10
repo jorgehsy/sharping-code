@@ -105,4 +105,39 @@ describe("runner", () => {
     const r: any = await run("function solve(n: number[]) { return 1; }", {}, [{ input: [[]], output: "SECRET" }]);
     expect(r.reason).toBe("wrong");
   });
+
+  describe("taste mode", () => {
+    const taste = (source: string, extra: object = {}, c: any[] = [cases[0]!, { input: [[5]], output: 5 }]) =>
+      run(source, { mode: "taste", ...extra }, c);
+
+    it("runs every case and reports each one", async () => {
+      const r = await taste("function solve(n: number[]) { return n.length === 4 ? 10 : 0; }");
+      expect(r.ok).toBe(true);
+      expect(r.cases).toEqual([
+        { input: [[1, 2, 3, 4]], expected: 10, actual: 10, passed: true },
+        { input: [[5]], expected: 5, actual: 0, passed: false },
+      ]);
+    });
+
+    it("a throw in one case does not stop the others", async () => {
+      const r = await taste("function solve(n: number[]) { if (n.length === 4) throw new Error('boom'); return 5; }");
+      expect(r.ok).toBe(true);
+      expect(r.cases[0]).toMatchObject({ passed: false, error: "boom" });
+      expect(r.cases[0].actual).toBeUndefined();
+      expect(r.cases[1]).toMatchObject({ passed: true, actual: 5 });
+    });
+
+    it("compile, sabotage, timeout and missing solve are ok:false", async () => {
+      expect(await taste("function solve( {")).toMatchObject({ ok: false, reason: "compile" });
+      expect(await taste("function solve(n: number[]) { for (const x of n) {} return 1; }", { sabotage: "no-loops" }))
+        .toMatchObject({ ok: false, reason: "sabotage" });
+      expect(await taste("function solve() { while (true) {} }")).toMatchObject({ ok: false, reason: "timeout" });
+      expect(await taste("const x = 1;")).toMatchObject({ ok: false, reason: "runtime" });
+    });
+
+    it("submit mode still stops at the first throw", async () => {
+      const r = await run("function solve() { throw new Error('boom'); }");
+      expect(r).toMatchObject({ passed: false, reason: "runtime", message: "boom" });
+    });
+  });
 });

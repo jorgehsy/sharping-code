@@ -33,6 +33,7 @@ export function withMockOrders(api: GameApi, realtime: Realtime, mock = new Mock
     },
     takeOrder: async (_c, orderId) => wrap(() => mock.take(orderId)),
     submit: async (_c, orderId, source) => wrap(() => mock.submit(orderId, source)),
+    taste: async (_c, orderId, source) => wrap(() => mock.taste(orderId, source)),
     sabotage: async (_c, target) => wrap(() => mock.sabotage(target)),
   };
 

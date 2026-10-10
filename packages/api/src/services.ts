@@ -1,12 +1,12 @@
 import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
-import type { ClockInput, RunnerEvent, RunnerResult } from '@sharping/shared';
+import type { ClockInput, RunnerEvent, RunnerResult, TasteResult } from '@sharping/shared';
 
 /** Side-effect ports of the lambdalith toward other Lambdas. */
 export interface Lambdas {
   /** Start the durable game clock (async invoke, qualified ARN, execution name = game code). */
   startClock(input: ClockInput): Promise<void>;
   /** Run player code in the Runner Lambda (sync invoke). Throws if the runner itself fails (not the player's code). */
-  runCode(event: RunnerEvent): Promise<RunnerResult>;
+  runCode(event: RunnerEvent): Promise<RunnerResult | TasteResult>;
   /** Fire-and-forget warm-up of the runner. Never throws. */
   warmRunner(): Promise<void>;
 }
@@ -33,7 +33,7 @@ export function createLambdas(client: LambdaClient, env: { clockArn: string; run
       );
       const text = res.Payload ? new TextDecoder().decode(res.Payload) : '';
       if (res.FunctionError) throw new Error(`runner failed (${res.FunctionError}): ${text.slice(0, 300)}`);
-      return JSON.parse(text) as RunnerResult;
+      return JSON.parse(text) as RunnerResult | TasteResult;
     },
     async warmRunner() {
       try {

@@ -1,5 +1,5 @@
 import type { Difficulty, PuzzleCase } from './puzzle.ts';
-import type { RunnerResult, SabotageRule } from './runner.ts';
+import type { RunnerResult, SabotageRule, TasteResult } from './runner.ts';
 
 /** HTTP contract between the SPA and the lambdalith. See docs/api.md. All times are epoch ms. */
 
@@ -88,6 +88,10 @@ export interface SubmitRequest {
 export type SubmitResponse =
   | { passed: true; rank: number; points: number; scores: Record<string, number> }
   | (Extract<RunnerResult, { passed: false }> & { penalty: number; scores: Record<string, number> });
+
+/** `POST /games/{code}/orders/{id}/taste` → 200. Same body as submit. Runs public cases only: no points, no penalty, no events. */
+export type TasteRequest = SubmitRequest;
+export type TasteResponse = TasteResult;
 
 export interface SabotageRequest {
   targetPlayerId: string;

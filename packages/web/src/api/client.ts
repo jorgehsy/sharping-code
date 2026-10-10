@@ -4,6 +4,7 @@ import {
   type GameSnapshot,
   type JoinGameResponse,
   type SubmitResponse,
+  type TasteResponse,
   type TakeOrderResponse,
 } from '@sharping/shared';
 
@@ -15,6 +16,7 @@ export interface GameApi {
   startGame(code: string, token: string): Promise<void>;
   takeOrder(code: string, orderId: string, token: string): Promise<TakeOrderResponse>;
   submit(code: string, orderId: string, source: string, token: string): Promise<SubmitResponse>;
+  taste(code: string, orderId: string, source: string, token: string): Promise<TasteResponse>;
   sabotage(code: string, targetPlayerId: string, token: string): Promise<void>;
 }
 
@@ -72,6 +74,7 @@ export function createHttpApi({ baseUrl, fetch: f = globalThis.fetch.bind(global
     startGame: async (code, token) => void (await request('POST', `${game(code)}/start`, { token })),
     takeOrder: (code, id, token) => request('POST', `${order(code, id)}/take`, { token }),
     submit: (code, id, source, token) => request('POST', `${order(code, id)}/submit`, { token, body: { source } }),
+    taste: (code, id, source, token) => request('POST', `${order(code, id)}/taste`, { token, body: { source } }),
     sabotage: async (code, targetPlayerId, token) =>
       void (await request('POST', `${game(code)}/sabotages`, { token, body: { targetPlayerId } })),
   };

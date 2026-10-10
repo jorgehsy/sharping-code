@@ -5,6 +5,7 @@ import type {
   OrderSummary,
   PlayerSummary,
   SubmitResponse,
+  TasteResponse,
   TakeOrderResponse,
 } from '@sharping/shared';
 import type { ConnectionStatus } from '../realtime/client.ts';
@@ -46,6 +47,9 @@ export interface GameState {
   taken: TakeOrderResponse | null;
   submitting: boolean;
   lastSubmit: { orderId: string; result: SubmitResponse } | null;
+  tasting: boolean;
+  /** Last taste (free run of the public cases) for the order I'm cooking. */
+  tasteResult: { orderId: string; result: TasteResponse } | null;
   /** Last action error (take/submit/sabotage/start), shown in the UI. */
   actionError: string | null;
 
@@ -74,6 +78,8 @@ export const initialState = (): GameState => ({
   taken: null,
   submitting: false,
   lastSubmit: null,
+  tasting: false,
+  tasteResult: null,
   actionError: null,
   toasts: [],
   podium: [],

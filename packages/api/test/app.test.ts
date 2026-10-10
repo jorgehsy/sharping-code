@@ -296,6 +296,55 @@ describe('POST submit', () => {
   });
 });
 
+describe('POST taste', () => {
+  const taste = () => call('POST', '/games/ABCDE/orders/o1/taste', { token: 't', body: { source: 'x' } });
+  const tasted = { ok: true, cases: [{ input: [1], expected: 2, actual: 2, passed: true }], durationMs: 1 };
+  beforeEach(() => {
+    login();
+    deps.repo.getMeta.mockResolvedValue(meta());
+    deps.repo.getOrder.mockResolvedValue(order());
+    deps.repo.getPlayer.mockResolvedValue(player());
+    deps.lambdas.runCode.mockResolvedValue(tasted as never);
+  });
+
+  it('sends public cases only, taste mode and the sabotage; returns the runner result untouched', async () => {
+    deps.repo.getPlayer.mockResolvedValue(player({ sabotage: 'no-loops' }));
+    const res = await taste();
+    expect(res.status).toBe(200);
+    expect(res.json).toEqual(tasted);
+    expect(deps.lambdas.runCode).toHaveBeenCalledWith({
+      source: 'x',
+      entry: 'solve',
+      cases: [{ input: [1], output: 2 }],
+      mode: 'taste',
+      sabotage: 'no-loops',
+    });
+  });
+
+  it('is free: no penalty, delivery, events or score change', async () => {
+    deps.lambdas.runCode.mockResolvedValue({ ok: false, reason: 'compile', message: 'bad', durationMs: 1 } as never);
+    const res = await taste();
+    expect(res.status).toBe(200);
+    expect(deps.repo.applyPenalty).not.toHaveBeenCalled();
+    expect(deps.repo.claimDelivery).not.toHaveBeenCalled();
+    expect(deps.repo.applyDelivery).not.toHaveBeenCalled();
+    expect(deps.emit).not.toHaveBeenCalled();
+  });
+
+  it('409 if not taken, expired or game over; 404 unknown; 401 without token', async () => {
+    deps.repo.getPlayer.mockResolvedValueOnce(player({ currentOrderId: 'o2' }));
+    expect((await taste()).status).toBe(409);
+    deps.repo.getOrder.mockResolvedValueOnce(order({ expiresAt: NOW }));
+    expect((await taste()).status).toBe(409);
+    deps.repo.getMeta.mockResolvedValueOnce(meta({ status: 'finished' }));
+    expect((await taste()).status).toBe(409);
+    deps.repo.getOrder.mockResolvedValueOnce(undefined);
+    expect((await taste()).status).toBe(404);
+    expect((await call('POST', '/games/ABCDE/orders/o1/taste', { body: { source: 'x' } })).status).toBe(401);
+    expect(deps.lambdas.runCode).not.toHaveBeenCalled();
+  });
+});
+
 describe('POST sabotages', () => {
   const sabotage = (target = 'p2') => call('POST', '/games/ABCDE/sabotages', { token: 't', body: { targetPlayerId: target } });
   beforeEach(() => {

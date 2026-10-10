@@ -30,8 +30,8 @@ describe('SharpingCodeStack', () => {
     template.hasResourceProperties('AWS::Lambda::Alias', { Name: 'live' });
   });
 
-  it('exposes 7 HTTP API routes plus a CORS config', () => {
-    template.resourceCountIs('AWS::ApiGatewayV2::Route', 7);
+  it('exposes 8 HTTP API routes plus a CORS config', () => {
+    template.resourceCountIs('AWS::ApiGatewayV2::Route', 8);
     template.hasResourceProperties('AWS::ApiGatewayV2::Api', {
       CorsConfiguration: Match.objectLike({ AllowHeaders: Match.arrayWith(['x-player-token']) }),
     });

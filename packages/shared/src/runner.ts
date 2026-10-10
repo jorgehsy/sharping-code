@@ -12,6 +12,11 @@ export interface RunnerEvent {
   entry: 'solve';
   cases: RunnerCase[];
   sabotage?: SabotageRule;
+  /**
+   * `submit` (default): stop at the first failing case → RunnerResult.
+   * `taste`: run every case and report each one → TasteResult. Only public cases are sent.
+   */
+  mode?: 'submit' | 'taste';
 }
 
 export type RunnerResult =
@@ -25,3 +30,17 @@ export type RunnerResult =
       message?: string;
       durationMs: number;
     };
+
+/** One case as reported by a taste. `error` is set when solve() threw on this case. */
+export interface TasteCase {
+  input: unknown[];
+  expected: unknown;
+  actual?: unknown;
+  error?: string;
+  passed: boolean;
+}
+
+/** Runner answer when `mode: 'taste'`. `ok: false` means no case could run. */
+export type TasteResult =
+  | { ok: true; cases: TasteCase[]; durationMs: number }
+  | { ok: false; reason: 'compile' | 'sabotage' | 'timeout' | 'runtime'; message: string; durationMs: number };

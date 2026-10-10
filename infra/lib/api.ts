@@ -65,6 +65,7 @@ export class Api extends Construct {
       [HttpMethod.POST, '/games/{code}/start'],
       [HttpMethod.POST, '/games/{code}/orders/{id}/take'],
       [HttpMethod.POST, '/games/{code}/orders/{id}/submit'],
+      [HttpMethod.POST, '/games/{code}/orders/{id}/taste'],
       [HttpMethod.POST, '/games/{code}/sabotages'],
     ];
     for (const [method, path] of routes) this.httpApi.addRoutes({ path, methods: [method], integration });

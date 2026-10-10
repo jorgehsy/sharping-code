@@ -24,6 +24,7 @@ function setup(getSnapshot: () => Promise<GameSnapshot>, gapWindowMs = 30) {
     startGame: vi.fn(async () => {}),
     takeOrder: vi.fn(),
     submit: vi.fn(),
+    taste: vi.fn(),
     sabotage: vi.fn(),
   } as unknown as GameApi;
   const controller = createGameController({
@@ -150,6 +151,35 @@ describe('game controller', () => {
     vi.mocked(t.api.submit).mockRejectedValue(new ApiRequestError(409, 'Order is closed'));
     await t.controller.submit('x');
     expect(t.store.getState().actionError).toBe('Order is closed');
+  });
+
+  it('taste stores the result, ignores calls while in flight, clears on submit and on order change', async () => {
+    const t = setup(async () => snapshot());
+    await t.controller.create('Ana');
+    await tick();
+    const taken = { ...snapshot().orders[0]!, statement: 'S', signature: 'f', publicCases: [] };
+    vi.mocked(t.api.takeOrder).mockResolvedValue(taken);
+    await t.controller.takeOrder('o1');
+    const res = { ok: true as const, cases: [{ input: [1], expected: 2, actual: 2, passed: true }], durationMs: 3 };
+    let release!: (r: typeof res) => void;
+    vi.mocked(t.api.taste).mockImplementation(() => new Promise((r) => (release = r)));
+    const first = t.controller.taste('a');
+    void t.controller.taste('b');
+    expect(t.store.getState().tasting).toBe(true);
+    release(res);
+    await first;
+    expect(t.api.taste).toHaveBeenCalledTimes(1);
+    expect(t.store.getState()).toMatchObject({ tasting: false, tasteResult: { orderId: 'o1', result: res } });
+    vi.mocked(t.api.submit).mockResolvedValue({ passed: true, rank: 1, points: 1, scores: {} });
+    await t.controller.submit('x');
+    expect(t.store.getState().tasteResult).toBeNull();
+    vi.mocked(t.api.taste).mockResolvedValue(res);
+    await t.controller.taste('a');
+    await t.controller.takeOrder('o2');
+    expect(t.store.getState().tasteResult).toBeNull();
+    vi.mocked(t.api.taste).mockRejectedValue(new ApiRequestError(500, 'boom'));
+    await t.controller.taste('a');
+    expect(t.store.getState()).toMatchObject({ tasting: false, actionError: 'boom' });
   });
 
   it('leave closes the channel and resets state', async () => {

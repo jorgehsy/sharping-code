@@ -6,6 +6,7 @@ import type {
   OrderSummary,
   Scores,
   SubmitResponse,
+  TasteResponse,
   TakeOrderResponse,
 } from '@sharping/shared';
 import { BASE_POINTS, CATALOG, CLOCK_MS, type FakePuzzle } from './catalog.ts';
@@ -173,6 +174,18 @@ export class MockOrders {
       this.emit('condiment.earned', { playerId: me });
     }
     return { passed: true, rank, points, scores };
+  }
+
+  /** Free run: no events, no scores. Without "return" every case fails with an error; with it, all but the last pass. */
+  taste(orderId: string, source: string): TasteResponse {
+    const o = this.find(orderId);
+    const returns = /\breturn\b/.test(source);
+    const cases = o.puzzle.publicCases.map((c, i, all) => {
+      if (!returns) return { input: c.input, expected: c.output, error: 'solve() returned undefined', passed: false };
+      const passed = all.length < 2 || i < all.length - 1;
+      return { input: c.input, expected: c.output, actual: passed ? c.output : null, passed };
+    });
+    return { ok: true, cases, durationMs: 1 };
   }
 
   sabotage(targetPlayerId: string) {

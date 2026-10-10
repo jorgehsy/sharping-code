@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { SubmitResponse } from '@sharping/shared';
+import type { SubmitResponse, TasteResponse } from '@sharping/shared';
 import { useApp, useGame } from './context.ts';
 import { CodeEditor } from './CodeEditor.tsx';
 import { Markdown } from './markdown.tsx';
@@ -30,6 +30,8 @@ function Cooking() {
   const open = useGame((s) => s.orders.some((o) => o.orderId === taken.orderId));
   const submitting = useGame((s) => s.submitting);
   const last = useGame((s) => s.lastSubmit);
+  const tasting = useGame((s) => s.tasting);
+  const taste = useGame((s) => s.tasteResult);
   const sabotage = useGame((s) => s.me?.sabotage ?? null);
   const error = useGame((s) => s.actionError);
   const [source, setSource] = useState(() => drafts.loadDraft(code, taken.orderId) ?? stubFor(taken.signature));
@@ -43,7 +45,12 @@ function Cooking() {
   const canSubmit = open && !submitting;
   const submit = () => canSubmit && void controller.submit(sourceRef.current);
 
-  // Ctrl/Cmd+Enter submits, also while Monaco has focus.
+  const canTaste = open && !tasting && !submitting;
+  const doTaste = () => canTaste && void controller.taste(sourceRef.current);
+  const tasteRef = useRef(doTaste);
+  tasteRef.current = doTaste;
+
+  // Ctrl/Cmd+Enter submits, Ctrl/Cmd+' tastes, also while Monaco has focus.
   const submitRef = useRef(submit);
   submitRef.current = submit;
   useEffect(() => {
@@ -51,6 +58,9 @@ function Cooking() {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
         submitRef.current();
+      } else if ((e.ctrlKey || e.metaKey) && e.key === "'") {
+        e.preventDefault();
+        tasteRef.current();
       }
     };
     window.addEventListener('keydown', onKey, true);
@@ -85,9 +95,13 @@ function Cooking() {
           <button disabled={!canSubmit} onClick={submit}>
             {submitting ? 'Submitting…' : 'Submit (Ctrl+Enter)'}
           </button>
+          <button disabled={!canTaste} onClick={doTaste}>
+            {tasting ? 'Tasting…' : "Taste (Ctrl+')"}
+          </button>
           {!open && <span className="error">This order is closed.</span>}
           {error && <span className="error">{error}</span>}
         </div>
+        {taste?.orderId === taken.orderId && <Taste result={taste.result} />}
         {last?.orderId === taken.orderId && <Result result={last.result} />}
       </section>
     </div>
@@ -116,6 +130,40 @@ export function Result({ result }: { result: SubmitResponse }) {
           {`input:    ${show(result.case.input)}\nexpected: ${show(result.case.expected)}\nactual:   ${show(result.case.actual)}`}
         </pre>
       )}
+    </div>
+  );
+}
+
+export function Taste({ result }: { result: TasteResponse }) {
+  return (
+    <div className="result">
+      {result.ok ? (
+        <table>
+          <thead>
+            <tr>
+              <th>input</th>
+              <th>expected</th>
+              <th>actual</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {result.cases.map((c, i) => (
+              <tr key={i}>
+                <td>{c.input.map(show).join(', ')}</td>
+                <td>{show(c.expected)}</td>
+                <td>{c.error !== undefined ? <span className="error">{c.error}</span> : show(c.actual)}</td>
+                <td>{c.passed ? '✓' : '✗'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="error">
+          <strong>{result.reason}</strong>: {result.message}
+        </p>
+      )}
+      <p className="muted">Passing the public cases doesn't guarantee the hidden ones.</p>
     </div>
   );
 }

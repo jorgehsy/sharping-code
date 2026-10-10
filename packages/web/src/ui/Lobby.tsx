@@ -26,7 +26,7 @@ export function Lobby() {
       </ul>
       {isHost ? <button onClick={() => void controller.start()}>Start game</button> : <p>Waiting for the host to start…</p>}
       {error && <p className="error">{error}</p>}
-      <button className="link" onClick={() => controller.leave()}>
+      <button className="link" onClick={() => window.confirm('Leave the lobby?') && controller.leave()}>
         Leave
       </button>
     </main>

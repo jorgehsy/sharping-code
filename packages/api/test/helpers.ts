@@ -1,7 +1,7 @@
 import type { Context } from 'aws-lambda';
 import { vi } from 'vitest';
 import type { CatalogPuzzle } from '@sharping/game';
-import type { RunnerEvent, RunnerResult } from '@sharping/shared';
+import type { RunnerEvent, RunnerResult, TasteResult } from '@sharping/shared';
 import type { Deps } from '../src/app.ts';
 
 export const PUZZLE: CatalogPuzzle = {
@@ -73,7 +73,7 @@ export function fakeDeps() {
     lambdas: {
       startClock: vi.fn(async () => {}),
       warmRunner: vi.fn(async () => {}),
-      runCode: vi.fn<(e: RunnerEvent) => Promise<RunnerResult>>(async () => ({ passed: true, durationMs: 1 })),
+      runCode: vi.fn<(e: RunnerEvent) => Promise<RunnerResult | TasteResult>>(async () => ({ passed: true, durationMs: 1 })),
     },
     now: () => 1_000_000,
   };
