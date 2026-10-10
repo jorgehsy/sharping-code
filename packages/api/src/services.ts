@@ -1,10 +1,12 @@
-import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
+import { InvokeCommand, LambdaClient, SendDurableExecutionCallbackSuccessCommand } from '@aws-sdk/client-lambda';
 import type { ClockInput, RunnerEvent, RunnerResult, TasteResult } from '@sharping/shared';
 
 /** Side-effect ports of the lambdalith toward other Lambdas. */
 export interface Lambdas {
   /** Start the durable game clock (async invoke, qualified ARN, execution name = game code). */
   startClock(input: ClockInput): Promise<void>;
+  /** Complete the clock's `waitForCallback` (3rd delivery of an order): wakes it early. Throws if the id is stale/consumed. */
+  wakeClock(callbackId: string): Promise<void>;
   /** Run player code in the Runner Lambda (sync invoke). Throws if the runner itself fails (not the player's code). */
   runCode(event: RunnerEvent): Promise<RunnerResult | TasteResult>;
   /** Fire-and-forget warm-up of the runner. Never throws. */
@@ -22,6 +24,9 @@ export function createLambdas(client: LambdaClient, env: { clockArn: string; run
           Payload: JSON.stringify(input),
         }),
       );
+    },
+    async wakeClock(callbackId) {
+      await client.send(new SendDurableExecutionCallbackSuccessCommand({ CallbackId: callbackId, Result: new TextEncoder().encode('full') }));
     },
     async runCode(event) {
       const res = await client.send(

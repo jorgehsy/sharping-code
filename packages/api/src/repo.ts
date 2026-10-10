@@ -214,10 +214,11 @@ export const repo = {
         new UpdateCommand({
           TableName: tableName(),
           Key: orderKey(code, orderId),
-          UpdateExpression: 'ADD deliveries :one, deliveredBy :me',
+          UpdateExpression:
+            'ADD deliveries :one, deliveredBy :me SET deliveredOrder = list_append(if_not_exists(deliveredOrder, :empty), :meList)',
           ConditionExpression:
             'attribute_exists(pk) AND deliveries < :max AND expiresAt > :now AND (attribute_not_exists(deliveredBy) OR NOT contains(deliveredBy, :pid))',
-          ExpressionAttributeValues: { ':one': 1, ':me': new Set([playerId]), ':pid': playerId, ':max': maxRanked, ':now': now },
+          ExpressionAttributeValues: { ':one': 1, ':me': new Set([playerId]), ':meList': [playerId], ':empty': [], ':pid': playerId, ':max': maxRanked, ':now': now },
           ReturnValues: 'UPDATED_NEW',
         }),
       );

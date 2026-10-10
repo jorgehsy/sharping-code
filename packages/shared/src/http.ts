@@ -29,6 +29,10 @@ export interface PlayerSummary {
   playerId: string;
   nickname: string;
   score: number;
+  /** Order this player is cooking (last take), null when idle. Public: the kitchen shows who cooks what. */
+  currentOrderId: string | null;
+  /** Active sabotage on this player, if any. Public: the kitchen shows cursed cooks. */
+  sabotage: SabotageRule | null;
 }
 
 /** An open order as everyone sees it (no statement, no cases). */
@@ -39,8 +43,10 @@ export interface OrderSummary {
   basePoints: number;
   openedAt: number;
   expiresAt: number;
-  /** Correct deliveries so far (0..3). */
+  /** Correct deliveries so far (0..3). Always `deliveredBy.length`. */
   deliveries: number;
+  /** PlayerIds of correct deliveries in arrival order: index = rank - 1. */
+  deliveredBy: string[];
 }
 
 export interface MyState {

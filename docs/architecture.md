@@ -56,8 +56,7 @@ Browser (SPA + Monaco)
 
 ### Game clock — Lambda durable function
 - Una ejecución durable por partida, iniciada al empezar la partida.
-- El reloj es **solo tiempo**: las entregas no cierran comandas, así que el próximo evento siempre es conocido (vence una comanda, empieza hora punta, termina la partida).
-- Loop: el plan completo (`buildSchedule`, puro y sembrado con el código de partida) se calcula al principio; por cada *tick* (acciones del mismo instante) hay un `wait` y un `step` que actualiza DynamoDB (`ORDER#`) y publica. Sin tick fijo: ~20-30 ticks por partida. Rotación de comandas: ver [api.md](api.md).
+- Reloj **reactivo**: un `tick` (step) lee las comandas, decide, persiste y publica; entre ticks espera con `waitForCallback`. La API lo despierta al llenarse una comanda (3ª entrega) para rellenar el slot; si no, el callback vence en el próximo evento conocido (vencimiento, hora punta, fin). Rotación de comandas: ver [api.md](api.md) y [ADR 0002](adr/0002-reloj-de-partida-con-lambda-durable-functions.md).
 - `durableConfig.executionTimeout` cubre la partida con margen (ej. 20 min).
 - Ojo con el modelo de replay: el código del loop debe ser determinista; todo lo no determinista (hora, random, I/O) va dentro de `step`.
 

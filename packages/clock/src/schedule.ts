@@ -1,6 +1,6 @@
 // Pure scheduling logic. No Date.now / Math.random / I/O in here (durable replay model, ADR 0002).
 import type { ClockInput, Difficulty } from '@sharping/shared';
-import { BASE_POINTS, ORDER_CLOCK_MS, PUZZLES, type PuzzleRef } from './game.ts';
+import { BASE_POINTS, ORDER_CLOCK_MS, type PuzzleRef } from './game.ts';
 
 /** Orders visible at the same time ("~5 comandas"). */
 export const ORDER_SLOTS = 5;
@@ -30,9 +30,9 @@ export type ClockAction =
   | { kind: 'rush' }
   | { kind: 'finish' };
 
-/** All actions due at the same instant: one durable wait + one step. */
+/** All actions decided at the same instant: one step. */
 export interface PlannedTick {
-  /** Epoch ms. */
+  /** Epoch ms of the tick (when the decision was taken). */
   plannedAt: number;
   actions: ClockAction[];
 }
@@ -52,76 +52,131 @@ export function seededRng(seed: string): () => number {
 
 const DIFFICULTIES: readonly Difficulty[] = ['easy', 'medium', 'hard'];
 
+/** Deliveries after which an order is full: nobody can deliver it, so its slot is free again. */
+export const MAX_DELIVERIES = 3;
+
+/** What the clock persists between ticks (JSON-safe: it is a step result). */
+export interface ClockState {
+  /** Orders opened so far (ids `o01`, `o02`...). Also seeds the rng of the next tick. */
+  counter: number;
+  /** Times each puzzle has been opened. */
+  used: Record<string, number>;
+  rushDone: boolean;
+  finished: boolean;
+  /** Time of the previous tick (epoch ms): expirations are reported once, in (lastTickAt, now]. */
+  lastTickAt: number;
+}
+
+export const initialClockState = (input: Pick<ClockInput, 'startedAt'>): ClockState => ({
+  counter: 0,
+  used: {},
+  rushDone: false,
+  finished: false,
+  lastTickAt: input.startedAt - 1,
+});
+
+/** The part of an ORDER# item the clock needs. */
+export interface OrderView {
+  orderId: string;
+  puzzleId: string;
+  expiresAt: number;
+  deliveries: number;
+}
+
+export interface TickDecision {
+  /** Sorted: expirations, openings, rush, finish. */
+  actions: ClockAction[];
+  state: ClockState;
+  /** Epoch ms of the next moment the clock must act without outside help; null once finished. */
+  nextWakeAt: number | null;
+}
+
 /**
- * Plans the order rotation: ORDER_SLOTS slots; every slot opens an order at `startedAt` and, when it expires,
- * immediately opens another one in the same slot.
+ * Reactive scheduling: given what exists in the table at `now`, decide what to do. Pure (no clock, no I/O); the rng is
+ * seeded by game code + order counter so a retried tick decides the same.
  *
- * Rules:
- * - Difficulty must have puzzles in the catalog and at least MIN_CLOCK_FRACTION of its clock left before `endsAt`.
- *   If none qualifies the slot stays empty for the rest of the game.
- * - `expiresAt` is capped at `endsAt` (an order never outlives the game). Orders that end with the game get no
- *   `order.expired` action: `game.finished` closes everything.
+ * Slots: ORDER_SLOTS. An order occupies its slot until it expires OR is full (MAX_DELIVERIES). A free slot gets a
+ * new order right away.
+ * - Expiry: `order.expired` only for orders that are not full (clients already dropped full ones on the 3rd
+ *   `order.delivered`) and whose expiry is before `endsAt` (the game end closes everything with `game.finished`).
+ * - Difficulty must have puzzles and at least MIN_CLOCK_FRACTION of its clock left before `endsAt`; if none
+ *   qualifies the slot stays empty. `expiresAt` is capped at `endsAt`.
  * - Puzzle choice: least-used first among puzzles of that difficulty not currently open; repeats only when needed.
+ * - The first fill (counter 0) follows INITIAL_MIX; later openings pick a difficulty by weight.
  */
-export function planOrders(
-  input: Pick<ClockInput, 'gameCode' | 'startedAt' | 'endsAt'>,
-  puzzles: readonly PuzzleRef[],
-): PlannedTick[] {
-  const rng = seededRng(input.gameCode);
+export function decideTick(args: {
+  now: number;
+  orders: readonly OrderView[];
+  state: ClockState;
+  puzzles: readonly PuzzleRef[];
+  input: ClockInput;
+}): TickDecision {
+  const { now, orders, input, puzzles } = args;
+  const state: ClockState = { ...args.state, used: { ...args.state.used } };
+  const actions: ClockAction[] = [];
   const byDifficulty = new Map<Difficulty, PuzzleRef[]>(DIFFICULTIES.map((d) => [d, puzzles.filter((p) => p.difficulty === d)]));
-  const used = new Map<string, number>();
-  const open = new Map<string, string>(); // orderId -> puzzleId currently open
-  const ticks = new Map<number, ClockAction[]>();
-  const add = (at: number, a: ClockAction) => ticks.set(at, [...(ticks.get(at) ?? []), a]);
 
-  let counter = 0;
-  // Slot queue: (time the slot frees up, orderId expiring then or null for the initial fill).
-  const pending: { at: number; expiring: string | null; slot: number }[] = Array.from({ length: ORDER_SLOTS }, (_, slot) => ({
-    at: input.startedAt,
-    expiring: null,
-    slot,
-  }));
-
-  while (pending.length > 0) {
-    pending.sort((a, b) => a.at - b.at || a.slot - b.slot);
-    const { at, expiring, slot } = pending.shift()!;
-    if (expiring) {
-      add(at, { kind: 'expire', orderId: expiring });
-      open.delete(expiring);
+  if (!state.finished) {
+    for (const o of [...orders].sort((a, b) => a.orderId.localeCompare(b.orderId))) {
+      const expired = o.expiresAt > state.lastTickAt && o.expiresAt <= now;
+      if (expired && o.deliveries < MAX_DELIVERIES && o.expiresAt < input.endsAt) actions.push({ kind: 'expire', orderId: o.orderId });
     }
+  }
 
-    const remaining = input.endsAt - at;
-    const allowed = DIFFICULTIES.filter(
-      (d) => byDifficulty.get(d)!.length > 0 && remaining >= ORDER_CLOCK_MS[d] * MIN_CLOCK_FRACTION,
-    );
-    if (allowed.length === 0) continue;
+  const live = orders.filter((o) => o.expiresAt > now && o.deliveries < MAX_DELIVERIES);
+  const openPuzzles = new Set(live.map((o) => o.puzzleId));
+  const rng = seededRng(`${input.gameCode}:${state.counter}`);
+  const initial = state.counter === 0;
+  const opened: { orderId: string; expiresAt: number }[] = [];
 
-    const wanted = expiring === null ? INITIAL_MIX[slot % INITIAL_MIX.length]! : weightedPick(allowed, rng);
+  let filled = 0;
+  while (!state.finished && live.length + opened.length < ORDER_SLOTS) {
+    const remaining = input.endsAt - now;
+    const allowed = DIFFICULTIES.filter((d) => byDifficulty.get(d)!.length > 0 && remaining >= ORDER_CLOCK_MS[d] * MIN_CLOCK_FRACTION);
+    if (allowed.length === 0) break;
+
+    const wanted = initial ? INITIAL_MIX[filled % INITIAL_MIX.length]! : weightedPick(allowed, rng);
     const difficulty = allowed.includes(wanted)
       ? wanted
       : [...allowed].sort((a, b) => Math.abs(rank(a) - rank(wanted)) - Math.abs(rank(b) - rank(wanted)))[0]!;
 
     const pool = byDifficulty.get(difficulty)!;
-    const openIds = new Set(open.values());
-    const fresh = pool.filter((p) => !openIds.has(p.id));
+    const fresh = pool.filter((p) => !openPuzzles.has(p.id));
     const candidates = fresh.length > 0 ? fresh : pool;
-    const least = Math.min(...candidates.map((p) => used.get(p.id) ?? 0));
-    const tied = candidates.filter((p) => (used.get(p.id) ?? 0) === least);
+    const least = Math.min(...candidates.map((p) => state.used[p.id] ?? 0));
+    const tied = candidates.filter((p) => (state.used[p.id] ?? 0) === least);
     const puzzle = tied[Math.floor(rng() * tied.length)]!;
-    used.set(puzzle.id, (used.get(puzzle.id) ?? 0) + 1);
+    state.used[puzzle.id] = (state.used[puzzle.id] ?? 0) + 1;
+    openPuzzles.add(puzzle.id);
 
-    const orderId = `o${String(++counter).padStart(2, '0')}`;
-    const expiresAt = Math.min(at + ORDER_CLOCK_MS[difficulty], input.endsAt);
-    open.set(orderId, puzzle.id);
-    add(at, {
+    const orderId = `o${String(++state.counter).padStart(2, '0')}`;
+    const expiresAt = Math.min(now + ORDER_CLOCK_MS[difficulty], input.endsAt);
+    actions.push({
       kind: 'open',
-      order: { orderId, puzzleId: puzzle.id, title: puzzle.title, difficulty, basePoints: BASE_POINTS[difficulty], openedAt: at, expiresAt },
+      order: { orderId, puzzleId: puzzle.id, title: puzzle.title, difficulty, basePoints: BASE_POINTS[difficulty], openedAt: now, expiresAt },
     });
-    // Orders ending with the game are closed by game.finished, not by their own expiry.
-    if (expiresAt < input.endsAt) pending.push({ at: expiresAt, expiring: orderId, slot });
+    opened.push({ orderId, expiresAt });
+    filled++;
   }
 
-  return [...ticks.entries()].sort((a, b) => a[0] - b[0]).map(([plannedAt, actions]) => ({ plannedAt, actions }));
+  if (!state.finished && !state.rushDone && now >= input.rushAt) {
+    actions.push({ kind: 'rush' });
+    state.rushDone = true;
+  }
+  if (!state.finished && now >= input.endsAt) {
+    actions.push({ kind: 'finish' });
+    state.finished = true;
+  }
+  state.lastTickAt = now;
+
+  let nextWakeAt: number | null = null;
+  if (!state.finished) {
+    // Orders ending with the game are closed by game.finished (endsAt below), not by their own expiry.
+    const wakes = [input.endsAt, ...(state.rushDone ? [] : [input.rushAt])];
+    for (const o of [...live, ...opened]) if (o.expiresAt < input.endsAt) wakes.push(o.expiresAt);
+    nextWakeAt = Math.min(...wakes);
+  }
+  return { actions, state, nextWakeAt };
 }
 
 const rank = (d: Difficulty) => DIFFICULTIES.indexOf(d);
@@ -134,22 +189,6 @@ function weightedPick(options: readonly Difficulty[], rng: () => number): Diffic
     if (r < 0) return d;
   }
   return options[options.length - 1]!;
-}
-
-/**
- * Every tick the clock must run, sorted by time: order rotation, `rush.started` and `game.finished`.
- * Within a tick: expirations, then openings, then rush, then finish.
- */
-export function buildSchedule(input: ClockInput, puzzles: readonly PuzzleRef[] = PUZZLES): PlannedTick[] {
-  const ticks = new Map<number, ClockAction[]>();
-  const add = (at: number, a: ClockAction) => ticks.set(at, [...(ticks.get(at) ?? []), a]);
-  for (const t of planOrders(input, puzzles)) for (const a of t.actions) add(t.plannedAt, a);
-  add(input.rushAt, { kind: 'rush' });
-  add(input.endsAt, { kind: 'finish' });
-  const order = { expire: 0, open: 1, rush: 2, finish: 3 } as const;
-  return [...ticks.entries()]
-    .sort((a, b) => a[0] - b[0])
-    .map(([plannedAt, actions]) => ({ plannedAt, actions: [...actions].sort((x, y) => order[x.kind] - order[y.kind]) }));
 }
 
 /**

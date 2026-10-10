@@ -73,6 +73,7 @@ export function fakeDeps() {
     lambdas: {
       startClock: vi.fn(async () => {}),
       warmRunner: vi.fn(async () => {}),
+      wakeClock: vi.fn(async (_callbackId: string) => {}),
       runCode: vi.fn<(e: RunnerEvent) => Promise<RunnerResult | TasteResult>>(async () => ({ passed: true, durationMs: 1 })),
     },
     now: () => 1_000_000,

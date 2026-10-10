@@ -3,6 +3,7 @@ import { CorsHttpMethod, HttpApi, HttpMethod } from 'aws-cdk-lib/aws-apigatewayv
 import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import type { EventApi } from 'aws-cdk-lib/aws-appsync';
 import type { ITable } from 'aws-cdk-lib/aws-dynamodb';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Tracing, type Function as LambdaFunction, type IAlias, type IFunction } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
 import { bundledFunction } from './bundling.ts';
@@ -12,6 +13,8 @@ export interface ApiProps {
   eventApi: EventApi;
   runner: IFunction;
   clockAlias: IAlias;
+  /** The clock function itself: callbacks are authorized against `<function arn>:*`. */
+  clockFunction: IFunction;
 }
 
 /** Lambdalith behind an HTTP API (payload v2). Routes are dispatched by the Powertools Router. */
@@ -45,6 +48,13 @@ export class Api extends Construct {
     props.runner.grantInvoke(this.fn);
     // Durable functions only need lambda:InvokeFunction on the qualified ARN (alias).
     props.clockAlias.grantInvoke(this.fn);
+    // 3rd delivery of an order: complete the clock's waitForCallback to refill the slot right away.
+    this.fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['lambda:SendDurableExecutionCallbackSuccess'],
+        resources: [`${props.clockFunction.functionArn}:*`],
+      }),
+    );
 
     this.httpApi = new HttpApi(this, 'HttpApi', {
       apiName: 'sharping-code',

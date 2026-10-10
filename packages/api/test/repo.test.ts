@@ -77,7 +77,9 @@ describe('claimDelivery', () => {
     const input = (send.mock.calls[0]![0] as UpdateCommand).input;
     expect(input.ConditionExpression).toContain('deliveries < :max');
     expect(input.ConditionExpression).toContain('expiresAt > :now');
-    expect(input.ExpressionAttributeValues).toMatchObject({ ':max': 3, ':now': 5000, ':pid': 'p1' });
+    expect(input.ExpressionAttributeValues).toMatchObject({ ':max': 3, ':now': 5000, ':pid': 'p1', ':meList': ['p1'], ':empty': [] });
+    expect(input.UpdateExpression).toContain('deliveredOrder = list_append(if_not_exists(deliveredOrder, :empty), :meList)');
+    expect(input.ConditionExpression).toContain('NOT contains(deliveredBy, :pid)');
   });
 
   it.each([

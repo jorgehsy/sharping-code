@@ -20,6 +20,7 @@ export class SharpingCodeStack extends Stack {
       eventApi: realtime.api,
       runner: runner.fn,
       clockAlias: clock.alias,
+      clockFunction: clock.fn,
     });
 
     new CfnOutput(this, 'HttpApiUrl', { value: api.httpApi.apiEndpoint });

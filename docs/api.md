@@ -60,6 +60,12 @@ Errores: `401` token ausente/inválido, `404` partida/comanda/objetivo inexisten
 - `409` con mensaje claro si: te saboteas a ti mismo, no tienes condimentos, el objetivo ya tiene sabotaje, todas las reglas están bloqueadas para su puzzle, o se perdió una carrera (condimento gastado / otro atacante primero).
 - Gasta 1 condimento y pega la regla en una transacción (condiciones: condimento disponible, objetivo sin sabotaje, partida `running`). Emite `sabotage.applied`.
 
+### Snapshot: campos de jugadores y comandas
+
+- `players[]` incluye `currentOrderId` (comanda que cocina, o `null`) y `sabotage` (regla activa o `null`). `currentOrderId` sigue la misma regla que `me.currentOrderId`: es `null` si la comanda ya no está abierta o si ese jugador ya la entregó.
+- `orders[].deliveredBy`: playerIds con entrega correcta **en orden de llegada** (índice = rank - 1). `deliveries` siempre es `deliveredBy.length`.
+- En DynamoDB, `currentOrderId` no se limpia al entregar; el snapshot lo calcula con la regla de arriba.
+
 ### Reconexión
 
 Al entrar (o al volver tras perder conexión / recargar): `GET /games/{code}` para el estado completo, y luego suscribirse al canal. `seq` del snapshot es el último evento ya reflejado en él: descarta eventos con `seq <= snapshot.seq`.
@@ -89,8 +95,9 @@ Los eventos que mueven puntos llevan `scores` completo (no deltas), para tolerar
 
 ### Rotación de comandas (reloj)
 
-- ~5 comandas visibles (5 *slots*). Al empezar se abren 5 a la vez (mezcla fácil/fácil/media/media/difícil); cuando una vence (`order.expired`) se abre otra en el mismo slot (`order.opened`), en el mismo instante y en el mismo `emit` (`expired` antes de `opened`).
+- 5 *slots*. Al empezar se abren 5 a la vez (mezcla fácil/fácil/media/media/difícil). Un slot se libera cuando su comanda **vence** (`order.expired`) o cuando **se llena** (3 entregas): en ambos casos se abre otra de inmediato (`order.opened`). Al vencer, `expired` va antes de `opened` en el mismo `emit`.
+- Comanda llena: no tiene evento propio. Los clientes ya la quitan con `order.delivered` rank 3; el snapshot no la lista (`orders[]` omite las que tienen `deliveries >= 3`, y por eso `currentOrderId` de quien la cocinaba es `null`). Cuando pasa su `expiresAt` **no** se emite `order.expired`. El reemplazo llega ~1-2 s después de la 3ª entrega; si el aviso de la API se pierde, como mucho ~30 s después (el reloj nunca espera más de 30 s).
 - Reloj por dificultad (`ORDER_CLOCK_MS`). `expiresAt` se **recorta a `endsAt`**: ninguna comanda sobrevive a la partida, y las que terminan con la partida no emiten `order.expired` (basta `game.finished`).
 - No se abre una comanda si queda menos del 50 % de su reloj hasta `endsAt` (ej. difícil necesita ≥ 5 min); si ninguna dificultad cabe, el slot queda vacío.
-- El plan completo (dificultades, puzzles, ids `o01`, `o02`…) es determinista: PRNG sembrado con el código de partida. Ver `packages/clock/src/schedule.ts`.
+- El reloj es reactivo: en cada tick lee las comandas de DynamoDB y decide (`decideTick`, puro, en `packages/clock/src/schedule.ts`). El PRNG se siembra con código de partida + contador de comandas; ids `o01`, `o02`… Ver ADR 0002.
 - `order.opened` solo lo emite el reloj; puede llegar justo antes o después de `game.started` (distintas Lambdas): usar `seq`, no el orden de llegada entre tipos.

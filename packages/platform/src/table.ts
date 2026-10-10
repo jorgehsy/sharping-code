@@ -21,6 +21,8 @@ export interface GameMeta extends Key {
   startedAt?: number;
   rushAt?: number;
   endsAt?: number;
+  /** Callback id of the clock's current `waitForCallback`: the API completes it on the 3rd delivery of an order to wake the clock early. */
+  clockCallbackId?: string;
   /** Last event seq reserved (events are numbered from 1). */
   seq: number;
   ttl: number;
@@ -56,6 +58,8 @@ export interface OrderItem extends Key {
   deliveries: number;
   /** Players with a correct (ranked) delivery; one per player per order. */
   deliveredBy?: Set<string>;
+  /** Same players as `deliveredBy`, in arrival order (index = rank - 1); the set is unordered. */
+  deliveredOrder?: string[];
   ttl: number;
 }
 
@@ -125,4 +129,29 @@ export async function putOrderIfAbsent(item: OrderItem): Promise<void> {
   } catch (e) {
     if ((e as { name?: string }).name !== 'ConditionalCheckFailedException') throw e;
   }
+}
+
+/** All ORDER# items of a game (consistent read: `deliveries` must be current). */
+export async function listOrders(code: string): Promise<OrderItem[]> {
+  const res = await getDocClient().send(
+    new QueryCommand({
+      TableName: tableName(),
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :p)',
+      ExpressionAttributeValues: { ':pk': `GAME#${code}`, ':p': ORDER_SK_PREFIX },
+      ConsistentRead: true,
+    }),
+  );
+  return (res.Items ?? []) as OrderItem[];
+}
+
+/** Store the callback id the API uses to wake the clock early. */
+export async function setClockCallbackId(code: string, callbackId: string): Promise<void> {
+  await getDocClient().send(
+    new UpdateCommand({
+      TableName: tableName(),
+      Key: gameKey(code),
+      UpdateExpression: 'SET clockCallbackId = :c',
+      ExpressionAttributeValues: { ':c': callbackId },
+    }),
+  );
 }

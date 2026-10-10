@@ -30,6 +30,20 @@ describe('SharpingCodeStack', () => {
     template.hasResourceProperties('AWS::Lambda::Alias', { Name: 'live' });
   });
 
+  it('lets the API complete clock callbacks (qualified function ARN only)', () => {
+    template.hasResourceProperties('AWS::IAM::Policy', {
+      PolicyDocument: {
+        Statement: Match.arrayWith([
+          Match.objectLike({
+            Action: 'lambda:SendDurableExecutionCallbackSuccess',
+            Effect: 'Allow',
+            Resource: { 'Fn::Join': ['', [Match.anyValue(), ':*']] },
+          }),
+        ]),
+      },
+    });
+  });
+
   it('exposes 8 HTTP API routes plus a CORS config', () => {
     template.resourceCountIs('AWS::ApiGatewayV2::Route', 8);
     template.hasResourceProperties('AWS::ApiGatewayV2::Api', {

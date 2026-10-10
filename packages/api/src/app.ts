@@ -77,12 +77,13 @@ const toSummary = (o: OrderItem): OrderSummary => ({
   openedAt: o.openedAt,
   expiresAt: o.expiresAt,
   deliveries: o.deliveries,
+  deliveredBy: o.deliveredOrder ?? [],
 });
 
-/** Orders a client may still act on: game running and the order clock not at zero. */
+/** Orders a client may still act on: game running, order clock not at zero and not full (3 ranked deliveries). */
 const openOrders = (meta: GameMeta, orders: readonly OrderItem[], t: number): OrderItem[] =>
   meta.status === 'running'
-    ? orders.filter((o) => t < o.expiresAt).sort((a, b) => a.openedAt - b.openedAt || a.orderId.localeCompare(b.orderId))
+    ? orders.filter((o) => t < o.expiresAt && o.deliveries < RANK_MULTIPLIERS.length).sort((a, b) => a.openedAt - b.openedAt || a.orderId.localeCompare(b.orderId))
     : [];
 
 /** 200 with a typed contract body (the router's JSON types do not accept interfaces without index signatures). */
@@ -107,6 +108,19 @@ export function createApp(deps: Deps): Router {
       throw new ConflictError('game is not running');
     }
     return meta;
+  }
+
+  /**
+   * Completes the clock's current waitForCallback so it refills the freed slot now instead of at its next timed wake.
+   * Best effort: no id yet, or a stale/consumed one, is expected; the clock re-reads the orders on every wake anyway.
+   */
+  async function wakeClock(code: string): Promise<void> {
+    try {
+      const callbackId = (await repo.getMeta(code))?.clockCallbackId;
+      if (callbackId) await lambdas.wakeClock(callbackId);
+    } catch (e) {
+      deps.logger?.warn('could not wake the clock', { code, error: (e as Error).message });
+    }
   }
 
   /** x-player-token -> playerId, scoped to the game in the path. 401 if missing/unknown. */
@@ -158,6 +172,12 @@ export function createApp(deps: Deps): Router {
       const t = now();
       const open = openOrders(meta, snap.orders ?? [], t);
       const me = players.find((p) => p.playerId === playerId);
+      // An expired order, or one this player already delivered, is no longer "being cooked".
+      // Same rule for `me` and for every player (matches the client reducer on order.delivered).
+      const currentOrderOf = (p: { playerId: string; currentOrderId?: string }) => {
+        const o = open.find((x) => x.orderId === p.currentOrderId);
+        return o && !o.deliveredBy?.has(p.playerId) ? o.orderId : null;
+      };
       return ok({
         code,
         status: meta.status,
@@ -170,14 +190,19 @@ export function createApp(deps: Deps): Router {
         now: t,
         /** META.seq at read time: events with seq <= this are already reflected in the snapshot. */
         seq: meta.seq ?? 0,
-        players: players.map((p) => ({ playerId: p.playerId, nickname: p.nickname, score: p.score })),
+        players: players.map((p) => ({
+          playerId: p.playerId,
+          nickname: p.nickname,
+          score: p.score,
+          currentOrderId: currentOrderOf(p),
+          sabotage: (p.sabotage as SabotageRule | undefined) ?? null,
+        })),
         orders: open.map(toSummary),
         me: me && {
           playerId: me.playerId,
           nickname: me.nickname,
           score: me.score,
-          // An expired order is no longer "being cooked".
-          currentOrderId: open.some((o) => o.orderId === me.currentOrderId) ? (me.currentOrderId ?? null) : null,
+          currentOrderId: currentOrderOf(me),
           condiments: me.condiments,
           sabotage: (me.sabotage as SabotageRule | undefined) ?? null,
         },
@@ -313,6 +338,8 @@ export function createApp(deps: Deps): Router {
       if (applied.clearedSabotage) events.push({ type: 'sabotage.cleared', data: { playerId } });
       await emit(code, events);
       deps.count?.('OrderDelivered');
+      // The order is now full: its slot is free. Wake the clock so it refills right away (best effort).
+      if (claim.ok && rank === RANK_MULTIPLIERS.length) await wakeClock(code);
 
       const body: SubmitResponse = { passed: true, rank, points, scores };
       return ok(body);

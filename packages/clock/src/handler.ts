@@ -1,8 +1,10 @@
 import {
   emit,
+  listOrders,
   listPlayers,
   orderKey,
   putOrderIfAbsent,
+  setClockCallbackId,
   setGameStatus,
   ttlFor,
   type EmitInput,
@@ -25,6 +27,7 @@ async function putOrder(code: string, o: PlannedOrder): Promise<void> {
     openedAt: o.openedAt,
     expiresAt: o.expiresAt,
     deliveries: 0,
+    deliveredOrder: [],
     ttl: ttlFor(o.openedAt),
   });
 }
@@ -60,5 +63,7 @@ async function toEvents(code: string, a: ClockAction): Promise<EmitInput[]> {
 
 export const handler = createClockHandler({
   fire,
+  listOrders: async (code) => (await listOrders(code)).map((o) => ({ orderId: o.orderId, puzzleId: o.puzzleId, expiresAt: o.expiresAt, deliveries: o.deliveries })),
+  setCallbackId: setClockCallbackId,
   waitMarginMs: Number(process.env.WAIT_MARGIN_MS ?? 5000),
 });

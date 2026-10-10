@@ -159,6 +159,76 @@ describe('GET /games/:code orders', () => {
   });
 });
 
+describe('GET /games/:code snapshot fields', () => {
+  it('deliveredBy keeps arrival order and deliveries matches its length', async () => {
+    login();
+    deps.repo.getSnapshot.mockResolvedValue({
+      meta: meta(),
+      players: [player()],
+      orders: [
+        order({ deliveries: 2, deliveredBy: new Set(['p2', 'p1']), deliveredOrder: ['p2', 'p1'] }),
+        order({ orderId: 'o2', openedAt: NOW }),
+      ],
+    });
+    const res = await call('GET', '/games/ABCDE', { token: 't' });
+    expect(res.json.orders[0]).toMatchObject({ orderId: 'o1', deliveries: 2, deliveredBy: ['p2', 'p1'] });
+    expect(res.json.orders[1]).toMatchObject({ orderId: 'o2', deliveries: 0, deliveredBy: [] });
+  });
+
+  it('players expose currentOrderId (null when idle or expired) and sabotage', async () => {
+    login();
+    deps.repo.getSnapshot.mockResolvedValue({
+      meta: meta(),
+      players: [
+        player({ currentOrderId: 'o1', sabotage: 'no-loops' }),
+        player({ playerId: 'p2', nickname: 'Bo', currentOrderId: undefined }),
+        player({ playerId: 'p3', nickname: 'Cy', currentOrderId: 'gone' }),
+      ],
+      orders: [order()],
+    });
+    const res = await call('GET', '/games/ABCDE', { token: 't' });
+    expect(res.json.players).toMatchObject([
+      { playerId: 'p1', currentOrderId: 'o1', sabotage: 'no-loops' },
+      { playerId: 'p2', currentOrderId: null, sabotage: null },
+      { playerId: 'p3', currentOrderId: null, sabotage: null },
+    ]);
+    expect(res.json.me.currentOrderId).toBe('o1');
+  });
+
+  it('a player who already delivered their current order is no longer cooking it', async () => {
+    login();
+    deps.repo.getSnapshot.mockResolvedValue({
+      meta: meta(),
+      players: [player({ currentOrderId: 'o1' }), player({ playerId: 'p2', nickname: 'Bo', currentOrderId: 'o1' })],
+      orders: [order({ deliveries: 1, deliveredBy: new Set(['p1']), deliveredOrder: ['p1'] })],
+    });
+    const res = await call('GET', '/games/ABCDE', { token: 't' });
+    expect(res.json.players).toMatchObject([
+      { playerId: 'p1', currentOrderId: null },
+      { playerId: 'p2', currentOrderId: 'o1' },
+    ]);
+    expect(res.json.me.currentOrderId).toBeNull();
+  });
+});
+
+describe('GET /games/:code full orders', () => {
+  it('hides orders with 3 deliveries, and a full order is not "being cooked"', async () => {
+    login();
+    deps.repo.getSnapshot.mockResolvedValue({
+      meta: meta(),
+      players: [player({ currentOrderId: 'full' })],
+      orders: [
+        order({ orderId: 'full', deliveries: 3, deliveredBy: new Set(['p2', 'p3', 'p4']), deliveredOrder: ['p2', 'p3', 'p4'] }),
+        order({ orderId: 'ok', openedAt: NOW, deliveries: 2 }),
+      ],
+    });
+    const res = await call('GET', '/games/ABCDE', { token: 't' });
+    expect(res.json.orders.map((o: { orderId: string }) => o.orderId)).toEqual(['ok']);
+    expect(res.json.me.currentOrderId).toBeNull();
+    expect(res.json.players[0].currentOrderId).toBeNull();
+  });
+});
+
 describe('POST take', () => {
   const take = () => call('POST', '/games/ABCDE/orders/o1/take', { token: 't' });
   beforeEach(() => {
@@ -227,6 +297,42 @@ describe('POST submit', () => {
       { type: 'order.delivered', data: { orderId: 'o1', playerId: 'p1', rank: 1, points: 400, scores: { p1: 400 } } },
       { type: 'condiment.earned', data: { playerId: 'p1' } },
     ]);
+  });
+
+  describe('waking the clock on the 3rd delivery', () => {
+    beforeEach(() => deps.repo.claimDelivery.mockResolvedValue({ ok: true, rank: 3 }));
+
+    it('rank 3 sends the callback with the id stored in META, after the emit', async () => {
+      deps.repo.getMeta.mockResolvedValue(meta({ clockCallbackId: 'cb-1' }));
+      const res = await submit();
+      expect(res.status).toBe(200);
+      expect(deps.lambdas.wakeClock).toHaveBeenCalledExactlyOnceWith('cb-1');
+      expect(deps.emit.mock.invocationCallOrder[0]!).toBeLessThan(deps.lambdas.wakeClock.mock.invocationCallOrder[0]!);
+    });
+
+    it('no stored id: no call', async () => {
+      expect((await submit()).status).toBe(200);
+      expect(deps.lambdas.wakeClock).not.toHaveBeenCalled();
+    });
+
+    it('a failing callback does not fail the delivery', async () => {
+      deps.repo.getMeta.mockResolvedValue(meta({ clockCallbackId: 'stale' }));
+      deps.lambdas.wakeClock.mockRejectedValue(new Error('ResourceNotFoundException'));
+      const res = await submit();
+      expect(res.status).toBe(200);
+      expect(res.json).toMatchObject({ passed: true, rank: 3 });
+    });
+
+    it('ranks 1 and 2, and a late 4th delivery, do not wake the clock', async () => {
+      deps.repo.getMeta.mockResolvedValue(meta({ clockCallbackId: 'cb-1' }));
+      deps.repo.claimDelivery.mockResolvedValueOnce({ ok: true, rank: 1 });
+      await submit();
+      deps.repo.claimDelivery.mockResolvedValueOnce({ ok: true, rank: 2 });
+      await submit();
+      deps.repo.claimDelivery.mockResolvedValueOnce({ ok: false, reason: 'full' });
+      await submit();
+      expect(deps.lambdas.wakeClock).not.toHaveBeenCalled();
+    });
   });
 
   it('rush hour doubles, rank 2 pays 60%, sabotage cleared event', async () => {

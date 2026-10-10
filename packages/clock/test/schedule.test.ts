@@ -1,13 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import { ORDER_CLOCK_MS } from '../src/game.ts';
 import {
-  buildSchedule,
   computeResults,
+  decideTick,
+  initialClockState,
+  MIN_CLOCK_FRACTION,
   ORDER_SLOTS,
-  planOrders,
   planWaitSeconds,
   seededRng,
   type ClockAction,
+  type ClockState,
+  type OrderView,
   type PlannedOrder,
 } from '../src/schedule.ts';
 
@@ -18,9 +21,15 @@ const PUZZLES = [
   { id: 'h1', title: 'H1', difficulty: 'hard' as const },
   { id: 'h2', title: 'H2', difficulty: 'hard' as const },
 ];
-const input = { gameCode: 'ABCDE', startedAt: 1_000_000, rushAt: 1_000_000 + 720_000, endsAt: 1_000_000 + 900_000 };
-const opens = (s: ReturnType<typeof buildSchedule>): PlannedOrder[] =>
-  s.flatMap((t) => t.actions).flatMap((a) => (a.kind === 'open' ? [a.order] : []));
+const T0 = 1_000_000;
+const input = { gameCode: 'ABCDE', startedAt: T0, rushAt: T0 + 720_000, endsAt: T0 + 900_000 };
+const view = (orderId: string, o: Partial<OrderView> = {}): OrderView => ({ orderId, puzzleId: `p-${orderId}`, expiresAt: T0 + 100_000, deliveries: 0, ...o });
+const kinds = (a: ClockAction[]) => a.map((x) => x.kind);
+const opens = (a: ClockAction[]): PlannedOrder[] => a.flatMap((x) => (x.kind === 'open' ? [x.order] : []));
+const tick = (now: number, orders: OrderView[], state: ClockState, puzzles = PUZZLES) => decideTick({ now, orders, state, puzzles, input });
+/** A state after an initial fill, `lastTickAt` at `at`. */
+const afterFill = (at = T0, counter = 5): ClockState => ({ ...initialClockState(input), counter, lastTickAt: at });
+const fiveOrders = (o: Partial<OrderView> = {}) => Array.from({ length: 5 }, (_, i) => view(`o0${i + 1}`, o));
 
 describe('seededRng', () => {
   it('is deterministic per seed and in [0,1)', () => {
@@ -32,115 +41,145 @@ describe('seededRng', () => {
   });
 });
 
-describe('buildSchedule', () => {
-  it('is deterministic for the same input', () => {
-    expect(buildSchedule(input, PUZZLES)).toEqual(buildSchedule(input, PUZZLES));
-  });
-
-  it('differs between game codes', () => {
-    expect(buildSchedule({ ...input, gameCode: 'ZZZZZ' }, PUZZLES)).not.toEqual(buildSchedule(input, PUZZLES));
-  });
-
-  it('is sorted, opens ORDER_SLOTS orders in the first tick, ends with rush then finish', () => {
-    const s = buildSchedule(input, PUZZLES);
-    expect(s.map((t) => t.plannedAt)).toEqual([...s.map((t) => t.plannedAt)].sort((a, b) => a - b));
-    expect(s[0]!.plannedAt).toBe(input.startedAt);
-    expect(s[0]!.actions.filter((a) => a.kind === 'open')).toHaveLength(ORDER_SLOTS);
-    const kinds = s.flatMap((t) => t.actions.map((a) => a.kind));
-    expect(kinds.at(-1)).toBe('finish');
-    expect(kinds.filter((k) => k === 'rush')).toHaveLength(1);
-    expect(s.find((t) => t.actions.some((a) => a.kind === 'rush'))!.plannedAt).toBe(input.rushAt);
-    expect(s.at(-1)!.plannedAt).toBe(input.endsAt);
-  });
-
-  it('keeps ~ORDER_SLOTS orders open at any time and never past endsAt', () => {
-    const orders = opens(buildSchedule(input, PUZZLES));
-    for (const o of orders) {
-      expect(o.expiresAt).toBeLessThanOrEqual(input.endsAt);
-      expect(o.expiresAt).toBeGreaterThan(o.openedAt);
+describe('decideTick', () => {
+  it('initial fill: ORDER_SLOTS orders with INITIAL_MIX, ids o01.., unique puzzles per difficulty while possible', () => {
+    const d = tick(T0, [], initialClockState(input));
+    expect(kinds(d.actions)).toEqual(Array(ORDER_SLOTS).fill('open'));
+    const os = opens(d.actions);
+    expect(os.map((o) => o.difficulty)).toEqual(['easy', 'easy', 'medium', 'medium', 'hard']);
+    expect(os.map((o) => o.orderId)).toEqual(['o01', 'o02', 'o03', 'o04', 'o05']);
+    expect(new Set(os.filter((o) => o.difficulty === 'easy').map((o) => o.puzzleId)).size).toBe(2);
+    for (const o of os) {
+      expect(o.openedAt).toBe(T0);
+      expect(o.expiresAt).toBe(T0 + ORDER_CLOCK_MS[o.difficulty]);
     }
-    for (let t = input.startedAt; t < input.endsAt - 90_000; t += 10_000) {
-      const n = orders.filter((o) => o.openedAt <= t && t < o.expiresAt).length;
-      expect(n).toBeLessThanOrEqual(ORDER_SLOTS);
-      expect(n).toBeGreaterThanOrEqual(ORDER_SLOTS - 2); // late slots may stay empty when nothing fits
+    expect(d.state.counter).toBe(5);
+    expect(d.nextWakeAt).toBe(Math.min(...os.map((o) => o.expiresAt)));
+  });
+
+  it('is deterministic, and the rng depends on the game code', () => {
+    const a = tick(T0, [], initialClockState(input));
+    expect(tick(T0, [], initialClockState(input))).toEqual(a);
+    const b = decideTick({ now: T0, orders: [], state: initialClockState(input), puzzles: PUZZLES, input: { ...input, gameCode: 'ZZZZZ' } });
+    expect(b.actions).not.toEqual(a.actions);
+  });
+
+  it('refill after an order becomes full (3 deliveries) before its expiry: opens one, emits no expiry', () => {
+    const orders = [view('o01', { deliveries: 3 }), ...fiveOrders().slice(1)];
+    const d = tick(T0 + 20_000, orders, afterFill(T0));
+    expect(kinds(d.actions)).toEqual(['open']);
+    expect(opens(d.actions)[0]!.orderId).toBe('o06');
+    expect(opens(d.actions)[0]!.openedAt).toBe(T0 + 20_000);
+    expect(d.state.counter).toBe(6);
+  });
+
+  it('refill after expiry: expired before opened, one per freed slot', () => {
+    const orders = [view('o02', { expiresAt: T0 + 10_000 }), view('o01', { expiresAt: T0 + 10_000 }), ...fiveOrders().slice(2)];
+    const d = tick(T0 + 10_000, orders, afterFill(T0));
+    expect(kinds(d.actions)).toEqual(['expire', 'expire', 'open', 'open']);
+    expect(d.actions.slice(0, 2)).toEqual([
+      { kind: 'expire', orderId: 'o01' },
+      { kind: 'expire', orderId: 'o02' },
+    ]);
+  });
+
+  it('a full order past its expiresAt produces no expire event (and frees nothing twice)', () => {
+    const orders = [view('o01', { deliveries: 3, expiresAt: T0 + 50_000 }), ...fiveOrders().slice(1)];
+    // o01 was already refilled at the 3rd delivery: 4 live + the replacement o06.
+    const withRefill = [...orders, view('o06', { expiresAt: T0 + 400_000 })];
+    const d = tick(T0 + 50_000, withRefill, afterFill(T0 + 20_000, 6));
+    expect(kinds(d.actions)).toEqual([]);
+  });
+
+  it('an expiry is reported once: only in (lastTickAt, now]', () => {
+    const orders = [view('o01', { expiresAt: T0 + 10_000 }), ...fiveOrders().slice(1)];
+    const first = tick(T0 + 10_000, orders, afterFill(T0));
+    expect(kinds(first.actions)).toEqual(['expire', 'open']);
+    const again = tick(T0 + 30_000, [...orders, view('o06')], first.state);
+    expect(kinds(again.actions)).not.toContain('expire');
+  });
+
+  it('does nothing when all slots are taken and nothing is due; wakes at the earliest non-full expiry', () => {
+    const orders = [
+      view('o01', { expiresAt: T0 + 30_000, deliveries: 3 }), // full: ignored for the wake time (and refilled)
+      view('o02', { expiresAt: T0 + 90_000 }),
+      view('o03', { expiresAt: T0 + 60_000 }),
+      view('o04'),
+      view('o05'),
+      view('o06'),
+    ];
+    const d = tick(T0 + 5_000, orders, afterFill(T0, 6));
+    expect(d.actions).toEqual([]);
+    expect(d.nextWakeAt).toBe(T0 + 60_000);
+  });
+
+  it('opens nothing when no difficulty fits before the end; the slot stays empty', () => {
+    const now = input.endsAt - ORDER_CLOCK_MS.easy * MIN_CLOCK_FRACTION + 1;
+    const d = tick(now, [], afterFill(T0, 5));
+    expect(opens(d.actions)).toEqual([]);
+    expect(d.nextWakeAt).toBe(input.rushAt <= now ? input.endsAt : input.rushAt);
+  });
+
+  it('caps expiresAt at endsAt and does not wake for orders ending with the game', () => {
+    const now = input.endsAt - ORDER_CLOCK_MS.easy; // easy fits entirely; medium/hard fit >= 50 % but are capped
+    const d = tick(now, [], { ...afterFill(T0, 10), rushDone: true });
+    expect(opens(d.actions).length).toBe(ORDER_SLOTS);
+    for (const o of opens(d.actions)) expect(o.expiresAt).toBeLessThanOrEqual(input.endsAt);
+    expect(opens(d.actions).some((o) => o.expiresAt === input.endsAt)).toBe(true);
+    expect(d.nextWakeAt).toBe(input.endsAt);
+  });
+
+  it('rush once, at rushAt', () => {
+    const orders = fiveOrders({ expiresAt: input.endsAt });
+    const before = tick(input.rushAt - 1, orders, afterFill(T0));
+    expect(kinds(before.actions)).toEqual([]);
+    expect(before.nextWakeAt).toBe(input.rushAt);
+    const at = tick(input.rushAt, orders, afterFill(T0));
+    expect(kinds(at.actions)).toEqual(['rush']);
+    expect(at.state.rushDone).toBe(true);
+    const later = tick(input.rushAt + 5_000, orders, at.state);
+    expect(kinds(later.actions)).not.toContain('rush');
+    expect(later.nextWakeAt).toBe(input.endsAt);
+  });
+
+  it('finish closes: no expiry for capped orders, no openings, no further wake', () => {
+    const orders = fiveOrders({ expiresAt: input.endsAt });
+    const d = tick(input.endsAt, orders, { ...afterFill(T0), rushDone: true });
+    expect(kinds(d.actions)).toEqual(['finish']);
+    expect(d.state.finished).toBe(true);
+    expect(d.nextWakeAt).toBeNull();
+    expect(kinds(tick(input.endsAt + 1000, orders, d.state).actions)).toEqual([]);
+  });
+
+  it('rush and finish after a very late tick come out in order, after expiries/openings', () => {
+    const d = tick(input.endsAt, fiveOrders({ expiresAt: input.endsAt - 100_000 }), afterFill(T0));
+    expect(kinds(d.actions)).toEqual(['expire', 'expire', 'expire', 'expire', 'expire', 'rush', 'finish']);
+  });
+
+  it('never opens a puzzle that is currently open while the pool has others', () => {
+    const live = [view('o01', { puzzleId: 'e1' }), view('o02', { puzzleId: 'h1' })];
+    for (let c = 0; c < 20; c++) {
+      const d = decideTick({ now: T0 + 1000, orders: live, state: { ...afterFill(T0, 2 + c), used: { e1: 1, h1: 1 } }, puzzles: PUZZLES, input });
+      const first = new Map<string, string>();
+      for (const o of opens(d.actions)) if (!first.has(o.difficulty)) first.set(o.difficulty, o.puzzleId);
+      if (first.has('easy')) expect(first.get('easy')).toBe('e2');
+      if (first.has('hard')) expect(first.get('hard')).toBe('h2');
+      if (first.has('medium')) expect(first.get('medium')).toBe('m1');
     }
   });
 
-  it('expire + open of a slot share a tick, expire first', () => {
-    const s = buildSchedule(input, PUZZLES);
-    const t = s.find((t) => t.actions.some((a) => a.kind === 'expire'))!;
-    const kinds = t.actions.map((a) => a.kind);
-    expect(kinds.indexOf('expire')).toBeLessThan(kinds.indexOf('open'));
+  it('least-used puzzle first; repeats only when the pool is exhausted', () => {
+    const state = { ...afterFill(T0, 8), used: { e1: 3, e2: 1, m1: 0 } };
+    const d = decideTick({ now: T0 + 1, orders: fiveOrders().slice(1), state, puzzles: PUZZLES.filter((p) => p.difficulty === 'easy'), input });
+    expect(opens(d.actions)[0]!.puzzleId).toBe('e2');
+    const tiny = decideTick({ now: T0 + 1, orders: [view('o02', { puzzleId: 'e1' })], state: afterFill(T0, 8), puzzles: [PUZZLES[0]!], input });
+    expect(opens(tiny.actions).length).toBe(4); // repeats e1 because it is the only one
   });
 
-  it('every non-capped order is expired exactly once, at its expiresAt; capped ones are not', () => {
-    const s = buildSchedule(input, PUZZLES);
-    const orders = opens(s);
-    const expired = s.flatMap((t) => t.actions.map((a: ClockAction) => ({ a, at: t.plannedAt }))).filter((x) => x.a.kind === 'expire');
-    for (const o of orders) {
-      const e = expired.filter((x) => x.a.kind === 'expire' && x.a.orderId === o.orderId);
-      expect(e).toHaveLength(o.expiresAt < input.endsAt ? 1 : 0);
-      if (e[0]) expect(e[0].at).toBe(o.expiresAt);
-    }
-  });
-
-  it('uses the order clock of its difficulty unless capped, with unique ids', () => {
-    const orders = opens(buildSchedule(input, PUZZLES));
-    expect(new Set(orders.map((o) => o.orderId)).size).toBe(orders.length);
-    for (const o of orders) {
-      expect(o.expiresAt).toBe(Math.min(o.openedAt + ORDER_CLOCK_MS[o.difficulty], input.endsAt));
-    }
-  });
-
-  it('does not open orders that cannot be meaningfully finished', () => {
-    const orders = opens(buildSchedule(input, PUZZLES));
-    for (const o of orders) {
-      expect(input.endsAt - o.openedAt).toBeGreaterThanOrEqual(ORDER_CLOCK_MS[o.difficulty] * 0.5);
-    }
-  });
-
-  it('mixes difficulties at the start', () => {
-    const first = opens(buildSchedule(input, PUZZLES)).slice(0, ORDER_SLOTS);
-    expect(new Set(first.map((o) => o.difficulty))).toEqual(new Set(['easy', 'medium', 'hard']));
-  });
-
-  it('avoids repeating a puzzle among open orders while the catalog allows it', () => {
-    // 2 easy + 1 medium + 2 hard puzzles for a mix of easy,easy,medium,medium,hard: only the 2nd medium must repeat.
-    const first = opens(buildSchedule(input, PUZZLES)).slice(0, ORDER_SLOTS);
-    expect(new Set(first.map((o) => o.puzzleId)).size).toBe(4);
-  });
-
-  it('falls back to available difficulties and tolerates a tiny catalog', () => {
-    const small = [{ id: 'e1', title: 'E1', difficulty: 'easy' as const }];
-    const orders = opens(buildSchedule(input, small));
-    expect(orders.length).toBeGreaterThan(ORDER_SLOTS);
-    expect(orders.every((o) => o.puzzleId === 'e1' && o.difficulty === 'easy')).toBe(true);
-  });
-
-  it('with an empty catalog only rush and finish remain', () => {
-    const s = buildSchedule(input, []);
-    expect(s.map((t) => t.actions.map((a) => a.kind))).toEqual([['rush'], ['finish']]);
-  });
-
-  it('keeps the number of ticks (durable waits + steps) bounded', () => {
-    expect(buildSchedule(input, PUZZLES).length).toBeLessThanOrEqual(30);
-  });
-
-  it('uses the bundled catalog by default', () => {
-    expect(opens(buildSchedule(input)).length).toBeGreaterThan(0);
-  });
-
-  it('merges rush into the same tick as an expiry when they coincide', () => {
-    const s = buildSchedule({ ...input, rushAt: input.startedAt + ORDER_CLOCK_MS.easy }, [PUZZLES[0]!]);
-    const t = s.find((t) => t.plannedAt === input.startedAt + ORDER_CLOCK_MS.easy)!;
-    expect(t.actions.some((a) => a.kind === 'rush')).toBe(true);
-    expect(t.actions.at(-1)!.kind).toBe('rush');
-  });
-});
-
-describe('planOrders', () => {
-  it('first tick opens at startedAt', () => {
-    expect(planOrders(input, PUZZLES)[0]!.plannedAt).toBe(input.startedAt);
+  it('an empty catalog opens nothing (rush and finish only)', () => {
+    const d = tick(T0, [], initialClockState(input), []);
+    expect(d.actions).toEqual([]);
+    expect(d.nextWakeAt).toBe(input.rushAt);
   });
 });
 
