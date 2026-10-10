@@ -24,19 +24,19 @@ export function Home() {
       <h1>Sharping Code</h1>
       <form onSubmit={submitJoin} className="stack">
         <label>
-          Nickname
+          Apodo
           <input value={nickname} onChange={(e) => setNickname(e.target.value)} maxLength={24} autoFocus />
         </label>
         <button type="button" disabled={busy || !nick} onClick={() => void run(() => controller.create(nick))}>
-          Create game
+          Crear partida
         </button>
         <hr />
         <label>
-          Game code
+          Código de partida
           <input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} maxLength={8} />
         </label>
         <button type="submit" disabled={busy || !nick || !code.trim()}>
-          Join game
+          Unirse
         </button>
         {error && <p className="error">{error}</p>}
       </form>

@@ -1,7 +1,11 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { Kitchen } from './Kitchen.tsx';
+import { ConfirmModal } from './Modal.tsx';
+import { Sprite } from './Sprite.tsx';
 import { Toasts } from './Toasts.tsx';
 import { useApp, useGame } from './context.ts';
+import { ruleLabel } from '../kitchen/labels.ts';
+import { MAX_CONDIMENTS } from '../store/reducer.ts';
 import { formatClock, remainingMs } from '../store/time.ts';
 import { useServerNow } from './ticker.ts';
 
@@ -33,7 +37,7 @@ export function Game() {
         {view === 'kitchen' ? (
           <Kitchen onTaken={() => setView('editor')} />
         ) : (
-          <Suspense fallback={<p className="center">Loading editor…</p>}>
+          <Suspense fallback={<p className="center">Cargando editor…</p>}>
             <EditorView onBack={() => setView('kitchen')} />
           </Suspense>
         )}
@@ -47,27 +51,52 @@ function Hud({ view, setView, canEdit }: { view: View; setView: (v: View) => voi
   const { controller } = useApp();
   const endsAt = useGame((s) => s.endsAt);
   const rush = useGame((s) => s.rush);
-  const me = useGame((s) => s.me);
+  const score = useGame((s) => s.me?.score ?? 0);
+  const condiments = useGame((s) => s.me?.condiments ?? 0);
+  const sabotage = useGame((s) => s.me?.sabotage ?? null);
   const code = useGame((s) => s.code);
   const now = useServerNow();
+  const [leaving, setLeaving] = useState(false);
 
   return (
-    <header className="hud">
-      <span>
-        Game <strong>{code}</strong>
+    <header className="hud" aria-label="Estado de la partida">
+      <span className="muted">
+        Partida <span className="code-text">{code}</span>
       </span>
       <span className="clock">{endsAt ? formatClock(remainingMs(endsAt, now)) : '--:--'}</span>
-      {rush && <span className="badge rush">RUSH x2</span>}
-      <span>Score: {me?.score ?? 0}</span>
-      <span>Condiments: {me?.condiments ?? 0}</span>
-      {me?.sabotage && <span className="badge bad">Sabotage: {me.sabotage}</span>}
+      {rush && <span className="pill rush">Hora punta x2</span>}
+      <span>
+        Puntos <span className="score">{score}</span>
+      </span>
+      <span title={`${condiments} condimento${condiments === 1 ? '' : 's'}`}>
+        Condimentos{' '}
+        <span className="flasks">
+          {Array.from({ length: MAX_CONDIMENTS }, (_, i) => (
+            <Sprite key={i} name="flask_big_red" scale={1.25} style={{ opacity: i < condiments ? 1 : 0.25 }} />
+          ))}
+        </span>
+      </span>
+      {sabotage && <span className="pill curse">Maldito: {ruleLabel(sabotage)}</span>}
       <span className="spacer" />
-      <button onClick={() => setView(view === 'kitchen' ? 'editor' : 'kitchen')} disabled={view === 'kitchen' && !canEdit}>
-        {view === 'kitchen' ? 'Editor' : 'Kitchen'} (Alt+K)
+      <button type="button" onClick={() => setView(view === 'kitchen' ? 'editor' : 'kitchen')} disabled={view === 'kitchen' && !canEdit}>
+        {view === 'kitchen' ? 'Editor' : 'Cocina'} (Alt+K)
       </button>
-      <button className="link" onClick={() => window.confirm('Leave the game? Your progress on the current order is lost.') && controller.leave()}>
-        Leave
+      <button type="button" onClick={() => setLeaving(true)}>
+        Salir
       </button>
+      {leaving && (
+        <ConfirmModal
+          title="¿Salir de la partida?"
+          confirmLabel="Salir"
+          onCancel={() => setLeaving(false)}
+          onConfirm={() => {
+            setLeaving(false);
+            controller.leave();
+          }}
+        >
+          Perderás tu progreso en la comanda actual.
+        </ConfirmModal>
+      )}
     </header>
   );
 }

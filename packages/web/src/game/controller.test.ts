@@ -182,6 +182,70 @@ describe('game controller', () => {
     expect(t.store.getState()).toMatchObject({ tasting: false, actionError: 'boom' });
   });
 
+  describe('onLiveEvent', () => {
+    const live = async (seq = 0) => {
+      const t = setup(async () => snapshot({ seq }));
+      await t.controller.create('Ana');
+      await tick();
+      const got: number[] = [];
+      const off = t.controller.onLiveEvent((e) => got.push(e.seq));
+      return { t, got, off };
+    };
+    const joined = (seq: number) => ev('player.joined', seq, { playerId: `x${seq}`, nickname: `N${seq}` });
+
+    it('fires for each live event after the reducer applied it (state already updated)', async () => {
+      const { t, got } = await live();
+      const seen: number[] = [];
+      t.controller.onLiveEvent(() => seen.push(t.store.getState().players.length));
+      t.h().onEvent(joined(1));
+      t.h().onEvent(joined(2));
+      expect(got).toEqual([1, 2]);
+      expect(seen).toEqual([3, 4]);
+    });
+
+    it('fires in seq order once a reorder gap fills, and not for duplicates', async () => {
+      const { t, got } = await live();
+      t.h().onEvent(joined(2));
+      t.h().onEvent(joined(3));
+      expect(got).toEqual([]); // waiting for 1
+      t.h().onEvent(joined(1));
+      t.h().onEvent(joined(1));
+      t.h().onEvent(joined(2));
+      expect(got).toEqual([1, 2, 3]);
+    });
+
+    it('does not fire for events replayed from a snapshot', async () => {
+      let release!: (s: GameSnapshot) => void;
+      const t = setup(() => new Promise((r) => (release = r)));
+      const got: number[] = [];
+      t.controller.onLiveEvent((e) => got.push(e.seq));
+      await t.controller.create('Ana');
+      t.h().onEvent(joined(5)); // buffered while the snapshot is in flight
+      t.h().onEvent(joined(6));
+      release(snapshot({ seq: 4 }));
+      await tick();
+      expect(t.store.getState().lastSeq).toBe(6);
+      expect(got).toEqual([]);
+      t.h().onEvent(joined(7)); // live again
+      expect(got).toEqual([7]);
+    });
+
+    it('unsubscribes, and a throwing listener does not break the others', async () => {
+      const { t, got, off } = await live();
+      const err = vi.spyOn(console, 'error').mockImplementation(() => {});
+      t.controller.onLiveEvent(() => {
+        throw new Error('boom');
+      });
+      t.h().onEvent(joined(1));
+      expect(got).toEqual([1]);
+      expect(t.store.getState().lastSeq).toBe(1);
+      off();
+      t.h().onEvent(joined(2));
+      expect(got).toEqual([1]);
+      err.mockRestore();
+    });
+  });
+
   it('leave closes the channel and resets state', async () => {
     const t = setup(async () => snapshot());
     await t.controller.create('Ana');

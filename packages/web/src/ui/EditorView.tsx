@@ -3,6 +3,7 @@ import type { SubmitResponse, TasteResponse } from '@sharping/shared';
 import { useApp, useGame } from './context.ts';
 import { CodeEditor } from './CodeEditor.tsx';
 import { Markdown } from './markdown.tsx';
+import { difficultyLabel, ruleLabel } from '../kitchen/labels.ts';
 import { createSessionStore } from '../session.ts';
 
 const drafts = createSessionStore(globalThis.localStorage);
@@ -14,8 +15,8 @@ export default function EditorView({ onBack }: { onBack: () => void }) {
   if (!taken) {
     return (
       <div className="center">
-        <p>No order in progress.</p>
-        <button onClick={onBack}>Back to the kitchen</button>
+        <p>No hay ninguna comanda en curso.</p>
+        <button onClick={onBack}>Volver a la cocina</button>
       </div>
     );
   }
@@ -35,8 +36,12 @@ function Cooking() {
   const sabotage = useGame((s) => s.me?.sabotage ?? null);
   const error = useGame((s) => s.actionError);
   const [source, setSource] = useState(() => drafts.loadDraft(code, taken.orderId) ?? stubFor(taken.signature));
+  // Updated on change, not on render: a shortcut pressed right after typing fires before React re-renders.
   const sourceRef = useRef(source);
-  sourceRef.current = source;
+  const onChange = (v: string) => {
+    sourceRef.current = v;
+    setSource(v);
+  };
 
   useEffect(() => {
     drafts.saveDraft(code, taken.orderId, source);
@@ -72,11 +77,11 @@ function Cooking() {
       <section className="statement">
         <h2>{taken.title}</h2>
         <p className="muted">
-          {taken.difficulty} - {taken.basePoints} pts
+          {difficultyLabel(taken.difficulty)} - {taken.basePoints} pts
         </p>
-        {sabotage && <p className="badge bad">Sabotage active: {sabotage}</p>}
+        {sabotage && <p className="badge bad">Sabotaje activo: {ruleLabel(sabotage)}</p>}
         <Markdown source={taken.statement} />
-        <h3>Examples</h3>
+        <h3>Ejemplos</h3>
         <ul className="plain">
           {taken.publicCases.map((c, i) => (
             <li key={i}>
@@ -89,16 +94,16 @@ function Cooking() {
       </section>
       <section className="work">
         <div className="monaco">
-          <CodeEditor path={taken.orderId} value={source} onChange={setSource} />
+          <CodeEditor path={taken.orderId} value={source} onChange={onChange} />
         </div>
         <div className="actions">
           <button disabled={!canSubmit} onClick={submit}>
-            {submitting ? 'Submitting…' : 'Submit (Ctrl+Enter)'}
+            {submitting ? 'Entregando…' : 'Entregar (Ctrl+Enter)'}
           </button>
           <button disabled={!canTaste} onClick={doTaste}>
-            {tasting ? 'Tasting…' : "Taste (Ctrl+')"}
+            {tasting ? 'Degustando…' : "Degustar (Ctrl+')"}
           </button>
-          {!open && <span className="error">This order is closed.</span>}
+          {!open && <span className="error">Esta comanda está cerrada.</span>}
           {error && <span className="error">{error}</span>}
         </div>
         {taste?.orderId === taken.orderId && <Taste result={taste.result} />}
@@ -114,20 +119,20 @@ export function Result({ result }: { result: SubmitResponse }) {
   if (result.passed) {
     return (
       <div className="result good">
-        Delivered! Rank #{result.rank}, +{result.points} pts.
+        ¡Entregada! Puesto Nº{result.rank}, +{result.points} pts.
       </div>
     );
   }
   return (
     <div className="result bad">
       <strong>
-        {result.reason === 'compile' ? 'Compile error' : result.hidden ? 'Failed a hidden case' : `Failed (${result.reason})`}
+        {result.reason === 'compile' ? 'Error de compilación' : result.hidden ? 'Falló un caso oculto' : `Falló (${result.reason})`}
       </strong>{' '}
-      <span className="muted">penalty -{Math.abs(result.penalty)}</span>
+      <span className="muted">penalización -{Math.abs(result.penalty)}</span>
       {result.message && <pre>{result.message}</pre>}
       {result.case && (
         <pre>
-          {`input:    ${show(result.case.input)}\nexpected: ${show(result.case.expected)}\nactual:   ${show(result.case.actual)}`}
+          {`entrada:  ${show(result.case.input)}\nesperado: ${show(result.case.expected)}\nobtenido: ${show(result.case.actual)}`}
         </pre>
       )}
     </div>
@@ -141,9 +146,9 @@ export function Taste({ result }: { result: TasteResponse }) {
         <table>
           <thead>
             <tr>
-              <th>input</th>
-              <th>expected</th>
-              <th>actual</th>
+              <th>entrada</th>
+              <th>esperado</th>
+              <th>obtenido</th>
               <th />
             </tr>
           </thead>
@@ -163,7 +168,7 @@ export function Taste({ result }: { result: TasteResponse }) {
           <strong>{result.reason}</strong>: {result.message}
         </p>
       )}
-      <p className="muted">Passing the public cases doesn't guarantee the hidden ones.</p>
+      <p className="muted">Pasar los casos públicos no garantiza pasar los casos ocultos.</p>
     </div>
   );
 }

@@ -13,8 +13,8 @@ export function Final() {
 
   return (
     <main className="center">
-      <h1>Game over</h1>
-      <h2>Podium</h2>
+      <h1>Fin de la partida</h1>
+      <h2>Podio</h2>
       <ol>
         {top.map((id) => (
           <li key={id}>
@@ -22,7 +22,7 @@ export function Final() {
           </li>
         ))}
       </ol>
-      <h2>Scores</h2>
+      <h2>Puntuaciones</h2>
       <ul className="plain">
         {ranked.map((p) => (
           <li key={p.playerId}>
@@ -32,7 +32,7 @@ export function Final() {
       </ul>
       {Object.keys(awards).length > 0 && (
         <>
-          <h2>Awards</h2>
+          <h2>Premios</h2>
           <ul className="plain">
             {Object.entries(awards).map(([award, id]) => (
               <li key={award}>
@@ -42,7 +42,7 @@ export function Final() {
           </ul>
         </>
       )}
-      <button onClick={() => controller.leave()}>Back to start</button>
+      <button onClick={() => controller.leave()}>Volver al inicio</button>
     </main>
   );
 }

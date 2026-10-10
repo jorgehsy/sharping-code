@@ -1,11 +1,12 @@
-import type { EventPayloads, GameEvent, GameSnapshot, Scores } from '@sharping/shared';
+import type { EventPayloads, GameEvent, GameSnapshot, SabotageRule, Scores } from '@sharping/shared';
+import { ruleLabel } from '../kitchen/labels.ts';
 import { initialState, type GameState, type Toast } from './state.ts';
 
 export const MAX_TOASTS = 5;
 export const MAX_CONDIMENTS = 2;
 
-const nick = (s: GameState, id: string) => s.players.find((p) => p.playerId === id)?.nickname ?? 'Someone';
-const orderTitle = (s: GameState, id: string) => s.orders.find((o) => o.orderId === id)?.title ?? 'an order';
+const nick = (s: GameState, id: string) => s.players.find((p) => p.playerId === id)?.nickname ?? 'Alguien';
+const orderTitle = (s: GameState, id: string) => s.orders.find((o) => o.orderId === id)?.title ?? 'una comanda';
 
 /** Scores are always replaced, never added (events carry the full table). */
 function withScores(s: GameState, scores: Scores): GameState {
@@ -23,6 +24,20 @@ const pushToast = (s: GameState, e: GameEvent, kind: Toast['kind'], text: string
 
 const isMe = (s: GameState, id: string) => s.playerId === id;
 
+/** Updates one player of the public list. */
+const patchPlayer = (s: GameState, id: string, patch: Partial<GameState['players'][number]>): GameState => ({
+  ...s,
+  players: s.players.map((p) => (p.playerId === id ? { ...p, ...patch } : p)),
+});
+
+/** `playerId` takes position `rank` in `deliveredBy` (idempotent; never leaves holes). */
+function withDelivery(by: readonly string[], playerId: string, rank: number): string[] {
+  if (by[rank - 1] === playerId) return [...by];
+  const rest = by.filter((id) => id !== playerId);
+  rest.splice(Math.min(Math.max(rank - 1, 0), rest.length), 0, playerId);
+  return rest;
+}
+
 /** Applies one event unconditionally (sequencing is `receiveEvent`'s job). Unknown types are ignored. */
 export function reduceEvent(s: GameState, e: GameEvent): GameState {
   switch (e.type) {
@@ -30,10 +45,10 @@ export function reduceEvent(s: GameState, e: GameEvent): GameState {
       const d = e.data as EventPayloads['player.joined'];
       if (s.players.some((p) => p.playerId === d.playerId)) return s;
       return pushToast(
-        { ...s, players: [...s.players, { playerId: d.playerId, nickname: d.nickname, score: 0 }] },
+        { ...s, players: [...s.players, { playerId: d.playerId, nickname: d.nickname, score: 0, currentOrderId: null, sabotage: null }] },
         e,
         'info',
-        `${d.nickname} joined`,
+        `${d.nickname} se unió`,
       );
     }
     case 'game.started': {
@@ -51,19 +66,28 @@ export function reduceEvent(s: GameState, e: GameEvent): GameState {
         openedAt: e.at,
         expiresAt: d.expiresAt,
         deliveries: 0,
+        deliveredBy: [],
       };
-      return pushToast({ ...s, orders: [...s.orders, order] }, e, 'info', `New order: ${d.title}`);
+      return pushToast({ ...s, orders: [...s.orders, order] }, e, 'info', `Nueva comanda: ${d.title}`);
     }
     case 'order.taken': {
       const d = e.data as EventPayloads['order.taken'];
-      const next = isMe(s, d.playerId) && s.me ? { ...s, me: { ...s.me, currentOrderId: d.orderId } } : s;
-      return isMe(s, d.playerId) ? next : pushToast(next, e, 'info', `${nick(s, d.playerId)} is cooking ${orderTitle(s, d.orderId)}`);
+      const withPlayer = patchPlayer(s, d.playerId, { currentOrderId: d.orderId });
+      const next = isMe(s, d.playerId) && s.me ? { ...withPlayer, me: { ...s.me, currentOrderId: d.orderId } } : withPlayer;
+      return isMe(s, d.playerId) ? next : pushToast(next, e, 'info', `${nick(s, d.playerId)} está cocinando ${orderTitle(s, d.orderId)}`);
     }
     case 'order.delivered': {
       const d = e.data as EventPayloads['order.delivered'];
       const title = orderTitle(s, d.orderId);
-      let n = withScores(s, d.scores);
-      n = { ...n, orders: n.orders.map((o) => (o.orderId === d.orderId ? { ...o, deliveries: Math.max(o.deliveries, d.rank) } : o)) };
+      let n = patchPlayer(withScores(s, d.scores), d.playerId, { currentOrderId: null });
+      n = {
+        ...n,
+        orders: n.orders.map((o) => {
+          if (o.orderId !== d.orderId) return o;
+          const deliveredBy = withDelivery(o.deliveredBy, d.playerId, d.rank);
+          return { ...o, deliveredBy, deliveries: deliveredBy.length };
+        }),
+      };
       if (isMe(s, d.playerId)) {
         const mine = n.me?.currentOrderId === d.orderId;
         n = {
@@ -72,11 +96,11 @@ export function reduceEvent(s: GameState, e: GameEvent): GameState {
           taken: mine ? null : n.taken,
         };
       }
-      return pushToast(n, e, isMe(s, d.playerId) ? 'good' : 'info', `${nick(s, d.playerId)} delivered ${title} (#${d.rank}, +${d.points})`);
+      return pushToast(n, e, isMe(s, d.playerId) ? 'good' : 'info', `${nick(s, d.playerId)} entregó ${title} (Nº${d.rank}, +${d.points})`);
     }
     case 'dish.burned': {
       const d = e.data as EventPayloads['dish.burned'];
-      return pushToast(withScores(s, d.scores), e, 'bad', `${nick(s, d.playerId)} burned a dish (${d.penalty > 0 ? '-' : ''}${Math.abs(d.penalty)})`);
+      return pushToast(withScores(s, d.scores), e, 'bad', `${nick(s, d.playerId)} sirvió un plato quemado (${d.penalty > 0 ? '-' : ''}${Math.abs(d.penalty)})`);
     }
     case 'order.expired': {
       const d = e.data as EventPayloads['order.expired'];
@@ -86,38 +110,40 @@ export function reduceEvent(s: GameState, e: GameEvent): GameState {
         {
           ...s,
           orders: s.orders.filter((o) => o.orderId !== d.orderId),
+          players: s.players.map((p) => (p.currentOrderId === d.orderId ? { ...p, currentOrderId: null } : p)),
           me: s.me && mine ? { ...s.me, currentOrderId: null } : s.me,
         },
         e,
         mine ? 'bad' : 'info',
-        `The customer left: ${title}`,
+        `El cliente se fue: ${title}`,
       );
     }
     case 'condiment.earned': {
       const d = e.data as EventPayloads['condiment.earned'];
-      if (!isMe(s, d.playerId) || !s.me) return pushToast(s, e, 'info', `${nick(s, d.playerId)} earned a condiment`);
+      if (!isMe(s, d.playerId) || !s.me) return pushToast(s, e, 'info', `${nick(s, d.playerId)} ganó un condimento`);
       return pushToast(
         { ...s, me: { ...s.me, condiments: Math.min(MAX_CONDIMENTS, s.me.condiments + 1) } },
         e,
         'good',
-        'You earned a condiment!',
+        '¡Ganaste un condimento!',
       );
     }
     case 'sabotage.applied': {
       const d = e.data as EventPayloads['sabotage.applied'];
       const toMe = isMe(s, d.toPlayerId) && s.me;
       const fromMe = isMe(s, d.fromPlayerId) && s.me;
-      let n = s;
-      if (toMe) n = { ...n, me: { ...n.me!, sabotage: d.rule as NonNullable<GameState['me']>['sabotage'] } };
+      let n = patchPlayer(s, d.toPlayerId, { sabotage: d.rule as SabotageRule });
+      if (toMe) n = { ...n, me: { ...n.me!, sabotage: d.rule as SabotageRule } };
       if (fromMe) n = { ...n, me: { ...n.me!, condiments: Math.max(0, n.me!.condiments - 1) } };
-      return pushToast(n, e, toMe ? 'bad' : 'info', `${nick(s, d.fromPlayerId)} sabotaged ${nick(s, d.toPlayerId)}: ${d.rule}`);
+      return pushToast(n, e, toMe ? 'bad' : 'info', `${nick(s, d.fromPlayerId)} saboteó a ${nick(s, d.toPlayerId)}: ${ruleLabel(d.rule)}`);
     }
     case 'sabotage.cleared': {
       const d = e.data as EventPayloads['sabotage.cleared'];
-      return isMe(s, d.playerId) && s.me ? { ...s, me: { ...s.me, sabotage: null } } : s;
+      const n = patchPlayer(s, d.playerId, { sabotage: null });
+      return isMe(s, d.playerId) && n.me ? { ...n, me: { ...n.me, sabotage: null } } : n;
     }
     case 'rush.started':
-      return pushToast({ ...s, rush: true }, e, 'bad', 'Rush hour! Orders are worth double');
+      return pushToast({ ...s, rush: true }, e, 'bad', '¡Hora punta! Las comandas valen el doble');
     case 'game.finished': {
       const d = e.data as EventPayloads['game.finished'];
       return { ...withScores(s, d.scores), status: 'finished', podium: d.podium, awards: d.awards };

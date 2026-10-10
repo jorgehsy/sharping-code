@@ -1,3 +1,4 @@
+import type { GameEvent } from '@sharping/shared';
 import { ApiRequestError, type GameApi } from '../api/client.ts';
 import type { GameChannel, Realtime } from '../realtime/client.ts';
 import type { SessionStore } from '../session.ts';
@@ -20,6 +21,8 @@ export const GAP_WINDOW_MS = 1000;
 
 export type GameController = ReturnType<typeof createGameController>;
 
+export type LiveEventListener = (e: GameEvent) => void;
+
 const msg = (e: unknown) => (e instanceof Error ? e.message : String(e));
 
 /**
@@ -38,6 +41,7 @@ export function createGameController({ api, realtime, store, sessions, now = Dat
   /** Bumped by submit so a taste finishing afterwards doesn't resurrect stale output. */
   let submitEpoch = 0;
   const set = store.setState;
+  const liveListeners = new Set<LiveEventListener>();
   const code = () => store.getState().code!;
 
   async function refresh() {
@@ -57,9 +61,9 @@ export function createGameController({ api, realtime, store, sessions, now = Dat
       inFlight = 0;
       if (e instanceof ApiRequestError && (e.status === 401 || e.status === 403 || e.status === 404)) {
         leave();
-        set((s) => ({ ...s, actionError: 'That game is gone or your session expired.' }));
+        set((s) => ({ ...s, actionError: 'Esa partida ya no existe o tu sesión expiró.' }));
       } else {
-        set((s) => ({ ...s, actionError: `Could not load game: ${msg(e)}` }));
+        set((s) => ({ ...s, actionError: `No se pudo cargar la partida: ${msg(e)}` }));
         // Transient: retry; the realtime layer also refetches on every resubscribe.
         setTimeout(() => id === fetchId && channel && void refresh(), 2000);
       }
@@ -99,6 +103,30 @@ export function createGameController({ api, realtime, store, sessions, now = Dat
     else if (s.me?.currentOrderId && !s.taken) void takeOrder(s.me.currentOrderId, true);
   }
 
+  /**
+   * Fires `liveListeners` for every event the reducer applied because of `incoming` (the event itself and any
+   * buffered ones it unblocked), in seq order. Events replayed from a snapshot never come through here.
+   */
+  function emitApplied(before: ReturnType<typeof store.getState>, incoming: GameEvent) {
+    if (!liveListeners.size || !before.synced || before.lastSeq === null) return;
+    const after = store.getState();
+    if (after.lastSeq === null || after.lastSeq === before.lastSeq) return;
+    const bySeq = new Map<number, GameEvent>();
+    for (const e of [...before.buffer, incoming]) bySeq.set(e.seq, e);
+    const applied = [...bySeq.values()]
+      .filter((e) => e.seq > before.lastSeq! && e.seq <= after.lastSeq!)
+      .sort((a, b) => a.seq - b.seq);
+    for (const e of applied) {
+      for (const l of [...liveListeners]) {
+        try {
+          l(e);
+        } catch (err) {
+          console.error('live event listener failed', err);
+        }
+      }
+    }
+  }
+
   function open(session: { code: string; playerId: string; playerToken: string; nickname: string }) {
     leave(false);
     token = session.playerToken;
@@ -107,7 +135,9 @@ export function createGameController({ api, realtime, store, sessions, now = Dat
     set(() => ({ ...initialState(), code: session.code, playerId: session.playerId }));
     channel = realtime.subscribe(session.code, {
       onEvent: (e) => {
+        const before = store.getState();
         set((s) => receiveEvent(s, e));
+        emitApplied(before, e);
         watchGap();
         const s = store.getState();
         if (!s.synced && !inFlight) void refresh(); // not synced and no fetch running (e.g. earlier fetch failed)
@@ -209,6 +239,11 @@ export function createGameController({ api, realtime, store, sessions, now = Dat
       }));
     },
     sabotage: (targetPlayerId: string) => guarded(() => api.sabotage(code(), targetPlayerId, token!)),
+    /** Subscribes to events as the reducer applies them live (one-shot FX). Not called for snapshot replays. */
+    onLiveEvent(listener: LiveEventListener): () => void {
+      liveListeners.add(listener);
+      return () => void liveListeners.delete(listener);
+    },
     dismissToast: (id: string) => set((s) => ({ ...s, toasts: s.toasts.filter((t) => t.id !== id) })),
     get nickname() {
       return nickname;

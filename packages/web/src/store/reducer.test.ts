@@ -16,9 +16,19 @@ describe('reduceEvent', () => {
     expect(s.players.map((p) => p.nickname)).toEqual(['Ana', 'Bo', 'Cy']);
   });
 
+  it('player.joined starts idle and uncursed', () => {
+    const s = reduceEvent(synced(), ev('player.joined', 1, { playerId: 'p3', nickname: 'Cy' }));
+    expect(s.players[2]).toEqual({ playerId: 'p3', nickname: 'Cy', score: 0, currentOrderId: null, sabotage: null });
+  });
+
   it('game.started sets status and timings', () => {
     const s = reduceEvent(synced({ status: 'lobby' }), ev('game.started', 1, { startedAt: 1, rushAt: 2, endsAt: 3 }));
     expect(s).toMatchObject({ status: 'running', startedAt: 1, rushAt: 2, endsAt: 3, rush: false });
+  });
+
+  it('order.opened starts with nobody delivered', () => {
+    const s = reduceEvent(synced(), ev('order.opened', 1, { orderId: 'o2', title: 'T', difficulty: 'easy', basePoints: 100, expiresAt: 9 }));
+    expect(s.orders[1]).toMatchObject({ orderId: 'o2', deliveries: 0, deliveredBy: [] });
   });
 
   it('order.opened adds (idempotent), expired removes', () => {
@@ -36,6 +46,37 @@ describe('reduceEvent', () => {
     expect(s.toasts.at(-1)?.text).toContain('Bo');
     s = reduceEvent(s, ev('order.taken', 2, { orderId: 'o1', playerId: 'p1' }));
     expect(s.me?.currentOrderId).toBe('o1');
+  });
+
+  it('order.taken sets that player\'s currentOrderId in the public list (me and others)', () => {
+    let s = reduceEvent(synced(), ev('order.taken', 1, { orderId: 'o1', playerId: 'p2' }));
+    expect(s.players.map((p) => p.currentOrderId)).toEqual([null, 'o1']);
+    s = reduceEvent(s, ev('order.taken', 2, { orderId: 'o1', playerId: 'p1' }));
+    expect(s.players.map((p) => p.currentOrderId)).toEqual(['o1', 'o1']);
+    expect(s.me?.currentOrderId).toBe('o1');
+  });
+
+  it('order.delivered puts the player at deliveredBy[rank - 1], idempotently, and frees their cook slot', () => {
+    let s = synced();
+    s = reduceEvent(s, ev('order.taken', 1, { orderId: 'o1', playerId: 'p2' }));
+    const d1 = ev('order.delivered', 2, { orderId: 'o1', playerId: 'p2', rank: 1, points: 100, scores: { p1: 0, p2: 100 } });
+    s = reduceEvent(s, d1);
+    s = reduceEvent(s, d1); // replay
+    expect(s.orders[0]).toMatchObject({ deliveredBy: ['p2'], deliveries: 1 });
+    expect(s.players[1]?.currentOrderId).toBeNull();
+    s = reduceEvent(s, ev('order.delivered', 3, { orderId: 'o1', playerId: 'p1', rank: 2, points: 60, scores: { p1: 60, p2: 100 } }));
+    expect(s.orders[0]).toMatchObject({ deliveredBy: ['p2', 'p1'], deliveries: 2 });
+  });
+
+  it('order.delivered never leaves holes when a rank arrives out of step', () => {
+    const s = reduceEvent(synced(), ev('order.delivered', 1, { orderId: 'o1', playerId: 'p2', rank: 3, points: 30, scores: { p1: 0, p2: 30 } }));
+    expect(s.orders[0]?.deliveredBy).toEqual(['p2']);
+  });
+
+  it('order.expired frees every player who was cooking it', () => {
+    let s = reduceEvent(synced(), ev('order.taken', 1, { orderId: 'o1', playerId: 'p2' }));
+    s = reduceEvent(s, ev('order.expired', 2, { orderId: 'o1' }));
+    expect(s.players.map((p) => p.currentOrderId)).toEqual([null, null]);
   });
 
   it('order.delivered replaces scores, bumps deliveries, clears my current order', () => {
@@ -90,6 +131,16 @@ describe('reduceEvent', () => {
     expect(s.me?.sabotage).toBe('max-lines-3');
     s = reduceEvent(s, ev('sabotage.cleared', 3, { playerId: 'p1' }));
     expect(s.me?.sabotage).toBeNull();
+  });
+
+  it('sabotage events keep players[].sabotage in sync for everyone', () => {
+    let s = reduceEvent(synced(), ev('sabotage.applied', 1, { fromPlayerId: 'p1', toPlayerId: 'p2', rule: 'no-loops' }));
+    expect(s.players.map((p) => p.sabotage)).toEqual([null, 'no-loops']);
+    s = reduceEvent(s, ev('sabotage.applied', 2, { fromPlayerId: 'p2', toPlayerId: 'p1', rule: 'max-lines-3' }));
+    expect(s.players.map((p) => p.sabotage)).toEqual(['max-lines-3', 'no-loops']);
+    s = reduceEvent(s, ev('sabotage.cleared', 3, { playerId: 'p2' }));
+    expect(s.players.map((p) => p.sabotage)).toEqual(['max-lines-3', null]);
+    expect(s.me?.sabotage).toBe('max-lines-3');
   });
 
   it('rush.started and game.finished', () => {

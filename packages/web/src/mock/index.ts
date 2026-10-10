@@ -6,7 +6,7 @@ import { MockOrders } from './orders.ts';
  * The only entry points of the mock. Used by app/wire.ts when VITE_MOCK_ORDERS=true.
  * Both wrappers share one MockOrders; everything else in the app is unaware of it.
  */
-export function withMockOrders(api: GameApi, realtime: Realtime, mock = new MockOrders()): { api: GameApi; realtime: Realtime } {
+export function withMockOrders(api: GameApi, realtime: Realtime, mock = new MockOrders({ bots: 7, openTarget: 5 })): { api: GameApi; realtime: Realtime } {
   // One monotone seq over real + fake events (their own seqs would interleave and look like gaps).
   // Shared with the snapshot so `snapshot.seq` is consistent with what the stream stamps.
   let seq = 0;
@@ -27,7 +27,8 @@ export function withMockOrders(api: GameApi, realtime: Realtime, mock = new Mock
       mock.observe(snap);
       if (snap.status === 'running' && snap.startedAt && snap.rushAt && snap.endsAt) {
         mock.ensureRunning({ startedAt: snap.startedAt, rushAt: snap.rushAt, endsAt: snap.endsAt });
-        return { ...snap, orders: mock.orders() };
+        const { players, me } = mock.decorate(snap);
+        return { ...snap, players, me, orders: mock.orders() };
       }
       return snap;
     },
@@ -46,6 +47,8 @@ export function withMockOrders(api: GameApi, realtime: Realtime, mock = new Mock
         ...h,
         onEvent(e) {
           if (e.type === 'game.started') mock.ensureRunning(e.data as { startedAt: number; rushAt: number; endsAt: number });
+          // The real clock still rotates real orders; in mock mode orders are the mock's only (as in the snapshot).
+          if (e.type === 'order.opened' || e.type === 'order.expired') return;
           stamp(e);
         },
       });

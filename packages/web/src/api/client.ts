@@ -48,7 +48,7 @@ export function createHttpApi({ baseUrl, fetch: f = globalThis.fetch.bind(global
         body: opts.body === undefined ? undefined : JSON.stringify(opts.body),
       });
     } catch (e) {
-      throw new ApiRequestError(0, e instanceof Error ? e.message : 'Network error');
+      throw new ApiRequestError(0, e instanceof Error ? e.message : 'Error de red');
     }
     const text = await res.text();
     let json: unknown;

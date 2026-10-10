@@ -17,8 +17,8 @@ export function App() {
   if (!loaded) {
     return (
       <main className="center">
-        <p>{error ?? (synced ? 'Loading…' : 'Joining game…')}</p>
-        {error && <button onClick={() => controller.leave()}>Back</button>}
+        <p>{error ?? (synced ? 'Cargando…' : 'Uniéndose a la partida…')}</p>
+        {error && <button onClick={() => controller.leave()}>Volver</button>}
       </main>
     );
   }
@@ -34,5 +34,5 @@ function ConnectionBanner() {
   const connection = useGame((s) => s.connection);
   const synced = useGame((s) => s.synced);
   if (connection === 'live' && synced) return null;
-  return <div className="banner">{connection === 'live' ? 'Syncing…' : 'Reconnecting…'}</div>;
+  return <div className="banner">{connection === 'live' ? 'Sincronizando…' : 'Reconectando…'}</div>;
 }
