@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["juan perez"], "output": "J.P." },
+    { "input": ["ana maria lopez"], "output": "A.M.L." }
+  ],
+  "hidden": [
+    { "input": ["a"], "output": "A." },
+    { "input": ["Juan"], "output": "J." },
+    { "input": ["mario"], "output": "M." },
+    { "input": ["Luis De La Cruz"], "output": "L.D.L.C." },
+    { "input": ["pepe grillo"], "output": "P.G." }
+  ]
+}

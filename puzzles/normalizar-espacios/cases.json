@@ -1,0 +1,14 @@
+{
+  "public": [
+    {"input":["pan   con queso"],"output":"pan con queso"},
+    {"input":["  sal y  pimienta "],"output":"sal y pimienta"}
+  ],
+  "hidden": [
+    {"input":[""],"output":""},
+    {"input":["   "],"output":""},
+    {"input":["a"],"output":"a"},
+    {"input":[" a"],"output":"a"},
+    {"input":["a  b  c"],"output":"a b c"},
+    {"input":["hola mundo"],"output":"hola mundo"}
+  ]
+}

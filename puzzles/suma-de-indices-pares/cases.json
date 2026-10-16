@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": [[1,2,3,4,5]], "output": 9 },
+    { "input": [[10,20]], "output": 10 }
+  ],
+  "hidden": [
+    { "input": [[]], "output": 0 },
+    { "input": [[7]], "output": 7 },
+    { "input": [[-1,100,-2]], "output": -3 },
+    { "input": [[1,1,1,1]], "output": 2 },
+    { "input": [[0,5,0,5,9]], "output": 9 }
+  ]
+}

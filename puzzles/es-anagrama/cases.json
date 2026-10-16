@@ -1,0 +1,14 @@
+{
+  "public": [
+    { "input": ["roma","amor"], "output": true },
+    { "input": ["sal","sol"], "output": false }
+  ],
+  "hidden": [
+    { "input": ["",""], "output": true },
+    { "input": ["a","a"], "output": true },
+    { "input": ["abc","abcd"], "output": false },
+    { "input": ["aab","abb"], "output": false },
+    { "input": ["Roma","amor"], "output": false },
+    { "input": ["listen","silent"], "output": true }
+  ]
+}

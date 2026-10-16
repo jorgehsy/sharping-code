@@ -129,7 +129,7 @@ describe('game controller', () => {
 
   it('reload mid-order re-takes to recover the statement', async () => {
     const t = setup(async () =>
-      snapshot({ me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: 'o1', condiments: 0, sabotage: null } }),
+      snapshot({ me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: 'o1', condiments: 0, solved: 0, sabotage: null } }),
     );
     vi.mocked(t.api.takeOrder).mockResolvedValue({ ...snapshot().orders[0]!, statement: 'S', signature: 'function solve()', publicCases: [] });
     await t.controller.create('Ana');
@@ -145,9 +145,10 @@ describe('game controller', () => {
     const taken = { ...snapshot().orders[0]!, statement: 'S', signature: 'f', publicCases: [] };
     vi.mocked(t.api.takeOrder).mockResolvedValue(taken);
     await t.controller.takeOrder('o1');
-    vi.mocked(t.api.submit).mockResolvedValue({ passed: true, rank: 1, points: 100, scores: {} });
+    vi.mocked(t.api.submit).mockResolvedValue({ passed: true, rank: 1, points: 100, solved: 1, scores: {} });
     await t.controller.submit('return 1');
     expect(t.store.getState()).toMatchObject({ submitting: false, lastSubmit: { orderId: 'o1', result: { passed: true } } });
+    expect(t.store.getState().me?.solved).toBe(1);
     vi.mocked(t.api.submit).mockRejectedValue(new ApiRequestError(409, 'Order is closed'));
     await t.controller.submit('x');
     expect(t.store.getState().actionError).toBe('Order is closed');
@@ -170,7 +171,7 @@ describe('game controller', () => {
     await first;
     expect(t.api.taste).toHaveBeenCalledTimes(1);
     expect(t.store.getState()).toMatchObject({ tasting: false, tasteResult: { orderId: 'o1', result: res } });
-    vi.mocked(t.api.submit).mockResolvedValue({ passed: true, rank: 1, points: 1, scores: {} });
+    vi.mocked(t.api.submit).mockResolvedValue({ passed: true, rank: 1, points: 1, solved: 1, scores: {} });
     await t.controller.submit('x');
     expect(t.store.getState().tasteResult).toBeNull();
     vi.mocked(t.api.taste).mockResolvedValue(res);

@@ -16,7 +16,7 @@ Reglas del juego: [docs/game-design.md](docs/game-design.md).
 - **Plato mal hecho**: una entrega que falla los tests. Cuesta una multa fija.
 - **Cliente se va**: el reloj de la comanda llega a cero. La comanda se cierra y ya no admite entregas.
 - **Hora punta**: los últimos 3 minutos de la partida. Las comandas valen el doble.
-- **Condimento**: un sabotaje que se gana al ser el primero en entregar una comanda difícil. Se usa contra otro jugador.
+- **Condimento**: un sabotaje que se gana al ser el primero en entregar una comanda difícil, o cada 3 entregas correctas. Se usa contra otro jugador; la regla se sortea al usarlo.
 - **Sabotaje**: una restricción extra (por ejemplo "sin bucles" o "máximo 3 líneas") pegada a un jugador hasta su próxima entrega correcta.
 - **Catálogo**: el banco de puzzles. Cada puzzle es un archivo en el repo, escrito a mano y revisado por PR.
 - **Autor**: el jugador que escribió un puzzle del catálogo. Ese puzzle no le aparece en la partida.

@@ -3,9 +3,21 @@ import { Final } from './Final.tsx';
 import { Game } from './Game.tsx';
 import { Home } from './Home.tsx';
 import { Lobby } from './Lobby.tsx';
+import { MuteButtons } from './MuteButton.tsx';
 import { useApp, useGame } from './context.ts';
 
 export function App() {
+  // In-game the HUD hosts the toggle; elsewhere it floats top-right.
+  const inGame = useGame((s) => s.code !== null && s.hostPlayerId !== null && s.status === 'running');
+  return (
+    <>
+      {!inGame && <MuteButtons floating />}
+      <Screen />
+    </>
+  );
+}
+
+function Screen() {
   const { controller } = useApp();
   const code = useGame((s) => s.code);
   const synced = useGame((s) => s.synced);

@@ -18,8 +18,3 @@ Detalles:
 
 - Todos los pasos de `deps` están en `steps`. Puede haber dependencias repetidas.
 - Un paso sin dependencias también va en el resultado.
-
-Ejemplos:
-
-- `steps = ["salsa", "pasta", "servir"]`, `deps = [["pasta", "servir"], ["salsa", "servir"]]` → `["pasta", "salsa", "servir"]`
-- `steps = ["a", "b"]`, `deps = [["a", "b"], ["b", "a"]]` → `null`

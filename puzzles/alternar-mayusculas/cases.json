@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["hola"], "output": "HoLa" },
+    { "input": ["paella"], "output": "PaElLa" }
+  ],
+  "hidden": [
+    { "input": [""], "output": "" },
+    { "input": ["a"], "output": "A" },
+    { "input": ["ab"], "output": "Ab" },
+    { "input": ["ABCDE"], "output": "AbCdE" },
+    { "input": ["hOLA mUNDO"], "output": "HoLa mUnDo" }
+  ]
+}

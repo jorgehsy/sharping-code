@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["tortilla de patatas",8], "output": "tortilla..." },
+    { "input": ["flan",10], "output": "flan" }
+  ],
+  "hidden": [
+    { "input": ["",0], "output": "" },
+    { "input": ["abc",3], "output": "abc" },
+    { "input": ["abcd",3], "output": "abc..." },
+    { "input": ["abc",0], "output": "..." },
+    { "input": ["hola",4], "output": "hola" }
+  ]
+}

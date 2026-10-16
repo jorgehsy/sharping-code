@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["pasta"], "output": true },
+    { "input": ["pan"], "output": false }
+  ],
+  "hidden": [
+    { "input": [""], "output": false },
+    { "input": ["a"], "output": false },
+    { "input": ["aA"], "output": false },
+    { "input": ["abcdea"], "output": true },
+    { "input": ["  "], "output": true }
+  ]
+}

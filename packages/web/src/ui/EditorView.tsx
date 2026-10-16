@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import type { SubmitResponse, TasteResponse } from '@sharping/shared';
+import type { PuzzleCase, SubmitResponse, TasteResponse } from '@sharping/shared';
 import { useApp, useGame } from './context.ts';
 import { CodeEditor } from './CodeEditor.tsx';
 import { Markdown } from './markdown.tsx';
+import { formatValue, paramNames } from './examples.ts';
 import { difficultyLabel, ruleLabel } from '../kitchen/labels.ts';
 import { isFull, MAX_DELIVERIES, nextPoints } from '../kitchen/points.ts';
 import { createSessionStore } from '../session.ts';
@@ -95,15 +96,7 @@ function Cooking({ onBack }: { onBack: () => void }) {
         {sabotage && <p className="badge bad">Sabotaje activo: {ruleLabel(sabotage)}</p>}
         <Markdown source={taken.statement} />
         <h3>Ejemplos</h3>
-        <ul className="plain">
-          {taken.publicCases.map((c, i) => (
-            <li key={i}>
-              <code>{taken.signature.match(/function\s+(\w+)/)?.[1] ?? 'solve'}({c.input.map((a) => JSON.stringify(a)).join(', ')})</code>
-              {' → '}
-              <code>{JSON.stringify(c.output)}</code>
-            </li>
-          ))}
-        </ul>
+        <Examples signature={taken.signature} cases={taken.publicCases} />
       </section>
       <section className="work">
         {order && (
@@ -144,7 +137,31 @@ function Cooking({ onBack }: { onBack: () => void }) {
   );
 }
 
-const show = (v: unknown) => (v === undefined ? 'undefined' : JSON.stringify(v));
+const show = formatValue;
+
+export function Examples({ signature, cases }: { signature: string; cases: PuzzleCase[] }) {
+  const names = paramNames(signature);
+  return (
+    <ol className="examples">
+      {cases.map((c, i) => (
+        <li key={i} className="example">
+          <dl>
+            {c.input.map((arg, j) => (
+              <div key={j}>
+                <dt>{names[j] ?? `arg${j + 1}`}</dt>
+                <dd>{show(arg)}</dd>
+              </div>
+            ))}
+            <div className="out">
+              <dt>devuelve</dt>
+              <dd>{show(c.output)}</dd>
+            </div>
+          </dl>
+        </li>
+      ))}
+    </ol>
+  );
+}
 
 export function Result({ result }: { result: SubmitResponse }) {
   if (result.passed) {

@@ -1,0 +1,14 @@
+{
+  "public": [
+    { "input": [5], "output": [1,1,0] },
+    { "input": [15], "output": [4,2,1] }
+  ],
+  "hidden": [
+    { "input": [0], "output": [0,0,0] },
+    { "input": [1], "output": [0,0,0] },
+    { "input": [3], "output": [1,0,0] },
+    { "input": [14], "output": [4,2,0] },
+    { "input": [30], "output": [8,4,2] },
+    { "input": [100], "output": [27,14,6] }
+  ]
+}

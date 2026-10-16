@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["paella"], "output": 3 },
+    { "input": ["Tortilla"], "output": 3 }
+  ],
+  "hidden": [
+    { "input": [""], "output": 0 },
+    { "input": ["xyz"], "output": 0 },
+    { "input": ["AEIOU"], "output": 5 },
+    { "input": ["queso con pan"], "output": 5 },
+    { "input": ["rrr"], "output": 0 }
+  ]
+}

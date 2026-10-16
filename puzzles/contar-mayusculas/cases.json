@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["Hola Mundo"], "output": 2 },
+    { "input": ["paella"], "output": 0 }
+  ],
+  "hidden": [
+    { "input": [""], "output": 0 },
+    { "input": ["ABC"], "output": 3 },
+    { "input": ["a1B2c3"], "output": 1 },
+    { "input": ["HOLA!"], "output": 4 },
+    { "input": ["  Z "], "output": 1 }
+  ]
+}

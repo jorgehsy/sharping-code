@@ -8,7 +8,7 @@ import type { Logger } from '@aws-lambda-powertools/logger';
 import {
   applySabotage,
   deliveryPoints,
-  earnsCondiment,
+  condimentsEarned,
   getPuzzle as catalogGetPuzzle,
   pickSabotageRule,
   BURNED_DISH_PENALTY,
@@ -204,6 +204,7 @@ export function createApp(deps: Deps): Router {
           score: me.score,
           currentOrderId: currentOrderOf(me),
           condiments: me.condiments,
+          solved: me.solved ?? 0,
           sabotage: (me.sabotage as SabotageRule | undefined) ?? null,
         },
       });
@@ -325,23 +326,25 @@ export function createApp(deps: Deps): Router {
         deliveredAt: t,
         rushAt: meta.rushAt ?? Number.POSITIVE_INFINITY,
       });
+      // One submit at a time per player (it must hold the order), so the read-then-add count is race-free.
+      const solved = (me.solved ?? 0) + 1;
       const applied = await repo.applyDelivery(code, playerId, {
         points,
-        condiment: earnsCondiment(order.difficulty, rank),
+        condiments: condimentsEarned(order.difficulty, rank, solved),
         now: t,
       });
       const scores = await repo.getScores(code);
 
       const events: Parameters<typeof emit>[1] = [];
       if (ranked) events.push({ type: 'order.delivered', data: { orderId: id, playerId, rank, points, scores } });
-      if (applied.condimentEarned) events.push({ type: 'condiment.earned', data: { playerId } });
+      for (let i = 0; i < applied.condimentsEarned; i++) events.push({ type: 'condiment.earned', data: { playerId } });
       if (applied.clearedSabotage) events.push({ type: 'sabotage.cleared', data: { playerId } });
       await emit(code, events);
       deps.count?.('OrderDelivered');
       // The order is now full: its slot is free. Wake the clock so it refills right away (best effort).
       if (claim.ok && rank === RANK_MULTIPLIERS.length) await wakeClock(code);
 
-      const body: SubmitResponse = { passed: true, rank, points, scores };
+      const body: SubmitResponse = { passed: true, rank, points, solved, scores };
       return ok(body);
     },
     { validation: { req: { path: orderParams, body: submitBody } } },

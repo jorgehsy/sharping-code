@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["hola_mundo"], "output": "holaMundo" },
+    { "input": ["sopa_de_tomate"], "output": "sopaDeTomate" }
+  ],
+  "hidden": [
+    { "input": [""], "output": "" },
+    { "input": ["hola"], "output": "hola" },
+    { "input": ["a_b_c"], "output": "aBC" },
+    { "input": ["plato_del_dia_de_hoy"], "output": "platoDelDiaDeHoy" },
+    { "input": ["x_yz"], "output": "xYz" }
+  ]
+}

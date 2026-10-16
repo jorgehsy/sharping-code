@@ -1,0 +1,14 @@
+{
+  "public": [
+    { "input": [16], "output": true },
+    { "input": [12], "output": false }
+  ],
+  "hidden": [
+    { "input": [1], "output": true },
+    { "input": [2], "output": true },
+    { "input": [3], "output": false },
+    { "input": [1024], "output": true },
+    { "input": [1000], "output": false },
+    { "input": [6], "output": false }
+  ]
+}

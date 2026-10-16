@@ -13,6 +13,31 @@ const REQUIRED = {
   eventsApiKey: 'VITE_EVENTS_API_KEY',
 } as const;
 
+/**
+ * `/config.json`, written by the CDK deploy next to the hosted build (keys of `Config`). Mapped to the env names so
+ * deployed values override whatever was baked into the bundle at build time. Anything not an object is ignored.
+ */
+export function withRuntimeConfig(env: Record<string, unknown>, runtime: unknown): Record<string, unknown> {
+  if (!runtime || typeof runtime !== 'object') return env;
+  const out = { ...env };
+  for (const [key, name] of Object.entries(REQUIRED)) {
+    const v = (runtime as Record<string, unknown>)[key];
+    if (typeof v === 'string' && v.trim()) out[name] = v;
+  }
+  return out;
+}
+
+/** The deployed `/config.json`, or undefined (dev server, offline, not JSON). */
+export async function fetchRuntimeConfig(): Promise<unknown> {
+  try {
+    const res = await fetch('/config.json', { cache: 'no-store' });
+    if (!res.ok || !res.headers.get('content-type')?.includes('json')) return undefined;
+    return await res.json();
+  } catch {
+    return undefined;
+  }
+}
+
 /** Pure: takes the env record (import.meta.env) so it can be tested. Throws listing every missing var. */
 export function loadConfig(env: Record<string, unknown>): Config {
   const missing: string[] = [];

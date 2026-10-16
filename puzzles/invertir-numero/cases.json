@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": [123], "output": 321 },
+    { "input": [120], "output": 21 }
+  ],
+  "hidden": [
+    { "input": [0], "output": 0 },
+    { "input": [5], "output": 5 },
+    { "input": [1000], "output": 1 },
+    { "input": [1221], "output": 1221 },
+    { "input": [9876543], "output": 3456789 }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["hola mundo"], "output": "aloh odnum" },
+    { "input": ["sopa del dia"], "output": "apos led aid" }
+  ],
+  "hidden": [
+    { "input": [""], "output": "" },
+    { "input": ["a"], "output": "a" },
+    { "input": ["abc"], "output": "cba" },
+    { "input": ["ana ama"], "output": "ana ama" },
+    { "input": ["Pizza Fria"], "output": "azziP airF" }
+  ]
+}

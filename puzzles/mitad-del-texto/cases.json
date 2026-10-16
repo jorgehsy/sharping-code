@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["hola"], "output": "ho" },
+    { "input": ["abcde"], "output": "ab" }
+  ],
+  "hidden": [
+    { "input": [""], "output": "" },
+    { "input": ["a"], "output": "" },
+    { "input": ["ab"], "output": "a" },
+    { "input": ["cocina"], "output": "coc" },
+    { "input": ["sopa de pollo"], "output": "sopa d" }
+  ]
+}

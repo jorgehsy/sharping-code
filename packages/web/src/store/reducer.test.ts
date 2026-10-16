@@ -126,7 +126,7 @@ describe('reduceEvent', () => {
       { ...base, me: { ...base.me!, condiments: 1 } },
       ev('sabotage.applied', 1, { fromPlayerId: 'p1', toPlayerId: 'p2', rule: 'no-loops' }),
     );
-    expect(s.me).toMatchObject({ condiments: 0, sabotage: null });
+    expect(s.me).toMatchObject({ condiments: 0, solved: 0, sabotage: null });
     s = reduceEvent(s, ev('sabotage.applied', 2, { fromPlayerId: 'p2', toPlayerId: 'p1', rule: 'max-lines-3' }));
     expect(s.me?.sabotage).toBe('max-lines-3');
     s = reduceEvent(s, ev('sabotage.cleared', 3, { playerId: 'p1' }));
@@ -239,7 +239,7 @@ describe('applySnapshot + buffered events', () => {
 
   it('drops buffered events already reflected in the snapshot (seq <= snapshot.seq)', () => {
     let s = receiveEvent(initialState(), ev('condiment.earned', 4, { playerId: 'p1' }));
-    s = applySnapshot(s, snapshot({ seq: 4, me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, condiments: 1, sabotage: null } }), 0);
+    s = applySnapshot(s, snapshot({ seq: 4, me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, condiments: 1, solved: 0, sabotage: null } }), 0);
     expect(s.me?.condiments).toBe(1); // not double-counted
     expect(s.lastSeq).toBe(4);
     expect(receiveEvent(s, ev('condiment.earned', 5, { playerId: 'p1' })).me?.condiments).toBe(2);
@@ -278,7 +278,7 @@ describe('applySnapshot + buffered events', () => {
     const s0: GameState = { ...base, taken, me: { ...base.me!, currentOrderId: 'o1' }, toasts: [{ id: '1', kind: 'info', text: 't', at: 1 }] };
     const s = applySnapshot(
       s0,
-      snapshot({ orders: [], me: { playerId: 'p1', nickname: 'Ana', score: 50, currentOrderId: 'o1', condiments: 1, sabotage: 'no-loops' } }),
+      snapshot({ orders: [], me: { playerId: 'p1', nickname: 'Ana', score: 50, currentOrderId: 'o1', condiments: 1, solved: 0, sabotage: 'no-loops' } }),
       42,
     );
     expect(s.orders).toEqual([]);

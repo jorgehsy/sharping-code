@@ -1,0 +1,14 @@
+{
+  "public": [
+    {"input":["pan con queso"],"output":"queso con pan"},
+    {"input":["  sopa   del  dia "],"output":"dia del sopa"}
+  ],
+  "hidden": [
+    {"input":[""],"output":""},
+    {"input":["hola"],"output":"hola"},
+    {"input":["   "],"output":""},
+    {"input":["a b"],"output":"b a"},
+    {"input":["uno  dos   tres"],"output":"tres dos uno"},
+    {"input":[" x "],"output":"x"}
+  ]
+}

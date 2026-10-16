@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": [["sopa","Flan","SOPA"],"sopa"], "output": 2 },
+    { "input": [["pan","vino"],"queso"], "output": 0 }
+  ],
+  "hidden": [
+    { "input": [[],"a"], "output": 0 },
+    { "input": [["a","a","a"],"a"], "output": 3 },
+    { "input": [["Flan"],"fLAN"], "output": 1 },
+    { "input": [["sopa","sopas"],"sopa"], "output": 1 },
+    { "input": [["x","y","X"],"X"], "output": 2 }
+  ]
+}

@@ -11,5 +11,3 @@ blockedSabotages: []
 Te llega una comanda con una lista de números enteros. Devuelve la **suma de todos los números pares** de la lista.
 
 Si no hay ningún número par, devuelve `0`. Los números negativos también cuentan (`-4` es par).
-
-Ejemplo: `[1, 2, 3, 4]` → `6`.

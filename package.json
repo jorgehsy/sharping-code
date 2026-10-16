@@ -11,8 +11,9 @@
     "typecheck": "pnpm -r --if-present typecheck",
     "gen:catalog": "tsx scripts/gen-catalog.ts",
     "validate:puzzles": "tsx scripts/validate-puzzles.ts",
-    "cdk:synth": "pnpm gen:catalog && pnpm --filter @sharping/infra run synth",
-    "cdk:deploy": "pnpm gen:catalog && pnpm --filter @sharping/infra run cdk:deploy"
+    "web:build": "pnpm --filter @sharping/web build",
+    "cdk:synth": "pnpm gen:catalog && pnpm web:build && pnpm --filter @sharping/infra run synth",
+    "cdk:deploy": "pnpm gen:catalog && pnpm web:build && pnpm --filter @sharping/infra run cdk:deploy"
   },
   "devDependencies": {
     "@sharping/shared": "workspace:*",

@@ -22,6 +22,6 @@ export const snapshot = (over: Partial<GameSnapshot> = {}): GameSnapshot => ({
     { playerId: 'p2', nickname: 'Bo', score: 0, currentOrderId: null, sabotage: null },
   ],
   orders: [{ orderId: 'o1', title: 'Pair sum', difficulty: 'easy', basePoints: 100, openedAt: 100, expiresAt: 500_000, deliveries: 0, deliveredBy: [] }],
-  me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, condiments: 0, sabotage: null },
+  me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, condiments: 0, solved: 0, sabotage: null },
   ...over,
 });

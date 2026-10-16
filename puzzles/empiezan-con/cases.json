@@ -1,0 +1,14 @@
+{
+  "public": [
+    {"input":[["Pan","pasta","queso"],"p"],"output":2},
+    {"input":[["sal","Sopa"],"S"],"output":2}
+  ],
+  "hidden": [
+    {"input":[[],"a"],"output":0},
+    {"input":[["arroz"],"b"],"output":0},
+    {"input":[["Ajo","ajo","pan"],"a"],"output":2},
+    {"input":[["a","A"],"A"],"output":2},
+    {"input":[["flan","fideos","sal"],"f"],"output":2},
+    {"input":[["uno","dos","tres"],"z"],"output":0}
+  ]
+}

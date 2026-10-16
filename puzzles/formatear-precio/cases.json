@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": [1250], "output": "12.50" },
+    { "input": [5], "output": "0.05" }
+  ],
+  "hidden": [
+    { "input": [0], "output": "0.00" },
+    { "input": [100], "output": "1.00" },
+    { "input": [99], "output": "0.99" },
+    { "input": [101], "output": "1.01" },
+    { "input": [123456], "output": "1234.56" }
+  ]
+}

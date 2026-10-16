@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["dos huevos fritos"], "output": 3 },
+    { "input": ["  sopa   del  dia "], "output": 3 }
+  ],
+  "hidden": [
+    { "input": [""], "output": 0 },
+    { "input": ["   "], "output": 0 },
+    { "input": ["hola"], "output": 1 },
+    { "input": [" hola"], "output": 1 },
+    { "input": ["a b c d e f"], "output": 6 }
+  ]
+}

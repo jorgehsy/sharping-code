@@ -1,5 +1,6 @@
 {
   "app": "npx tsx bin/app.ts",
   "output": "cdk.out",
-  "outputsFile": "outputs.json"
+  "outputsFile": "outputs.json",
+  "profile": "wwps-sandbox"
 }

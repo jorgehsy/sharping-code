@@ -1,11 +1,12 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { Kitchen } from './Kitchen.tsx';
 import { ConfirmModal } from './Modal.tsx';
+import { MuteButtons } from './MuteButton.tsx';
 import { Sprite } from './Sprite.tsx';
 import { Toasts } from './Toasts.tsx';
 import { useApp, useGame } from './context.ts';
 import { ruleLabel } from '../kitchen/labels.ts';
-import { MAX_CONDIMENTS } from '../store/reducer.ts';
+import { MAX_CONDIMENTS, SOLVES_PER_CONDIMENT } from '../store/reducer.ts';
 import { formatClock, remainingMs } from '../store/time.ts';
 import { useServerNow } from './ticker.ts';
 
@@ -53,6 +54,7 @@ function Hud({ view, setView, canEdit }: { view: View; setView: (v: View) => voi
   const rush = useGame((s) => s.rush);
   const score = useGame((s) => s.me?.score ?? 0);
   const condiments = useGame((s) => s.me?.condiments ?? 0);
+  const towardNext = useGame((s) => (s.me?.solved ?? 0) % SOLVES_PER_CONDIMENT);
   const sabotage = useGame((s) => s.me?.sabotage ?? null);
   const code = useGame((s) => s.code);
   const now = useServerNow();
@@ -74,6 +76,9 @@ function Hud({ view, setView, canEdit }: { view: View; setView: (v: View) => voi
           {Array.from({ length: MAX_CONDIMENTS }, (_, i) => (
             <Sprite key={i} name="flask_big_red" scale={1.25} style={{ opacity: i < condiments ? 1 : 0.25 }} />
           ))}
+        </span>{' '}
+        <span className="muted" title={`Cada ${SOLVES_PER_CONDIMENT} platos bien hechos ganas un condimento`}>
+          {towardNext}/{SOLVES_PER_CONDIMENT}
         </span>
       </span>
       {sabotage && <span className="pill curse">Maldito: {ruleLabel(sabotage)}</span>}
@@ -81,6 +86,7 @@ function Hud({ view, setView, canEdit }: { view: View; setView: (v: View) => voi
       <button type="button" onClick={() => setView(view === 'kitchen' ? 'editor' : 'kitchen')} disabled={view === 'kitchen' && !canEdit}>
         {view === 'kitchen' ? 'Editor' : 'Cocina'} (Alt+K)
       </button>
+      <MuteButtons />
       <button type="button" onClick={() => setLeaving(true)}>
         Salir
       </button>

@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["pollo con arroz y pollo","pollo","pavo"], "output": "pavo con arroz y pavo" },
+    { "input": ["sopa de ajo","cebolla","puerro"], "output": "sopa de ajo" }
+  ],
+  "hidden": [
+    { "input": ["","a","b"], "output": "" },
+    { "input": ["aaa","a","b"], "output": "bbb" },
+    { "input": ["aaa","aa","b"], "output": "ba" },
+    { "input": ["queso","queso",""], "output": "" },
+    { "input": ["Sal sal","sal","pimienta"], "output": "Sal pimienta" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["aaabcc"], "output": "a3b1c2" },
+    { "input": ["xxyyy"], "output": "x2y3" }
+  ],
+  "hidden": [
+    { "input": [""], "output": "" },
+    { "input": ["a"], "output": "a1" },
+    { "input": ["abc"], "output": "a1b1c1" },
+    { "input": ["aaaaaaaaaaaa"], "output": "a12" },
+    { "input": ["aabaa"], "output": "a2b1a2" }
+  ]
+}

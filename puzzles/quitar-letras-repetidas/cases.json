@@ -1,0 +1,14 @@
+{
+  "public": [
+    { "input": ["banana"], "output": "ban" },
+    { "input": ["hola"], "output": "hola" }
+  ],
+  "hidden": [
+    { "input": [""], "output": "" },
+    { "input": ["aaaa"], "output": "a" },
+    { "input": ["abc"], "output": "abc" },
+    { "input": ["Aa"], "output": "Aa" },
+    { "input": ["mississippi"], "output": "misp" },
+    { "input": ["a b a b"], "output": "a b" }
+  ]
+}

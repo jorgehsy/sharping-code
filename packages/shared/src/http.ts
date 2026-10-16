@@ -55,6 +55,8 @@ export interface MyState {
   score: number;
   currentOrderId: string | null;
   condiments: number;
+  /** Correct deliveries so far. Every 3rd one earns a condiment. */
+  solved: number;
   sabotage: SabotageRule | null;
 }
 
@@ -92,7 +94,7 @@ export interface SubmitRequest {
 
 /** `POST /games/{code}/orders/{id}/submit` → 200. Failing is a 200 too (it's a game outcome, not an error). */
 export type SubmitResponse =
-  | { passed: true; rank: number; points: number; scores: Record<string, number> }
+  | { passed: true; rank: number; points: number; solved: number; scores: Record<string, number> }
   | (Extract<RunnerResult, { passed: false }> & { penalty: number; scores: Record<string, number> });
 
 /** `POST /games/{code}/orders/{id}/taste` → 200. Same body as submit. Runs public cases only: no points, no penalty, no events. */

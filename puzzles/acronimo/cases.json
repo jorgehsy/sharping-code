@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["pan con tomate"], "output": "PCT" },
+    { "input": ["arroz con leche"], "output": "ACL" }
+  ],
+  "hidden": [
+    { "input": [""], "output": "" },
+    { "input": ["hola"], "output": "H" },
+    { "input": ["Uno dos"], "output": "UD" },
+    { "input": ["a b c d"], "output": "ABCD" },
+    { "input": ["sopa DEL dia"], "output": "SDD" }
+  ]
+}

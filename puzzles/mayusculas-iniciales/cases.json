@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["sopa de tomate"], "output": "Sopa De Tomate" },
+    { "input": ["arroz con leche"], "output": "Arroz Con Leche" }
+  ],
+  "hidden": [
+    { "input": [""], "output": "" },
+    { "input": ["a"], "output": "A" },
+    { "input": ["hola"], "output": "Hola" },
+    { "input": ["Ya ESTA"], "output": "Ya ESTA" },
+    { "input": ["uno dos tres cuatro"], "output": "Uno Dos Tres Cuatro" }
+  ]
+}

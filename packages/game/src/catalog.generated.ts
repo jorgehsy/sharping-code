@@ -4,6 +4,3350 @@ import type { CatalogPuzzle } from './catalog.ts';
 
 export const PUZZLES: readonly CatalogPuzzle[] = [
   {
+    "id": "a-binario",
+    "title": "A binario",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): string",
+    "tags": [
+      "math",
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega un entero `n >= 0`. **Devuelve su representación en binario** como texto. Para `0`, devuelve `\"0\"`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            5
+          ],
+          "output": "101"
+        },
+        {
+          "input": [
+            8
+          ],
+          "output": "1000"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0
+          ],
+          "output": "0"
+        },
+        {
+          "input": [
+            1
+          ],
+          "output": "1"
+        },
+        {
+          "input": [
+            2
+          ],
+          "output": "10"
+        },
+        {
+          "input": [
+            255
+          ],
+          "output": "11111111"
+        },
+        {
+          "input": [
+            1000
+          ],
+          "output": "1111101000"
+        }
+      ]
+    }
+  },
+  {
+    "id": "acronimo",
+    "title": "Acrónimo",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "Forma el **acrónimo** de la frase: la primera letra de cada palabra, en mayúscula. Las palabras van separadas por un solo espacio. Si la frase está vacía, devuelve `\"\"`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "pan con tomate"
+          ],
+          "output": "PCT"
+        },
+        {
+          "input": [
+            "arroz con leche"
+          ],
+          "output": "ACL"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "hola"
+          ],
+          "output": "H"
+        },
+        {
+          "input": [
+            "Uno dos"
+          ],
+          "output": "UD"
+        },
+        {
+          "input": [
+            "a b c d"
+          ],
+          "output": "ABCD"
+        },
+        {
+          "input": [
+            "sopa DEL dia"
+          ],
+          "output": "SDD"
+        }
+      ]
+    }
+  },
+  {
+    "id": "agrupar-de-a-n",
+    "title": "Bandejas",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[], n: number): number[][]",
+    "tags": [
+      "arrays",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Cada bandeja lleva `n` platos. **Divide la lista en grupos consecutivos de tamaño `n`**; el último grupo puede ser más corto.\n\nSi la lista está vacía, devuelve `[]`. Siempre `n >= 1`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            2
+          ],
+          "output": [
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              5
+            ]
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4
+            ],
+            2
+          ],
+          "output": [
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              4
+            ]
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            3
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              7
+            ],
+            1
+          ],
+          "output": [
+            [
+              7
+            ]
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ],
+            5
+          ],
+          "output": [
+            [
+              1,
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ],
+            1
+          ],
+          "output": [
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3
+            ]
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            3
+          ],
+          "output": [
+            [
+              1,
+              2,
+              3
+            ],
+            [
+              4,
+              5,
+              6
+            ],
+            [
+              7
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "alternar-mayusculas",
+    "title": "Alternar",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Alterna mayúsculas y minúsculas**: la posición 0 en mayúscula, la 1 en minúscula, la 2 en mayúscula, y así sucesivamente.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "hola"
+          ],
+          "output": "HoLa"
+        },
+        {
+          "input": [
+            "paella"
+          ],
+          "output": "PaElLa"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "a"
+          ],
+          "output": "A"
+        },
+        {
+          "input": [
+            "ab"
+          ],
+          "output": "Ab"
+        },
+        {
+          "input": [
+            "ABCDE"
+          ],
+          "output": "AbCdE"
+        },
+        {
+          "input": [
+            "hOLA mUNDO"
+          ],
+          "output": "HoLa mUnDo"
+        }
+      ]
+    }
+  },
+  {
+    "id": "bandeja-mas-pesada",
+    "title": "Bandeja más pesada",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(trays: number[][]): number",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Cada bandeja es una lista con el peso de sus platos. **Devuelve la posición de la bandeja que pesa más en total**. En caso de empate, la primera; si no hay bandejas, `-1`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              [
+                1,
+                2
+              ],
+              [
+                5
+              ],
+              [
+                3
+              ]
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              [
+                2
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": -1
+        },
+        {
+          "input": [
+            [
+              []
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              [],
+              [
+                0
+              ]
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              [
+                1,
+                2,
+                3
+              ],
+              [
+                6
+              ]
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              [
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                3
+              ]
+            ]
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              [
+                4
+              ],
+              [
+                1,
+                1,
+                1,
+                1,
+                1
+              ],
+              [
+                2,
+                2
+              ]
+            ]
+          ],
+          "output": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "buscar-posiciones",
+    "title": "¿Dónde está?",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[], x: number): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Devuelve todas las posiciones** de la lista donde aparece `x`, empezando a contar en 0 y de menor a mayor. Si no aparece, devuelve una lista vacía.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              4,
+              7,
+              4,
+              1
+            ],
+            4
+          ],
+          "output": [
+            0,
+            2
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ],
+            9
+          ],
+          "output": []
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            1
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              5
+            ],
+            5
+          ],
+          "output": [
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              2,
+              2,
+              2
+            ],
+            2
+          ],
+          "output": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "input": [
+            [
+              0,
+              1,
+              0
+            ],
+            0
+          ],
+          "output": [
+            0,
+            2
+          ]
+        },
+        {
+          "input": [
+            [
+              -1,
+              3,
+              -1
+            ],
+            -1
+          ],
+          "output": [
+            0,
+            2
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ],
+            3
+          ],
+          "output": [
+            2
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "celsius-a-fahrenheit",
+    "title": "Grados",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(temps: number[]): number[]",
+    "tags": [
+      "arrays",
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "El horno marca grados Celsius, pero la receta americana está en Fahrenheit. **Convierte cada temperatura** de la lista a Fahrenheit, redondeada al entero más cercano.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              0,
+              100
+            ]
+          ],
+          "output": [
+            32,
+            212
+          ]
+        },
+        {
+          "input": [
+            [
+              180,
+              220
+            ]
+          ],
+          "output": [
+            356,
+            428
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              -40
+            ]
+          ],
+          "output": [
+            -40
+          ]
+        },
+        {
+          "input": [
+            [
+              37
+            ]
+          ],
+          "output": [
+            99
+          ]
+        },
+        {
+          "input": [
+            [
+              21,
+              22
+            ]
+          ],
+          "output": [
+            70,
+            72
+          ]
+        },
+        {
+          "input": [
+            [
+              -10,
+              25
+            ]
+          ],
+          "output": [
+            14,
+            77
+          ]
+        },
+        {
+          "input": [
+            [
+              200
+            ]
+          ],
+          "output": [
+            392
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "censurar-vocales",
+    "title": "Censura",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Reemplaza cada vocal** (`a e i o u`, en mayúscula o minúscula) por un asterisco `*` y devuelve el texto resultante.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "hola"
+          ],
+          "output": "h*l*"
+        },
+        {
+          "input": [
+            "Tortilla de patatas"
+          ],
+          "output": "T*rt*ll* d* p*t*t*s"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "xyz"
+          ],
+          "output": "xyz"
+        },
+        {
+          "input": [
+            "AEIOU"
+          ],
+          "output": "*****"
+        },
+        {
+          "input": [
+            "queso"
+          ],
+          "output": "q**s*"
+        },
+        {
+          "input": [
+            "Sin Vocales? no"
+          ],
+          "output": "S*n V*c*l*s? n*"
+        }
+      ]
+    }
+  },
+  {
+    "id": "cercano-a-cero",
+    "title": "Más cerca de cero",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number | null",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Devuelve el número de la lista que está más cerca de 0**. Si un número y su opuesto están igual de cerca, gana el positivo. Si la lista está vacía, devuelve `null`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              3,
+              -2,
+              5
+            ]
+          ],
+          "output": -2
+        },
+        {
+          "input": [
+            [
+              -2,
+              2
+            ]
+          ],
+          "output": 2
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": null
+        },
+        {
+          "input": [
+            [
+              0,
+              5
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              -7
+            ]
+          ],
+          "output": -7
+        },
+        {
+          "input": [
+            [
+              -1,
+              1,
+              -1
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              4,
+              -4,
+              6
+            ]
+          ],
+          "output": 4
+        },
+        {
+          "input": [
+            [
+              2,
+              -2
+            ]
+          ],
+          "output": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "cifrado-cesar",
+    "title": "César",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string, k: number): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Desplaza cada letra minúscula `k` posiciones** en el abecedario (`a-z`), volviendo a la `a` tras la `z`. Los demás caracteres no cambian. Siempre `0 <= k <= 25`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "abc",
+            1
+          ],
+          "output": "bcd"
+        },
+        {
+          "input": [
+            "xyz",
+            3
+          ],
+          "output": "abc"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            "",
+            5
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "hola",
+            0
+          ],
+          "output": "hola"
+        },
+        {
+          "input": [
+            "z",
+            1
+          ],
+          "output": "a"
+        },
+        {
+          "input": [
+            "Hola Mundo!",
+            2
+          ],
+          "output": "Hqnc Mwpfq!"
+        },
+        {
+          "input": [
+            "abc",
+            25
+          ],
+          "output": "zab"
+        },
+        {
+          "input": [
+            "a b",
+            13
+          ],
+          "output": "n o"
+        }
+      ]
+    }
+  },
+  {
+    "id": "cocinar-a-tiempo",
+    "title": "Contra reloj",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(minutos: number[], limite: number): number",
+    "tags": [
+      "arrays",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Cocinas los platos en el orden de la lista; cada uno tarda los minutos indicados. **Cuenta cuántos platos terminas sin pasar del `limite`** de minutos acumulados.\n\nPara en el primer plato que no cabe, aunque los siguientes sí cupieran.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              10,
+              20,
+              30
+            ],
+            60
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            [
+              10,
+              20,
+              30
+            ],
+            35
+          ],
+          "output": 2
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            10
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              5
+            ],
+            4
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              5
+            ],
+            5
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              50,
+              1,
+              1
+            ],
+            10
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              3,
+              3,
+              100,
+              1
+            ],
+            10
+          ],
+          "output": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "comprimir-letras",
+    "title": "Comprimir",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Comprime el texto** escribiendo cada letra seguida de cuántas veces se repite seguida. Si el texto está vacío, devuelve `\"\"`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "aaabcc"
+          ],
+          "output": "a3b1c2"
+        },
+        {
+          "input": [
+            "xxyyy"
+          ],
+          "output": "x2y3"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "a"
+          ],
+          "output": "a1"
+        },
+        {
+          "input": [
+            "abc"
+          ],
+          "output": "a1b1c1"
+        },
+        {
+          "input": [
+            "aaaaaaaaaaaa"
+          ],
+          "output": "a12"
+        },
+        {
+          "input": [
+            "aabaa"
+          ],
+          "output": "a2b1a2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-bisiestos",
+    "title": "Años bisiestos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(desde: number, hasta: number): number",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Un año es bisiesto si es divisible por 4, salvo los años de siglo (divisibles por 100), que solo lo son si también son divisibles por 400. **Cuenta cuántos años bisiestos hay entre `desde` y `hasta`**, ambos incluidos.\n\nEs `desde <= hasta`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            2020,
+            2024
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            1896,
+            1904
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            1900,
+            1900
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            2000,
+            2000
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            2001,
+            2003
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            1,
+            100
+          ],
+          "output": 24
+        },
+        {
+          "input": [
+            1900,
+            2000
+          ],
+          "output": 25
+        },
+        {
+          "input": [
+            1,
+            400
+          ],
+          "output": 97
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-digitos",
+    "title": "Cuántos dígitos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): number",
+    "tags": [
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega un entero `n >= 0`. **Devuelve cuántos dígitos tiene.** El `0` tiene 1 dígito.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            123
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            7
+          ],
+          "output": 1
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            10
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            99
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            100
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            1000000
+          ],
+          "output": 7
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-digitos-en-texto",
+    "title": "Dígitos escondidos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): number",
+    "tags": [
+      "strings",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "En la nota del cliente hay números escondidos. **Cuenta cuántos caracteres son dígitos** (`0` a `9`) en el texto.\n\nSi no hay ninguno, devuelve `0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "mesa 12 y 3"
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            "sin numeros"
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            "007"
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            "a1b2c3d4"
+          ],
+          "output": 4
+        },
+        {
+          "input": [
+            "  9  "
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            "100% sabroso"
+          ],
+          "output": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-distintos",
+    "title": "Cuántos distintos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number",
+    "tags": [
+      "hashing"
+    ],
+    "blockedSabotages": [],
+    "statement": "Cuenta **cuántos números distintos** hay en la lista (los repetidos cuentan una sola vez).",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              1,
+              3
+            ]
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            [
+              4,
+              4,
+              4
+            ]
+          ],
+          "output": 1
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              9
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4
+            ]
+          ],
+          "output": 4
+        },
+        {
+          "input": [
+            [
+              -1,
+              1,
+              -1,
+              1
+            ]
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              0,
+              0,
+              1000000,
+              1000000
+            ]
+          ],
+          "output": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-en-rango",
+    "title": "Dentro del rango",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[], lo: number, hi: number): number",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega una lista de números y dos límites `lo <= hi`. **Cuenta cuántos números están entre `lo` y `hi`**, ambos incluidos.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              5,
+              10,
+              15
+            ],
+            5,
+            10
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ],
+            4,
+            6
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            0,
+            10
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              5
+            ],
+            5,
+            5
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              -3,
+              -2,
+              -1,
+              0
+            ],
+            -2,
+            0
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            [
+              7,
+              7,
+              7
+            ],
+            7,
+            7
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            2,
+            4
+          ],
+          "output": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-mayusculas",
+    "title": "Mayúsculas",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): number",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Cuenta las letras mayúsculas** (`A-Z`) del texto. Los demás caracteres no cuentan.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "Hola Mundo"
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            "paella"
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            "ABC"
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            "a1B2c3"
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            "HOLA!"
+          ],
+          "output": 4
+        },
+        {
+          "input": [
+            "  Z "
+          ],
+          "output": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-multiplos",
+    "title": "Múltiplos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number, k: number): number",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Recorre los números de `1` a `n` (ambos incluidos) y **cuenta cuántos son múltiplos de `k`**. Siempre `n >= 0` y `k >= 1`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            10,
+            3
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            20,
+            5
+          ],
+          "output": 4
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0,
+            3
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            5,
+            7
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            7,
+            7
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            10,
+            1
+          ],
+          "output": 10
+        },
+        {
+          "input": [
+            100,
+            10
+          ],
+          "output": 10
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-palabra",
+    "title": "¿Cuántas veces?",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(words: string[], w: string): number",
+    "tags": [
+      "arrays",
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "Tienes una lista de palabras de las comandas. **Cuenta cuántas veces aparece la palabra `w`**, sin distinguir mayúsculas de minúsculas.\n\nSi no aparece, devuelve `0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              "sopa",
+              "Flan",
+              "SOPA"
+            ],
+            "sopa"
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              "pan",
+              "vino"
+            ],
+            "queso"
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            "a"
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              "a",
+              "a",
+              "a"
+            ],
+            "a"
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            [
+              "Flan"
+            ],
+            "fLAN"
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              "sopa",
+              "sopas"
+            ],
+            "sopa"
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              "x",
+              "y",
+              "X"
+            ],
+            "X"
+          ],
+          "output": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-palabras",
+    "title": "Contar palabras",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): number",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Cuenta las palabras** de una comanda. Las palabras se separan por uno o más espacios y puede haber espacios al principio o al final.\n\nSi no hay palabras, devuelve `0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "dos huevos fritos"
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            "  sopa   del  dia "
+          ],
+          "output": 3
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            "   "
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            "hola"
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            " hola"
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            "a b c d e f"
+          ],
+          "output": 6
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-pares-e-impares",
+    "title": "Pares e impares",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega una lista de números enteros. **Cuenta cuántos son pares y cuántos impares** y devuelve `[pares, impares]`. Los negativos también cuentan (`-4` es par).",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          ],
+          "output": [
+            2,
+            3
+          ]
+        },
+        {
+          "input": [
+            [
+              2,
+              4
+            ]
+          ],
+          "output": [
+            2,
+            0
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": [
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              7
+            ]
+          ],
+          "output": [
+            0,
+            1
+          ]
+        },
+        {
+          "input": [
+            [
+              -3,
+              -2,
+              0
+            ]
+          ],
+          "output": [
+            2,
+            1
+          ]
+        },
+        {
+          "input": [
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "output": [
+            3,
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              3,
+              5,
+              7,
+              9,
+              11
+            ]
+          ],
+          "output": [
+            0,
+            6
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-subidas",
+    "title": "Horno calentando",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(temps: number[]): number",
+    "tags": [
+      "arrays",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Mides la temperatura del horno cada minuto. **Cuenta cuántas veces una medición es mayor que la anterior**.\n\nCon menos de dos mediciones, devuelve `0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              100,
+              120,
+              110,
+              150
+            ]
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              200,
+              180,
+              160
+            ]
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              50
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              1,
+              1,
+              1
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          ],
+          "output": 4
+        },
+        {
+          "input": [
+            [
+              -5,
+              -3,
+              -4,
+              0
+            ]
+          ],
+          "output": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "contar-vocales",
+    "title": "Contar vocales",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): number",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega el nombre de un plato. **Cuenta las vocales** (`a e i o u`), tanto en mayúscula como en minúscula. No hay acentos.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "paella"
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            "Tortilla"
+          ],
+          "output": 3
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            "xyz"
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            "AEIOU"
+          ],
+          "output": 5
+        },
+        {
+          "input": [
+            "queso con pan"
+          ],
+          "output": 5
+        },
+        {
+          "input": [
+            "rrr"
+          ],
+          "output": 0
+        }
+      ]
+    }
+  },
+  {
+    "id": "cuadrados",
+    "title": "Cuadrados ordenados",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve el **cuadrado de cada número** de la lista, **ordenados de menor a mayor**.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": [
+            1,
+            4,
+            9
+          ]
+        },
+        {
+          "input": [
+            [
+              -4,
+              -1,
+              0,
+              3
+            ]
+          ],
+          "output": [
+            0,
+            1,
+            9,
+            16
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              0
+            ]
+          ],
+          "output": [
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              -5
+            ]
+          ],
+          "output": [
+            25
+          ]
+        },
+        {
+          "input": [
+            [
+              -3,
+              -2,
+              1,
+              2
+            ]
+          ],
+          "output": [
+            1,
+            4,
+            4,
+            9
+          ]
+        },
+        {
+          "input": [
+            [
+              10,
+              -3,
+              9
+            ]
+          ],
+          "output": [
+            9,
+            81,
+            100
+          ]
+        },
+        {
+          "input": [
+            [
+              -10,
+              -10,
+              5
+            ]
+          ],
+          "output": [
+            25,
+            100,
+            100
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "diferencias-consecutivas",
+    "title": "Saltos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve la lista de **diferencias entre cada número y el anterior** (`siguiente - actual`). El resultado tiene un elemento menos que la lista original.\n\nSi hay menos de 2 números, devuelve `[]`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              4,
+              9
+            ]
+          ],
+          "output": [
+            3,
+            5
+          ]
+        },
+        {
+          "input": [
+            [
+              10,
+              7,
+              7
+            ]
+          ],
+          "output": [
+            -3,
+            0
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              5
+            ]
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              1,
+              2
+            ]
+          ],
+          "output": [
+            1
+          ]
+        },
+        {
+          "input": [
+            [
+              -3,
+              3,
+              -3
+            ]
+          ],
+          "output": [
+            6,
+            -6
+          ]
+        },
+        {
+          "input": [
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "output": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "dividir-la-cuenta",
+    "title": "Dividir la cuenta",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(total: number, personas: number): number[]",
+    "tags": [
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "Una mesa de `personas` comensales paga `total`: todos ponen **la misma cantidad entera** y nadie puede pagar de menos, así que la cuenta debe quedar cubierta. **Devuelve** `[cuánto paga cada uno, cuánto sobra]`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            100,
+            3
+          ],
+          "output": [
+            34,
+            2
+          ]
+        },
+        {
+          "input": [
+            10,
+            5
+          ],
+          "output": [
+            2,
+            0
+          ]
+        },
+        {
+          "input": [
+            7,
+            2
+          ],
+          "output": [
+            4,
+            1
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0,
+            4
+          ],
+          "output": [
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            5,
+            1
+          ],
+          "output": [
+            5,
+            0
+          ]
+        },
+        {
+          "input": [
+            1,
+            3
+          ],
+          "output": [
+            1,
+            2
+          ]
+        },
+        {
+          "input": [
+            99,
+            10
+          ],
+          "output": [
+            10,
+            1
+          ]
+        },
+        {
+          "input": [
+            50,
+            7
+          ],
+          "output": [
+            8,
+            6
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "divisores",
+    "title": "Divisores",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): number[]",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega un entero `n >= 1`. **Devuelve todos sus divisores** de menor a mayor, incluyendo `1` y `n`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            12
+          ],
+          "output": [
+            1,
+            2,
+            3,
+            4,
+            6,
+            12
+          ]
+        },
+        {
+          "input": [
+            7
+          ],
+          "output": [
+            1,
+            7
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            1
+          ],
+          "output": [
+            1
+          ]
+        },
+        {
+          "input": [
+            2
+          ],
+          "output": [
+            1,
+            2
+          ]
+        },
+        {
+          "input": [
+            36
+          ],
+          "output": [
+            1,
+            2,
+            3,
+            4,
+            6,
+            9,
+            12,
+            18,
+            36
+          ]
+        },
+        {
+          "input": [
+            100
+          ],
+          "output": [
+            1,
+            2,
+            4,
+            5,
+            10,
+            20,
+            25,
+            50,
+            100
+          ]
+        },
+        {
+          "input": [
+            97
+          ],
+          "output": [
+            1,
+            97
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "doblar-todo",
+    "title": "Doble ración",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Cada cliente pide doble ración, pero las comandas con 0 raciones se cancelan. **Devuelve las raciones dobles** de las comandas que siguen en pie, en el mismo orden.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": [
+            2,
+            4,
+            6
+          ]
+        },
+        {
+          "input": [
+            [
+              0,
+              5,
+              0,
+              4
+            ]
+          ],
+          "output": [
+            10,
+            8
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              0
+            ]
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              0,
+              0
+            ]
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              7
+            ]
+          ],
+          "output": [
+            14
+          ]
+        },
+        {
+          "input": [
+            [
+              3,
+              0,
+              0,
+              1
+            ]
+          ],
+          "output": [
+            6,
+            2
+          ]
+        },
+        {
+          "input": [
+            [
+              1000000,
+              0
+            ]
+          ],
+          "output": [
+            2000000
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "elemento-mas-frecuente",
+    "title": "El más repetido",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number | null",
+    "tags": [
+      "hashing"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve **el número que más veces aparece** en la lista. Si hay empate, devuelve el menor de los empatados.\n\nSi la lista está vacía, devuelve `null`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              2,
+              3
+            ]
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              5,
+              5,
+              7,
+              7,
+              7
+            ]
+          ],
+          "output": 7
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": null
+        },
+        {
+          "input": [
+            [
+              4
+            ]
+          ],
+          "output": 4
+        },
+        {
+          "input": [
+            [
+              3,
+              1,
+              3,
+              1
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              -2,
+              -2,
+              5,
+              5,
+              9
+            ]
+          ],
+          "output": -2
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              9,
+              8,
+              8,
+              9,
+              7
+            ]
+          ],
+          "output": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "empiezan-con",
+    "title": "Empiezan con…",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(words: string[], c: string): number",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Cuenta cuántas palabras empiezan con la letra `c`**, sin distinguir mayúsculas de minúsculas.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              "Pan",
+              "pasta",
+              "queso"
+            ],
+            "p"
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              "sal",
+              "Sopa"
+            ],
+            "S"
+          ],
+          "output": 2
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            "a"
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              "arroz"
+            ],
+            "b"
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              "Ajo",
+              "ajo",
+              "pan"
+            ],
+            "a"
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              "a",
+              "A"
+            ],
+            "A"
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              "flan",
+              "fideos",
+              "sal"
+            ],
+            "f"
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              "uno",
+              "dos",
+              "tres"
+            ],
+            "z"
+          ],
+          "output": 0
+        }
+      ]
+    }
+  },
+  {
+    "id": "es-anagrama",
+    "title": "Anagramas",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(a: string, b: string): boolean",
+    "tags": [
+      "strings",
+      "sorting"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve `true` si `a` y `b` **tienen exactamente las mismas letras** con las mismas cantidades, en cualquier orden. Mayúsculas y minúsculas son distintas.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "roma",
+            "amor"
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            "sal",
+            "sol"
+          ],
+          "output": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            "",
+            ""
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            "a",
+            "a"
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            "abc",
+            "abcd"
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            "aab",
+            "abb"
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            "Roma",
+            "amor"
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            "listen",
+            "silent"
+          ],
+          "output": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "es-palindromo",
+    "title": "¿Palíndromo?",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): boolean",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve `true` si el texto **se lee igual al derecho que al revés**, ignorando espacios y diferencias entre mayúsculas y minúsculas. Solo tiene letras y espacios; el texto vacío es palíndromo.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "Anita lava la tina"
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            "cocina"
+          ],
+          "output": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            "a"
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            "Anna"
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            "ab c"
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            "   "
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            "Ana y Ana"
+          ],
+          "output": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "es-potencia-de-dos",
+    "title": "¿Potencia de dos?",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): boolean",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega un entero `n >= 1`. **Devuelve `true` si `n` es una potencia de 2** (1, 2, 4, 8, 16…).",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            16
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            12
+          ],
+          "output": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            1
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            2
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            3
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            1024
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            1000
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            6
+          ],
+          "output": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "es-primo",
+    "title": "¿Es primo?",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): boolean",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega un entero `n >= 0`. **Devuelve `true` si es primo** (solo divisible por 1 y por sí mismo). El `0` y el `1` no son primos.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            7
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            10
+          ],
+          "output": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            1
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            2
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            9
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            97
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            100
+          ],
+          "output": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "esta-ordenada",
+    "title": "¿Está ordenada?",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): boolean",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve `true` si la lista está **ordenada de menor a mayor** (se permiten repetidos), y `false` si no.\n\nUna lista vacía cuenta como ordenada.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              3,
+              1,
+              2
+            ]
+          ],
+          "output": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              5
+            ]
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              1,
+              1,
+              2,
+              2
+            ]
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              2,
+              1
+            ]
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            [
+              -5,
+              -1,
+              0,
+              100
+            ]
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              2
+            ]
+          ],
+          "output": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "fibonacci",
+    "title": "Masa madre",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): number",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Cada día, la masa madre rinde tantas porciones como los dos días anteriores juntos. El día `0` rinde `0` porciones y el día `1` rinde `1`. **Devuelve las porciones del día `n`.**\n\nEs `0 <= n <= 40`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            0
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            1
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            7
+          ],
+          "output": 13
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            2
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            3
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            10
+          ],
+          "output": 55
+        },
+        {
+          "input": [
+            20
+          ],
+          "output": 6765
+        },
+        {
+          "input": [
+            40
+          ],
+          "output": 102334155
+        }
+      ]
+    }
+  },
+  {
+    "id": "fizzbuzz",
+    "title": "FizzBuzz contado",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): number[]",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "En la cocina cantan del `1` al `n`: dicen «Fizz» en los múltiplos de 3, «Buzz» en los de 5 y «FizzBuzz» en los de ambos. **Devuelve cuántas veces dijeron** `[Fizz, Buzz, FizzBuzz]`; un «FizzBuzz» no cuenta también como Fizz ni como Buzz.\n\nEs `n >= 0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            5
+          ],
+          "output": [
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "input": [
+            15
+          ],
+          "output": [
+            4,
+            2,
+            1
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0
+          ],
+          "output": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            1
+          ],
+          "output": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            3
+          ],
+          "output": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            14
+          ],
+          "output": [
+            4,
+            2,
+            0
+          ]
+        },
+        {
+          "input": [
+            30
+          ],
+          "output": [
+            8,
+            4,
+            2
+          ]
+        },
+        {
+          "input": [
+            100
+          ],
+          "output": [
+            27,
+            14,
+            6
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "formas-de-emplatar",
+    "title": "Formas de emplatar",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): number",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Tienes `n` platos distintos y quieres alinearlos en la barra. **Cuenta de cuántas maneras diferentes** se pueden ordenar. Con `0` platos hay una única manera (la barra vacía).\n\nEs `0 <= n <= 12`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            3
+          ],
+          "output": 6
+        },
+        {
+          "input": [
+            4
+          ],
+          "output": 24
+        },
+        {
+          "input": [
+            0
+          ],
+          "output": 1
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            1
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            2
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            5
+          ],
+          "output": 120
+        },
+        {
+          "input": [
+            10
+          ],
+          "output": 3628800
+        },
+        {
+          "input": [
+            12
+          ],
+          "output": 479001600
+        }
+      ]
+    }
+  },
+  {
+    "id": "formatear-precio",
+    "title": "Precio",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(cents: number): string",
+    "tags": [
+      "strings",
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "La caja guarda los precios en céntimos. **Convierte `cents` a euros con dos decimales**, usando un punto como separador y sin símbolo de moneda.\n\nSiempre `cents >= 0` y entero.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            1250
+          ],
+          "output": "12.50"
+        },
+        {
+          "input": [
+            5
+          ],
+          "output": "0.05"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0
+          ],
+          "output": "0.00"
+        },
+        {
+          "input": [
+            100
+          ],
+          "output": "1.00"
+        },
+        {
+          "input": [
+            99
+          ],
+          "output": "0.99"
+        },
+        {
+          "input": [
+            101
+          ],
+          "output": "1.01"
+        },
+        {
+          "input": [
+            123456
+          ],
+          "output": "1234.56"
+        }
+      ]
+    }
+  },
+  {
     "id": "hornos-compartidos",
     "title": "Hornos compartidos",
     "difficulty": "hard",
@@ -17,7 +3361,7 @@ export const PUZZLES: readonly CatalogPuzzle[] = [
     "blockedSabotages": [
       "max-lines-3"
     ],
-    "statement": "La cocina tiene hornos numerados `0, 1, 2, ...` (tantos como hagan falta). Cada plato `[inicio, fin]` ocupa un horno desde `inicio` hasta `fin`. El horno queda libre **justo en** `fin`: otro plato que empieza en `fin` puede usarlo.\n\nLos platos se asignan en orden de `inicio`. Si dos empiezan a la vez, va primero el que aparece antes en la lista. A cada plato le toca el horno libre con el **número más bajo**.\n\nDevuelve, para cada plato **en el orden de la lista original**, el número de horno que le tocó.\n\nDetalles:\n\n- `inicio < fin`, todos enteros `>= 0`. La lista puede venir desordenada o vacía.\n\nEjemplos:\n\n- `[[0, 10], [5, 15], [10, 20]]` → `[0, 1, 0]`\n- `[[5, 8], [0, 6]]` → `[1, 0]`",
+    "statement": "La cocina tiene hornos numerados `0, 1, 2, ...` (tantos como hagan falta). Cada plato `[inicio, fin]` ocupa un horno desde `inicio` hasta `fin`. El horno queda libre **justo en** `fin`: otro plato que empieza en `fin` puede usarlo.\n\nLos platos se asignan en orden de `inicio`. Si dos empiezan a la vez, va primero el que aparece antes en la lista. A cada plato le toca el horno libre con el **número más bajo**.\n\nDevuelve, para cada plato **en el orden de la lista original**, el número de horno que le tocó.\n\nDetalles:\n\n- `inicio < fin`, todos enteros `>= 0`. La lista puede venir desordenada o vacía.",
     "cases": {
       "public": [
         {
@@ -350,6 +3694,1447 @@ export const PUZZLES: readonly CatalogPuzzle[] = [
     }
   },
   {
+    "id": "ingredientes-faltantes",
+    "title": "¿Qué falta?",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(receta: string[], despensa: string[]): string[]",
+    "tags": [
+      "arrays",
+      "hashing"
+    ],
+    "blockedSabotages": [],
+    "statement": "Compara la receta con la despensa. **Devuelve los ingredientes de `receta` que no están en `despensa`**, en el mismo orden en que aparecen en la receta.\n\nSi no falta ninguno, devuelve una lista vacía.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              "harina",
+              "huevo",
+              "leche"
+            ],
+            [
+              "huevo"
+            ]
+          ],
+          "output": [
+            "harina",
+            "leche"
+          ]
+        },
+        {
+          "input": [
+            [
+              "sal"
+            ],
+            [
+              "sal",
+              "pimienta"
+            ]
+          ],
+          "output": []
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b"
+            ],
+            []
+          ],
+          "output": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b"
+            ],
+            [
+              "b",
+              "a"
+            ]
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              "x",
+              "y",
+              "x"
+            ],
+            [
+              "y"
+            ]
+          ],
+          "output": [
+            "x",
+            "x"
+          ]
+        },
+        {
+          "input": [
+            [
+              "tomate"
+            ],
+            [
+              "Tomate"
+            ]
+          ],
+          "output": [
+            "tomate"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "iniciales-nombre",
+    "title": "Iniciales",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(name: string): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "Dado un nombre completo, devuelve **sus iniciales en mayúscula**, cada una seguida de un punto. Las palabras van separadas por un solo espacio.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "juan perez"
+          ],
+          "output": "J.P."
+        },
+        {
+          "input": [
+            "ana maria lopez"
+          ],
+          "output": "A.M.L."
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            "a"
+          ],
+          "output": "A."
+        },
+        {
+          "input": [
+            "Juan"
+          ],
+          "output": "J."
+        },
+        {
+          "input": [
+            "mario"
+          ],
+          "output": "M."
+        },
+        {
+          "input": [
+            "Luis De La Cruz"
+          ],
+          "output": "L.D.L.C."
+        },
+        {
+          "input": [
+            "pepe grillo"
+          ],
+          "output": "P.G."
+        }
+      ]
+    }
+  },
+  {
+    "id": "intercalar-listas",
+    "title": "Intercalar",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(a: number[], b: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Mezcla dos listas** alternando un elemento de cada una: `a0, b0, a1, b1...`. Si una es más larga, sus elementos sobrantes van al final.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ],
+            [
+              10,
+              20,
+              30
+            ]
+          ],
+          "output": [
+            1,
+            10,
+            2,
+            20,
+            3,
+            30
+          ]
+        },
+        {
+          "input": [
+            [
+              1
+            ],
+            [
+              7,
+              8,
+              9
+            ]
+          ],
+          "output": [
+            1,
+            7,
+            8,
+            9
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [],
+            [
+              4,
+              5
+            ]
+          ],
+          "output": [
+            4,
+            5
+          ]
+        },
+        {
+          "input": [
+            [
+              4,
+              5
+            ],
+            []
+          ],
+          "output": [
+            4,
+            5
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4
+            ],
+            [
+              9
+            ]
+          ],
+          "output": [
+            1,
+            9,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "input": [
+            [
+              -1
+            ],
+            [
+              -2
+            ]
+          ],
+          "output": [
+            -1,
+            -2
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "interseccion",
+    "title": "En las dos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(a: number[], b: number[]): number[]",
+    "tags": [
+      "arrays",
+      "hashing"
+    ],
+    "blockedSabotages": [],
+    "statement": "Tienes los platos que sirvió el turno de mañana (`a`) y el de tarde (`b`). **Devuelve los valores que aparecen en ambas listas**, en el orden de `a` y sin repetir ninguno.\n\nSi no hay ninguno en común, devuelve una lista vacía.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4
+            ],
+            [
+              3,
+              4,
+              5
+            ]
+          ],
+          "output": [
+            3,
+            4
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2
+            ],
+            [
+              3
+            ]
+          ],
+          "output": []
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            [
+              1
+            ]
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              1
+            ],
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              1,
+              1,
+              2
+            ],
+            [
+              1
+            ]
+          ],
+          "output": [
+            1
+          ]
+        },
+        {
+          "input": [
+            [
+              5,
+              3,
+              1
+            ],
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "output": [
+            5,
+            3,
+            1
+          ]
+        },
+        {
+          "input": [
+            [
+              -1,
+              0
+            ],
+            [
+              0,
+              -1,
+              2
+            ]
+          ],
+          "output": [
+            -1,
+            0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "invertir-cada-palabra",
+    "title": "Palabras al revés",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "El chef escribe las palabras de la comanda al revés. **Invierte las letras de cada palabra** sin cambiar el orden de las palabras.\n\nLas palabras van separadas por un solo espacio. Si el texto está vacío, devuelve `\"\"`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "hola mundo"
+          ],
+          "output": "aloh odnum"
+        },
+        {
+          "input": [
+            "sopa del dia"
+          ],
+          "output": "apos led aid"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "a"
+          ],
+          "output": "a"
+        },
+        {
+          "input": [
+            "abc"
+          ],
+          "output": "cba"
+        },
+        {
+          "input": [
+            "ana ama"
+          ],
+          "output": "ana ama"
+        },
+        {
+          "input": [
+            "Pizza Fria"
+          ],
+          "output": "azziP airF"
+        }
+      ]
+    }
+  },
+  {
+    "id": "invertir-frase",
+    "title": "Frase al revés",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Devuelve las palabras de la frase en orden inverso**; cada palabra conserva sus letras. Las palabras pueden venir separadas por uno o más espacios; en el resultado, un solo espacio y ninguno al principio ni al final.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "pan con queso"
+          ],
+          "output": "queso con pan"
+        },
+        {
+          "input": [
+            "  sopa   del  dia "
+          ],
+          "output": "dia del sopa"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "hola"
+          ],
+          "output": "hola"
+        },
+        {
+          "input": [
+            "   "
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "a b"
+          ],
+          "output": "b a"
+        },
+        {
+          "input": [
+            "uno  dos   tres"
+          ],
+          "output": "tres dos uno"
+        },
+        {
+          "input": [
+            " x "
+          ],
+          "output": "x"
+        }
+      ]
+    }
+  },
+  {
+    "id": "invertir-numero",
+    "title": "Número al revés",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): number",
+    "tags": [
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega un entero `n >= 0`. **Devuelve el número con sus dígitos al revés.** Los ceros del final desaparecen (`120` pasa a `21`).",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            123
+          ],
+          "output": 321
+        },
+        {
+          "input": [
+            120
+          ],
+          "output": 21
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            5
+          ],
+          "output": 5
+        },
+        {
+          "input": [
+            1000
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            1221
+          ],
+          "output": 1221
+        },
+        {
+          "input": [
+            9876543
+          ],
+          "output": 3456789
+        }
+      ]
+    }
+  },
+  {
+    "id": "lista-simetrica",
+    "title": "Bandeja simétrica",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): boolean",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Una bandeja es simétrica si **se lee igual desde los dos extremos**. Devuelve si la bandeja lo es. La bandeja vacía cuenta como simétrica.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              5
+            ]
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              2,
+              1
+            ]
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              1
+            ]
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              2,
+              1
+            ]
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              1,
+              2
+            ]
+          ],
+          "output": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "mayor-salto",
+    "title": "Mayor salto",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number",
+    "tags": [
+      "arrays",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega una lista de números enteros. **Devuelve la mayor diferencia (en valor absoluto) entre dos números consecutivos.** Si hay menos de 2 números, devuelve `0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              5,
+              2,
+              3
+            ]
+          ],
+          "output": 4
+        },
+        {
+          "input": [
+            [
+              10,
+              9,
+              8
+            ]
+          ],
+          "output": 1
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              4
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              3,
+              3,
+              3
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              -5,
+              5
+            ]
+          ],
+          "output": 10
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              10,
+              -20,
+              0
+            ]
+          ],
+          "output": 30
+        }
+      ]
+    }
+  },
+  {
+    "id": "mayusculas-iniciales",
+    "title": "Iniciales en mayúscula",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Pon en mayúscula la primera letra de cada palabra** y deja el resto igual. Las palabras van separadas por un solo espacio.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "sopa de tomate"
+          ],
+          "output": "Sopa De Tomate"
+        },
+        {
+          "input": [
+            "arroz con leche"
+          ],
+          "output": "Arroz Con Leche"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "a"
+          ],
+          "output": "A"
+        },
+        {
+          "input": [
+            "hola"
+          ],
+          "output": "Hola"
+        },
+        {
+          "input": [
+            "Ya ESTA"
+          ],
+          "output": "Ya ESTA"
+        },
+        {
+          "input": [
+            "uno dos tres cuatro"
+          ],
+          "output": "Uno Dos Tres Cuatro"
+        }
+      ]
+    }
+  },
+  {
+    "id": "mcd",
+    "title": "Máximo común divisor",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(a: number, b: number): number",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llegan dos enteros `a, b >= 1`. **Devuelve su máximo común divisor**: el mayor número que divide a los dos.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            12,
+            18
+          ],
+          "output": 6
+        },
+        {
+          "input": [
+            7,
+            5
+          ],
+          "output": 1
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            1,
+            1
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            10,
+            10
+          ],
+          "output": 10
+        },
+        {
+          "input": [
+            100,
+            75
+          ],
+          "output": 25
+        },
+        {
+          "input": [
+            17,
+            34
+          ],
+          "output": 17
+        },
+        {
+          "input": [
+            48,
+            180
+          ],
+          "output": 12
+        },
+        {
+          "input": [
+            1,
+            99
+          ],
+          "output": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "mitad-del-texto",
+    "title": "Primera mitad",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Devuelve la primera mitad del texto.** Si tiene una cantidad impar de letras, la letra del medio no entra en la mitad.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "hola"
+          ],
+          "output": "ho"
+        },
+        {
+          "input": [
+            "abcde"
+          ],
+          "output": "ab"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "a"
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "ab"
+          ],
+          "output": "a"
+        },
+        {
+          "input": [
+            "cocina"
+          ],
+          "output": "coc"
+        },
+        {
+          "input": [
+            "sopa de pollo"
+          ],
+          "output": "sopa d"
+        }
+      ]
+    }
+  },
+  {
+    "id": "multiplos-hasta",
+    "title": "Múltiplos hasta el límite",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number, limite: number): number[]",
+    "tags": [
+      "arrays",
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "Hay que numerar las mesas de `n` en `n` sin pasarse de `limite`. **Devuelve todos los múltiplos positivos de `n` que no superen `limite`**, de menor a mayor.\n\nEs `n >= 1` y `limite >= 0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            3,
+            10
+          ],
+          "output": [
+            3,
+            6,
+            9
+          ]
+        },
+        {
+          "input": [
+            5,
+            5
+          ],
+          "output": [
+            5
+          ]
+        },
+        {
+          "input": [
+            4,
+            3
+          ],
+          "output": []
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            1,
+            4
+          ],
+          "output": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "input": [
+            7,
+            0
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            10,
+            100
+          ],
+          "output": [
+            10,
+            20,
+            30,
+            40,
+            50,
+            60,
+            70,
+            80,
+            90,
+            100
+          ]
+        },
+        {
+          "input": [
+            6,
+            40
+          ],
+          "output": [
+            6,
+            12,
+            18,
+            24,
+            30,
+            36
+          ]
+        },
+        {
+          "input": [
+            2,
+            1
+          ],
+          "output": []
+        }
+      ]
+    }
+  },
+  {
+    "id": "n-mas-baratos",
+    "title": "Los n más baratos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(prices: number[], n: number): number[]",
+    "tags": [
+      "sorting"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Devuelve los n precios más bajos** de la carta, de menor a mayor. Si hay menos de n precios, devuelve todos.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              5,
+              3,
+              8,
+              1
+            ],
+            2
+          ],
+          "output": [
+            1,
+            3
+          ]
+        },
+        {
+          "input": [
+            [
+              10,
+              9,
+              100,
+              1
+            ],
+            3
+          ],
+          "output": [
+            1,
+            9,
+            10
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            3
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              4,
+              4,
+              2
+            ],
+            2
+          ],
+          "output": [
+            2,
+            4
+          ]
+        },
+        {
+          "input": [
+            [
+              7
+            ],
+            0
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              2,
+              1
+            ],
+            5
+          ],
+          "output": [
+            1,
+            2
+          ]
+        },
+        {
+          "input": [
+            [
+              100,
+              10,
+              9,
+              20
+            ],
+            4
+          ],
+          "output": [
+            9,
+            10,
+            20,
+            100
+          ]
+        },
+        {
+          "input": [
+            [
+              30,
+              5,
+              30,
+              5
+            ],
+            3
+          ],
+          "output": [
+            5,
+            5,
+            30
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "normalizar-espacios",
+    "title": "Espacios de más",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "El texto de la comanda viene con espacios de más. **Deja exactamente un espacio entre palabras** y ninguno al principio ni al final.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "pan   con queso"
+          ],
+          "output": "pan con queso"
+        },
+        {
+          "input": [
+            "  sal y  pimienta "
+          ],
+          "output": "sal y pimienta"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "   "
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "a"
+          ],
+          "output": "a"
+        },
+        {
+          "input": [
+            " a"
+          ],
+          "output": "a"
+        },
+        {
+          "input": [
+            "a  b  c"
+          ],
+          "output": "a b c"
+        },
+        {
+          "input": [
+            "hola mundo"
+          ],
+          "output": "hola mundo"
+        }
+      ]
+    }
+  },
+  {
+    "id": "numero-capicua",
+    "title": "Número capicúa",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): boolean",
+    "tags": [
+      "math",
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega un entero `n >= 0`. **Devuelve `true` si se lee igual de izquierda a derecha que de derecha a izquierda** (`121`).",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            121
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            123
+          ],
+          "output": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            7
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            10
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            1221
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            12321
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            1000
+          ],
+          "output": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "numeros-faltantes",
+    "title": "Faltantes",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[], n: number): number[]",
+    "tags": [
+      "arrays",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega una lista de números entre `1` y `n` (puede haber repetidos) y el entero `n >= 0`. **Devuelve los números de `1` a `n` que no aparecen** en la lista, de menor a mayor.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              3,
+              5
+            ],
+            5
+          ],
+          "output": [
+            2,
+            4
+          ]
+        },
+        {
+          "input": [
+            [
+              2,
+              2,
+              4
+            ],
+            4
+          ],
+          "output": [
+            1,
+            3
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            3
+          ],
+          "output": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ],
+            3
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [],
+            0
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              3,
+              3,
+              3
+            ],
+            3
+          ],
+          "output": [
+            1,
+            2
+          ]
+        },
+        {
+          "input": [
+            [
+              5,
+              1,
+              4
+            ],
+            6
+          ],
+          "output": [
+            2,
+            3,
+            6
+          ]
+        }
+      ]
+    }
+  },
+  {
     "id": "orden-de-preparacion",
     "title": "Orden de preparación",
     "difficulty": "hard",
@@ -362,7 +5147,7 @@ export const PUZZLES: readonly CatalogPuzzle[] = [
     "blockedSabotages": [
       "max-lines-3"
     ],
-    "statement": "Una receta tiene **pasos** y **dependencias**. Cada dependencia `[a, b]` significa que `a` tiene que hacerse **antes** que `b`.\n\nDevuelve el orden en que se hacen todos los pasos. Siempre que haya varios pasos listos para hacerse, elige primero el **menor alfabéticamente** (comparación normal de strings).\n\nSi las dependencias forman un ciclo y la receta es imposible, devuelve `null`.\n\nDetalles:\n\n- Todos los pasos de `deps` están en `steps`. Puede haber dependencias repetidas.\n- Un paso sin dependencias también va en el resultado.\n\nEjemplos:\n\n- `steps = [\"salsa\", \"pasta\", \"servir\"]`, `deps = [[\"pasta\", \"servir\"], [\"salsa\", \"servir\"]]` → `[\"pasta\", \"salsa\", \"servir\"]`\n- `steps = [\"a\", \"b\"]`, `deps = [[\"a\", \"b\"], [\"b\", \"a\"]]` → `null`",
+    "statement": "Una receta tiene **pasos** y **dependencias**. Cada dependencia `[a, b]` significa que `a` tiene que hacerse **antes** que `b`.\n\nDevuelve el orden en que se hacen todos los pasos. Siempre que haya varios pasos listos para hacerse, elige primero el **menor alfabéticamente** (comparación normal de strings).\n\nSi las dependencias forman un ciclo y la receta es imposible, devuelve `null`.\n\nDetalles:\n\n- Todos los pasos de `deps` están en `steps`. Puede haber dependencias repetidas.\n- Un paso sin dependencias también va en el resultado.",
     "cases": {
       "public": [
         {
@@ -683,6 +5468,175 @@ export const PUZZLES: readonly CatalogPuzzle[] = [
     }
   },
   {
+    "id": "ordenar-numeros",
+    "title": "Ordenar",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number[]",
+    "tags": [
+      "arrays",
+      "sorting"
+    ],
+    "blockedSabotages": [],
+    "statement": "Tienes los números de las mesas desordenados. **Devuélvelos ordenados de menor a mayor** como números (no como texto).\n\nSi la lista está vacía, devuelve `[]`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              3,
+              1,
+              2
+            ]
+          ],
+          "output": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "input": [
+            [
+              5,
+              5,
+              1
+            ]
+          ],
+          "output": [
+            1,
+            5,
+            5
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              7
+            ]
+          ],
+          "output": [
+            7
+          ]
+        },
+        {
+          "input": [
+            [
+              10,
+              9,
+              100,
+              1
+            ]
+          ],
+          "output": [
+            1,
+            9,
+            10,
+            100
+          ]
+        },
+        {
+          "input": [
+            [
+              -1,
+              -10,
+              0,
+              5
+            ]
+          ],
+          "output": [
+            -10,
+            -1,
+            0,
+            5
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": [
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "palabra-mas-larga",
+    "title": "Palabra más larga",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve **la palabra más larga** de la frase. Las palabras van separadas por un solo espacio.\n\nSi hay empate, devuelve la primera. Si la frase está vacía, devuelve `\"\"`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "sopa de tomate"
+          ],
+          "output": "tomate"
+        },
+        {
+          "input": [
+            "pan con ajo"
+          ],
+          "output": "pan"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "hola"
+          ],
+          "output": "hola"
+        },
+        {
+          "input": [
+            "uno dos tres"
+          ],
+          "output": "tres"
+        },
+        {
+          "input": [
+            "ab cd ef"
+          ],
+          "output": "ab"
+        },
+        {
+          "input": [
+            "a bb ccc dd eee"
+          ],
+          "output": "ccc"
+        }
+      ]
+    }
+  },
+  {
     "id": "palindromo-casi",
     "title": "Casi palíndromo",
     "difficulty": "medium",
@@ -693,7 +5647,7 @@ export const PUZZLES: readonly CatalogPuzzle[] = [
       "two-pointers"
     ],
     "blockedSabotages": [],
-    "statement": "El cliente quiere saber si un texto es un **palíndromo** o puede llegar a serlo **eliminando como máximo un carácter**.\n\nCompara tal cual: sin ignorar mayúsculas, espacios ni signos.\n\nEjemplos:\n\n- `\"aba\"` → `true` (ya es palíndromo)\n- `\"abca\"` → `true` (quitando `\"c\"` o `\"b\"`)\n- `\"abc\"` → `false`",
+    "statement": "El cliente quiere saber si un texto es un **palíndromo** o puede llegar a serlo **eliminando como máximo un carácter**.\n\nCompara tal cual: sin ignorar mayúsculas, espacios ni signos.",
     "cases": {
       "public": [
         {
@@ -768,6 +5722,2845 @@ export const PUZZLES: readonly CatalogPuzzle[] = [
     }
   },
   {
+    "id": "pares-que-suman",
+    "title": "¿Suman k?",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[], k: number): boolean",
+    "tags": [
+      "arrays",
+      "hashing"
+    ],
+    "blockedSabotages": [],
+    "statement": "Tienes una lista de precios y un objetivo `k`. **Devuelve `true` si hay dos elementos en posiciones distintas que sumen exactamente `k`**, y `false` si no.\n\nUn mismo elemento no puede usarse dos veces.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              2,
+              7,
+              11
+            ],
+            9
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ],
+            10
+          ],
+          "output": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            0
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            [
+              5
+            ],
+            10
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            [
+              5,
+              5
+            ],
+            10
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              -3,
+              3,
+              8
+            ],
+            0
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              4,
+              1,
+              2
+            ],
+            8
+          ],
+          "output": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "plato-mas-caro",
+    "title": "El plato más caro",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(names: string[], prices: number[]): string | null",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "La carta llega como dos listas: nombres y precios, donde cada posición es el mismo plato. **Devuelve el nombre del plato más caro**. Si hay empate, el que aparece primero; si la carta está vacía, `null`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              "sopa",
+              "pizza",
+              "flan"
+            ],
+            [
+              5,
+              12,
+              4
+            ]
+          ],
+          "output": "pizza"
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b"
+            ],
+            [
+              7,
+              7
+            ]
+          ],
+          "output": "a"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            []
+          ],
+          "output": null
+        },
+        {
+          "input": [
+            [
+              "x"
+            ],
+            [
+              3
+            ]
+          ],
+          "output": "x"
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b",
+              "c"
+            ],
+            [
+              1,
+              9,
+              9
+            ]
+          ],
+          "output": "b"
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b",
+              "c"
+            ],
+            [
+              10,
+              9,
+              100
+            ]
+          ],
+          "output": "c"
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b"
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "output": "a"
+        },
+        {
+          "input": [
+            [
+              "pan",
+              "vino",
+              "agua"
+            ],
+            [
+              3,
+              20,
+              2
+            ]
+          ],
+          "output": "vino"
+        }
+      ]
+    }
+  },
+  {
+    "id": "plato-mas-pedido",
+    "title": "Plato estrella",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(pedidos: string[]): string | null",
+    "tags": [
+      "arrays",
+      "hashing"
+    ],
+    "blockedSabotages": [],
+    "statement": "Mira la lista de platos pedidos hoy. **Devuelve el plato que más veces aparece**.\n\nSi hay empate, devuelve el que aparece primero en la lista. Si la lista está vacía, devuelve `null`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              "paella",
+              "sopa",
+              "paella"
+            ]
+          ],
+          "output": "paella"
+        },
+        {
+          "input": [
+            [
+              "flan",
+              "sopa",
+              "flan",
+              "sopa"
+            ]
+          ],
+          "output": "flan"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": null
+        },
+        {
+          "input": [
+            [
+              "sopa"
+            ]
+          ],
+          "output": "sopa"
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b",
+              "c"
+            ]
+          ],
+          "output": "a"
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b",
+              "b",
+              "a"
+            ]
+          ],
+          "output": "a"
+        },
+        {
+          "input": [
+            [
+              "x",
+              "y",
+              "y",
+              "z",
+              "z",
+              "z"
+            ]
+          ],
+          "output": "z"
+        }
+      ]
+    }
+  },
+  {
+    "id": "posicion-del-maximo",
+    "title": "Dónde está el mayor",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve **la posición del número más grande** de la lista (la primera posición es la 0). Si el máximo se repite, devuelve la posición de la primera aparición.\n\nSi la lista está vacía, devuelve `-1`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              3,
+              9,
+              2
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              1,
+              7,
+              7,
+              3
+            ]
+          ],
+          "output": 1
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": -1
+        },
+        {
+          "input": [
+            [
+              5
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              -3,
+              -1,
+              -2
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              9,
+              1,
+              9
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          ],
+          "output": 4
+        }
+      ]
+    }
+  },
+  {
+    "id": "positivos-primero",
+    "title": "Positivos primero",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Pon primero los números mayores que 0** y después el resto, respetando en cada grupo el orden original.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              3,
+              -1,
+              0,
+              2,
+              -5
+            ]
+          ],
+          "output": [
+            3,
+            2,
+            -1,
+            0,
+            -5
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": [
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              0
+            ]
+          ],
+          "output": [
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              -1,
+              -2
+            ]
+          ],
+          "output": [
+            -1,
+            -2
+          ]
+        },
+        {
+          "input": [
+            [
+              0,
+              5,
+              0,
+              6
+            ]
+          ],
+          "output": [
+            5,
+            6,
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              -3,
+              4,
+              -2,
+              1,
+              0
+            ]
+          ],
+          "output": [
+            4,
+            1,
+            -3,
+            -2,
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              9
+            ]
+          ],
+          "output": [
+            9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "primera-repetida",
+    "title": "Primera repetida",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string | null",
+    "tags": [
+      "strings",
+      "hashing"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve **el primer carácter que se repite**: aquel cuya segunda aparición llega antes en el texto.\n\nSi ningún carácter se repite, devuelve `null`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "abca"
+          ],
+          "output": "a"
+        },
+        {
+          "input": [
+            "abcd"
+          ],
+          "output": null
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": null
+        },
+        {
+          "input": [
+            "a"
+          ],
+          "output": null
+        },
+        {
+          "input": [
+            "abba"
+          ],
+          "output": "b"
+        },
+        {
+          "input": [
+            "abcbca"
+          ],
+          "output": "b"
+        },
+        {
+          "input": [
+            "aAbB"
+          ],
+          "output": null
+        },
+        {
+          "input": [
+            "hola mundo"
+          ],
+          "output": "o"
+        }
+      ]
+    }
+  },
+  {
+    "id": "primero-y-ultimo",
+    "title": "Primero y último",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve una lista con **el primer y el último elemento** de la lista, en ese orden.\n\nSi la lista está vacía, devuelve `[]`. Si tiene un solo elemento, repítelo dos veces.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": [
+            1,
+            3
+          ]
+        },
+        {
+          "input": [
+            [
+              9
+            ]
+          ],
+          "output": [
+            9,
+            9
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              4,
+              4
+            ]
+          ],
+          "output": [
+            4,
+            4
+          ]
+        },
+        {
+          "input": [
+            [
+              -1,
+              5,
+              -2
+            ]
+          ],
+          "output": [
+            -1,
+            -2
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          ],
+          "output": [
+            1,
+            6
+          ]
+        },
+        {
+          "input": [
+            [
+              0
+            ]
+          ],
+          "output": [
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "producto-de-lista",
+    "title": "Producto",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number",
+    "tags": [
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Multiplica todos los números** de la lista y devuelve el resultado.\n\nSi la lista está vacía, devuelve `1`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              2,
+              3,
+              4
+            ]
+          ],
+          "output": 24
+        },
+        {
+          "input": [
+            [
+              5
+            ]
+          ],
+          "output": 5
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              0,
+              5,
+              7
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              -2,
+              3
+            ]
+          ],
+          "output": -6
+        },
+        {
+          "input": [
+            [
+              -2,
+              -3
+            ]
+          ],
+          "output": 6
+        },
+        {
+          "input": [
+            [
+              1,
+              1,
+              1,
+              9
+            ]
+          ],
+          "output": 9
+        }
+      ]
+    }
+  },
+  {
+    "id": "promedio-redondeado",
+    "title": "Nota media",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(stars: number[]): number",
+    "tags": [
+      "arrays",
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "Cada reseña da de 1 a 5 estrellas, o `0` si el cliente no quiso votar. **Calcula la nota media** ignorando los `0`, redondeada al entero más cercano (los .5 suben). Si nadie votó, devuelve `0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              5,
+              4,
+              0,
+              3
+            ]
+          ],
+          "output": 4
+        },
+        {
+          "input": [
+            [
+              5,
+              4
+            ]
+          ],
+          "output": 5
+        },
+        {
+          "input": [
+            [
+              0,
+              0
+            ]
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              3,
+              0,
+              0
+            ]
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            [
+              1,
+              2
+            ]
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              5,
+              5,
+              4
+            ]
+          ],
+          "output": 5
+        },
+        {
+          "input": [
+            [
+              1,
+              1,
+              2
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              2,
+              0,
+              3,
+              0,
+              3
+            ]
+          ],
+          "output": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "propina",
+    "title": "Propina",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(total: number, pct: number): number",
+    "tags": [
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "Un cliente tiene una cuenta de `total` y quiere dejar `pct` por ciento de propina. **Calcula cuánto paga en total** (cuenta más propina), redondeado al entero más cercano (los .5 suben).",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            200,
+            10
+          ],
+          "output": 220
+        },
+        {
+          "input": [
+            85,
+            15
+          ],
+          "output": 98
+        },
+        {
+          "input": [
+            10,
+            25
+          ],
+          "output": 13
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0,
+            10
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            100,
+            0
+          ],
+          "output": 100
+        },
+        {
+          "input": [
+            33,
+            10
+          ],
+          "output": 36
+        },
+        {
+          "input": [
+            1,
+            50
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            1000,
+            20
+          ],
+          "output": 1200
+        }
+      ]
+    }
+  },
+  {
+    "id": "punto-de-coccion",
+    "title": "Punto de cocción",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(temps: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Un filete está **al punto** entre 50 y 69 grados (ambos incluidos), **crudo** por debajo y **pasado** por encima. **Cuenta cuántos filetes hay de cada tipo** y devuelve `[crudos, al punto, pasados]`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              30,
+              50,
+              69,
+              70,
+              85
+            ]
+          ],
+          "output": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "input": [
+            [
+              49
+            ]
+          ],
+          "output": [
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              60
+            ]
+          ],
+          "output": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              49,
+              50,
+              69,
+              70
+            ]
+          ],
+          "output": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "input": [
+            [
+              100,
+              100,
+              20
+            ]
+          ],
+          "output": [
+            1,
+            0,
+            2
+          ]
+        },
+        {
+          "input": [
+            [
+              55,
+              55,
+              55
+            ]
+          ],
+          "output": [
+            0,
+            3,
+            0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "quitar-letras-repetidas",
+    "title": "Letras únicas",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings",
+      "hashing"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve el texto **conservando solo la primera aparición de cada carácter**, en el mismo orden.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "banana"
+          ],
+          "output": "ban"
+        },
+        {
+          "input": [
+            "hola"
+          ],
+          "output": "hola"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "aaaa"
+          ],
+          "output": "a"
+        },
+        {
+          "input": [
+            "abc"
+          ],
+          "output": "abc"
+        },
+        {
+          "input": [
+            "Aa"
+          ],
+          "output": "Aa"
+        },
+        {
+          "input": [
+            "mississippi"
+          ],
+          "output": "misp"
+        },
+        {
+          "input": [
+            "a b a b"
+          ],
+          "output": "a b"
+        }
+      ]
+    }
+  },
+  {
+    "id": "racha-de-ceros",
+    "title": "Racha de ceros",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega una lista de cantidades. **Devuelve cuántos ceros seguidos** tiene la racha de ceros más larga. Si no hay ceros, devuelve `0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              0,
+              0,
+              2,
+              0
+            ]
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              3,
+              4,
+              5
+            ]
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              0
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            [
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ]
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            [
+              5,
+              0,
+              0
+            ]
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              -1,
+              0,
+              -2,
+              0,
+              0
+            ]
+          ],
+          "output": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "rango-de-lista",
+    "title": "Rango",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve **la diferencia entre el mayor y el menor** número de la lista.\n\nSi la lista está vacía, devuelve `0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              3,
+              9,
+              2
+            ]
+          ],
+          "output": 7
+        },
+        {
+          "input": [
+            [
+              5,
+              5,
+              5
+            ]
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              4
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              -5,
+              5
+            ]
+          ],
+          "output": 10
+        },
+        {
+          "input": [
+            [
+              -10,
+              -3,
+              -7
+            ]
+          ],
+          "output": 7
+        },
+        {
+          "input": [
+            [
+              0,
+              1000000
+            ]
+          ],
+          "output": 1000000
+        }
+      ]
+    }
+  },
+  {
+    "id": "redondear-a-cinco",
+    "title": "Redondear a 5",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): number",
+    "tags": [
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega un entero `n >= 0`. **Redondea al múltiplo de 5 más cercano.**",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            12
+          ],
+          "output": 10
+        },
+        {
+          "input": [
+            18
+          ],
+          "output": 20
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            5
+          ],
+          "output": 5
+        },
+        {
+          "input": [
+            2
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            3
+          ],
+          "output": 5
+        },
+        {
+          "input": [
+            7
+          ],
+          "output": 5
+        },
+        {
+          "input": [
+            8
+          ],
+          "output": 10
+        },
+        {
+          "input": [
+            100
+          ],
+          "output": 100
+        }
+      ]
+    }
+  },
+  {
+    "id": "reemplazar-palabra",
+    "title": "Cambiar ingrediente",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string, a: string, b: string): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "Se acabó un ingrediente de la receta. **Reemplaza todas las apariciones de `a` por `b`** en el texto `s`.\n\n`a` nunca está vacío. Si `a` no aparece, devuelve `s` sin cambios.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "pollo con arroz y pollo",
+            "pollo",
+            "pavo"
+          ],
+          "output": "pavo con arroz y pavo"
+        },
+        {
+          "input": [
+            "sopa de ajo",
+            "cebolla",
+            "puerro"
+          ],
+          "output": "sopa de ajo"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            "",
+            "a",
+            "b"
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "aaa",
+            "a",
+            "b"
+          ],
+          "output": "bbb"
+        },
+        {
+          "input": [
+            "aaa",
+            "aa",
+            "b"
+          ],
+          "output": "ba"
+        },
+        {
+          "input": [
+            "queso",
+            "queso",
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "Sal sal",
+            "sal",
+            "pimienta"
+          ],
+          "output": "Sal pimienta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "rellenar-ceros",
+    "title": "Rellenar con ceros",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number, width: number): string",
+    "tags": [
+      "strings",
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "Para el ticket de la comanda necesitas el número con ceros a la izquierda. **Rellena `n` con ceros por la izquierda** hasta que tenga `width` dígitos.\n\nSi `n` ya tiene `width` dígitos o más, devuélvelo tal cual (como texto). Solo hay enteros `n >= 0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            5,
+            3
+          ],
+          "output": "005"
+        },
+        {
+          "input": [
+            42,
+            5
+          ],
+          "output": "00042"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            123,
+            2
+          ],
+          "output": "123"
+        },
+        {
+          "input": [
+            0,
+            1
+          ],
+          "output": "0"
+        },
+        {
+          "input": [
+            0,
+            4
+          ],
+          "output": "0000"
+        },
+        {
+          "input": [
+            7,
+            1
+          ],
+          "output": "7"
+        },
+        {
+          "input": [
+            1000,
+            4
+          ],
+          "output": "1000"
+        }
+      ]
+    }
+  },
+  {
+    "id": "repetir-letras",
+    "title": "Eco",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string, n: number): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Repite cada letra del texto n veces**, manteniendo el orden. Con `n = 0` el resultado es el texto vacío.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "hola",
+            2
+          ],
+          "output": "hhoollaa"
+        },
+        {
+          "input": [
+            "ab",
+            3
+          ],
+          "output": "aaabbb"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            "",
+            3
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "a",
+            1
+          ],
+          "output": "a"
+        },
+        {
+          "input": [
+            "xyz",
+            0
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "a b",
+            2
+          ],
+          "output": "aa  bb"
+        },
+        {
+          "input": [
+            "pan",
+            1
+          ],
+          "output": "pan"
+        },
+        {
+          "input": [
+            "z",
+            5
+          ],
+          "output": "zzzzz"
+        }
+      ]
+    }
+  },
+  {
+    "id": "rotar-a-la-derecha",
+    "title": "Rotar",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Mueve el último elemento al principio** de la lista y devuelve el resultado.\n\nSi la lista está vacía, devuelve `[]`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4
+            ]
+          ],
+          "output": [
+            4,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "input": [
+            [
+              5,
+              6
+            ]
+          ],
+          "output": [
+            6,
+            5
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              7
+            ]
+          ],
+          "output": [
+            7
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              1,
+              2
+            ]
+          ],
+          "output": [
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "input": [
+            [
+              -1,
+              0,
+              1
+            ]
+          ],
+          "output": [
+            1,
+            -1,
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          ],
+          "output": [
+            6,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "saldo-negativo",
+    "title": "Caja en rojo",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(moves: number[]): number",
+    "tags": [
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "La caja empieza en 0 y aplica los movimientos en orden (positivo entra dinero, negativo sale). **Devuelve la posición del primer movimiento tras el cual el saldo queda por debajo de 0**, contando desde 0. Si nunca pasa, devuelve `-1`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              5,
+              -3,
+              -4,
+              10
+            ]
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": -1
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": -1
+        },
+        {
+          "input": [
+            [
+              -1
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              3,
+              -3
+            ]
+          ],
+          "output": -1
+        },
+        {
+          "input": [
+            [
+              10,
+              -5,
+              -5,
+              -1
+            ]
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            [
+              -5,
+              10,
+              -20
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              2,
+              -1,
+              -1,
+              -1,
+              5
+            ]
+          ],
+          "output": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "segundo-mayor",
+    "title": "Segundo puesto",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number | null",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve **el segundo valor más grande** de la lista, sin contar repetidos (`[9, 9, 5]` tiene como segundo mayor el `5`).\n\nSi no existe, devuelve `null`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              3,
+              9,
+              2
+            ]
+          ],
+          "output": 3
+        },
+        {
+          "input": [
+            [
+              7,
+              7,
+              7
+            ]
+          ],
+          "output": null
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": null
+        },
+        {
+          "input": [
+            [
+              4
+            ]
+          ],
+          "output": null
+        },
+        {
+          "input": [
+            [
+              1,
+              2
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              9,
+              9,
+              5
+            ]
+          ],
+          "output": 5
+        },
+        {
+          "input": [
+            [
+              -1,
+              -5,
+              -3
+            ]
+          ],
+          "output": -3
+        },
+        {
+          "input": [
+            [
+              10,
+              10,
+              10,
+              3,
+              3
+            ]
+          ],
+          "output": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "segundos-a-reloj",
+    "title": "Reloj",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: number): string",
+    "tags": [
+      "math",
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "Un plato tarda `s` segundos en estar listo. Devuelve el tiempo como reloj **`mm:ss`**, con siempre dos dígitos en minutos y en segundos.\n\nEl valor es menor que 6000.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            75
+          ],
+          "output": "01:15"
+        },
+        {
+          "input": [
+            600
+          ],
+          "output": "10:00"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0
+          ],
+          "output": "00:00"
+        },
+        {
+          "input": [
+            5
+          ],
+          "output": "00:05"
+        },
+        {
+          "input": [
+            59
+          ],
+          "output": "00:59"
+        },
+        {
+          "input": [
+            60
+          ],
+          "output": "01:00"
+        },
+        {
+          "input": [
+            3599
+          ],
+          "output": "59:59"
+        },
+        {
+          "input": [
+            5999
+          ],
+          "output": "99:59"
+        }
+      ]
+    }
+  },
+  {
+    "id": "sin-duplicados",
+    "title": "Sin repetidos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Elimina los números repetidos** de la lista, quedándote con la primera aparición de cada uno y manteniendo el orden.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              1,
+              3,
+              2
+            ]
+          ],
+          "output": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "input": [
+            [
+              5,
+              5,
+              5
+            ]
+          ],
+          "output": [
+            5
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              7
+            ]
+          ],
+          "output": [
+            7
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "input": [
+            [
+              3,
+              2,
+              1,
+              3,
+              2,
+              1
+            ]
+          ],
+          "output": [
+            3,
+            2,
+            1
+          ]
+        },
+        {
+          "input": [
+            [
+              -1,
+              0,
+              -1,
+              0
+            ]
+          ],
+          "output": [
+            -1,
+            0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "snake-a-camel",
+    "title": "Snake a camel",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Convierte de snake_case a camelCase**: quita los guiones bajos y pon en mayúscula la letra que sigue a cada uno. El texto llega en minúsculas.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "hola_mundo"
+          ],
+          "output": "holaMundo"
+        },
+        {
+          "input": [
+            "sopa_de_tomate"
+          ],
+          "output": "sopaDeTomate"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "hola"
+          ],
+          "output": "hola"
+        },
+        {
+          "input": [
+            "a_b_c"
+          ],
+          "output": "aBC"
+        },
+        {
+          "input": [
+            "plato_del_dia_de_hoy"
+          ],
+          "output": "platoDelDiaDeHoy"
+        },
+        {
+          "input": [
+            "x_yz"
+          ],
+          "output": "xYz"
+        }
+      ]
+    }
+  },
+  {
+    "id": "sobre-el-promedio",
+    "title": "Sobre el promedio",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number",
+    "tags": [
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Cuenta cuántos números superan estrictamente al promedio** de la lista. Si la lista está vacía, devuelve `0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              10
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              2,
+              2,
+              2
+            ]
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              5
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              -5,
+              -1,
+              0
+            ]
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              1,
+              1,
+              1,
+              10
+            ]
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            [
+              10,
+              20,
+              30,
+              40
+            ]
+          ],
+          "output": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "solo-digitos",
+    "title": "¿Solo dígitos?",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): boolean",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "El código del pedido debe ser numérico. **Devuelve `true` si el texto no está vacío y todos sus caracteres son dígitos** (`0` a `9`), y `false` en otro caso.\n\nEl texto vacío devuelve `false`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "12345"
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            "12a45"
+          ],
+          "output": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            "0"
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            " 1"
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            "-5"
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            "3.14"
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            "007"
+          ],
+          "output": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "stock-bajo",
+    "title": "Stock bajo",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(stock: number[], min: number): number[]",
+    "tags": [
+      "arrays",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Revisa el inventario de la despensa. **Devuelve las posiciones (índices) de los productos cuyo stock es menor que `min`**, en orden ascendente.\n\nSi ninguno está bajo, devuelve una lista vacía.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              5,
+              1,
+              8,
+              2
+            ],
+            3
+          ],
+          "output": [
+            1,
+            3
+          ]
+        },
+        {
+          "input": [
+            [
+              10,
+              20
+            ],
+            5
+          ],
+          "output": []
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            5
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              0
+            ],
+            1
+          ],
+          "output": [
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              3,
+              3,
+              3
+            ],
+            3
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ],
+            10
+          ],
+          "output": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "input": [
+            [
+              -1,
+              4
+            ],
+            0
+          ],
+          "output": [
+            0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "suma-acumulada",
+    "title": "Suma acumulada",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve la lista de **totales acumulados**: cada posición es la suma de todos los números hasta ahí (inclusive).",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4
+            ]
+          ],
+          "output": [
+            1,
+            3,
+            6,
+            10
+          ]
+        },
+        {
+          "input": [
+            [
+              5,
+              -2
+            ]
+          ],
+          "output": [
+            5,
+            3
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              7
+            ]
+          ],
+          "output": [
+            7
+          ]
+        },
+        {
+          "input": [
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "output": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              -1,
+              -1,
+              -1
+            ]
+          ],
+          "output": [
+            -1,
+            -2,
+            -3
+          ]
+        },
+        {
+          "input": [
+            [
+              10,
+              -10,
+              10
+            ]
+          ],
+          "output": [
+            10,
+            0,
+            10
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "suma-de-digitos",
+    "title": "Suma de dígitos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number): number",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega un entero `n >= 0`. **Devuelve la suma de sus dígitos.**",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            123
+          ],
+          "output": 6
+        },
+        {
+          "input": [
+            90
+          ],
+          "output": 9
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            7
+          ],
+          "output": 7
+        },
+        {
+          "input": [
+            1000
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            99999
+          ],
+          "output": 45
+        },
+        {
+          "input": [
+            1234567890
+          ],
+          "output": 45
+        }
+      ]
+    }
+  },
+  {
+    "id": "suma-de-dos-listas",
+    "title": "Sumar bandejas",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(a: number[], b: number[]): number[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Dos bandejas traen cantidades por posición. **Suma ambas bandejas posición a posición**; si una es más corta, lo que le falta cuenta como 0.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ],
+            [
+              10,
+              20,
+              30
+            ]
+          ],
+          "output": [
+            11,
+            22,
+            33
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              2
+            ],
+            [
+              5
+            ]
+          ],
+          "output": [
+            6,
+            2
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [],
+            [
+              1,
+              2
+            ]
+          ],
+          "output": [
+            1,
+            2
+          ]
+        },
+        {
+          "input": [
+            [
+              1
+            ],
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": [
+            2,
+            2,
+            3
+          ]
+        },
+        {
+          "input": [
+            [
+              -1,
+              2
+            ],
+            [
+              1,
+              -2
+            ]
+          ],
+          "output": [
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            [
+              4,
+              4,
+              4
+            ],
+            []
+          ],
+          "output": [
+            4,
+            4,
+            4
+          ]
+        },
+        {
+          "input": [
+            [
+              0
+            ],
+            [
+              0
+            ]
+          ],
+          "output": [
+            0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "suma-de-impares",
+    "title": "Suma de impares",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega una comanda con una lista de números enteros. Devuelve la **suma de todos los números impares**.\n\nSi no hay ninguno, devuelve `0`. Los negativos también cuentan (`-3` es impar).",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4
+            ]
+          ],
+          "output": 4
+        },
+        {
+          "input": [
+            [
+              2,
+              4,
+              6
+            ]
+          ],
+          "output": 0
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              -3,
+              -2,
+              5
+            ]
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              7
+            ]
+          ],
+          "output": 7
+        },
+        {
+          "input": [
+            [
+              1000001,
+              1000001,
+              2
+            ]
+          ],
+          "output": 2000002
+        },
+        {
+          "input": [
+            [
+              0,
+              0
+            ]
+          ],
+          "output": 0
+        }
+      ]
+    }
+  },
+  {
+    "id": "suma-de-indices-pares",
+    "title": "Posiciones pares",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Suma **solo los elementos que están en posiciones pares** de la lista: la 0, la 2, la 4... (la primera posición es la 0).\n\nSi la lista está vacía, devuelve `0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          ],
+          "output": 9
+        },
+        {
+          "input": [
+            [
+              10,
+              20
+            ]
+          ],
+          "output": 10
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              7
+            ]
+          ],
+          "output": 7
+        },
+        {
+          "input": [
+            [
+              -1,
+              100,
+              -2
+            ]
+          ],
+          "output": -3
+        },
+        {
+          "input": [
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "output": 2
+        },
+        {
+          "input": [
+            [
+              0,
+              5,
+              0,
+              5,
+              9
+            ]
+          ],
+          "output": 9
+        }
+      ]
+    }
+  },
+  {
     "id": "suma-de-pares",
     "title": "Suma de pares",
     "difficulty": "easy",
@@ -777,7 +8570,7 @@ export const PUZZLES: readonly CatalogPuzzle[] = [
       "arrays"
     ],
     "blockedSabotages": [],
-    "statement": "Te llega una comanda con una lista de números enteros. Devuelve la **suma de todos los números pares** de la lista.\n\nSi no hay ningún número par, devuelve `0`. Los números negativos también cuentan (`-4` es par).\n\nEjemplo: `[1, 2, 3, 4]` → `6`.",
+    "statement": "Te llega una comanda con una lista de números enteros. Devuelve la **suma de todos los números pares** de la lista.\n\nSi no hay ningún número par, devuelve `0`. Los números negativos también cuentan (`-4` es par).",
     "cases": {
       "public": [
         {
@@ -838,6 +8631,844 @@ export const PUZZLES: readonly CatalogPuzzle[] = [
             ]
           ],
           "output": 2000000
+        }
+      ]
+    }
+  },
+  {
+    "id": "suma-sin-extremos",
+    "title": "Sin extremos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): number",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Te llega una lista de números. **Suma todos menos uno de los mayores y uno de los menores** (solo se descarta una vez cada uno). Si hay menos de 3 números, devuelve `0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          ],
+          "output": 9
+        },
+        {
+          "input": [
+            [
+              10,
+              1,
+              5
+            ]
+          ],
+          "output": 5
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              4,
+              9
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              7,
+              7,
+              7
+            ]
+          ],
+          "output": 7
+        },
+        {
+          "input": [
+            [
+              -5,
+              0,
+              5,
+              9
+            ]
+          ],
+          "output": 5
+        },
+        {
+          "input": [
+            [
+              3,
+              3,
+              1,
+              1,
+              2
+            ]
+          ],
+          "output": 6
+        }
+      ]
+    }
+  },
+  {
+    "id": "suma-sin-multiplos",
+    "title": "Suma sin múltiplos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(n: number, k: number): number",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "**Suma los números del `1` al `n`** saltándote los múltiplos de `k`.\n\nEs `n >= 0` y `k >= 1`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            10,
+            3
+          ],
+          "output": 37
+        },
+        {
+          "input": [
+            5,
+            10
+          ],
+          "output": 15
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            5,
+            1
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            0,
+            3
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            1,
+            2
+          ],
+          "output": 1
+        },
+        {
+          "input": [
+            100,
+            7
+          ],
+          "output": 4315
+        },
+        {
+          "input": [
+            10,
+            2
+          ],
+          "output": 25
+        },
+        {
+          "input": [
+            6,
+            6
+          ],
+          "output": 15
+        }
+      ]
+    }
+  },
+  {
+    "id": "tiene-letras-repetidas",
+    "title": "¿Algo repetido?",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string): boolean",
+    "tags": [
+      "strings",
+      "hashing"
+    ],
+    "blockedSabotages": [],
+    "statement": "Revisa el nombre de la receta. **Devuelve `true` si algún carácter aparece dos o más veces**, y `false` si todos son distintos.\n\nLa comparación distingue mayúsculas de minúsculas. El texto vacío devuelve `false`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "pasta"
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            "pan"
+          ],
+          "output": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            ""
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            "a"
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            "aA"
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            "abcdea"
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            "  "
+          ],
+          "output": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "todos-iguales",
+    "title": "Todos iguales",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(nums: number[]): boolean",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Devuelve `true` si **todos los números de la lista son iguales** entre sí, y `false` si no.\n\nUna lista vacía cuenta como `true`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              4,
+              4,
+              4
+            ]
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              4,
+              4,
+              5
+            ]
+          ],
+          "output": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            []
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              9
+            ]
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              1,
+              2
+            ]
+          ],
+          "output": false
+        },
+        {
+          "input": [
+            [
+              -1,
+              -1
+            ]
+          ],
+          "output": true
+        },
+        {
+          "input": [
+            [
+              0,
+              0,
+              0,
+              1
+            ]
+          ],
+          "output": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "total-del-pedido",
+    "title": "Total del pedido",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(prices: number[], qty: number[]): number",
+    "tags": [
+      "arrays",
+      "math"
+    ],
+    "blockedSabotages": [],
+    "statement": "Cada plato tiene un precio y una cantidad pedida, en la misma posición de ambas listas. **Devuelve el total del pedido** sabiendo que hay promo 3x2: por cada 3 unidades del mismo plato, una sale gratis.\n\nAmbas listas miden lo mismo.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              10,
+              5
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "output": 30
+        },
+        {
+          "input": [
+            [
+              4
+            ],
+            [
+              1
+            ]
+          ],
+          "output": 4
+        },
+        {
+          "input": [
+            [
+              3
+            ],
+            [
+              7
+            ]
+          ],
+          "output": 15
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            []
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              7,
+              8
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "output": 0
+        },
+        {
+          "input": [
+            [
+              3,
+              3,
+              3
+            ],
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": 15
+        },
+        {
+          "input": [
+            [
+              100
+            ],
+            [
+              6
+            ]
+          ],
+          "output": 400
+        },
+        {
+          "input": [
+            [
+              5
+            ],
+            [
+              5
+            ]
+          ],
+          "output": 20
+        },
+        {
+          "input": [
+            [
+              2
+            ],
+            [
+              9
+            ]
+          ],
+          "output": 12
+        }
+      ]
+    }
+  },
+  {
+    "id": "truncar",
+    "title": "Recortar",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(s: string, n: number): string",
+    "tags": [
+      "strings"
+    ],
+    "blockedSabotages": [],
+    "statement": "El cartel de la taberna solo admite `n` caracteres. Si el texto es **más largo que `n`, recórtalo a sus primeros `n` caracteres y añade `\"...\"`** al final.\n\nSi mide `n` o menos, devuélvelo sin cambios. Siempre `n >= 0`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            "tortilla de patatas",
+            8
+          ],
+          "output": "tortilla..."
+        },
+        {
+          "input": [
+            "flan",
+            10
+          ],
+          "output": "flan"
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            "",
+            0
+          ],
+          "output": ""
+        },
+        {
+          "input": [
+            "abc",
+            3
+          ],
+          "output": "abc"
+        },
+        {
+          "input": [
+            "abcd",
+            3
+          ],
+          "output": "abc..."
+        },
+        {
+          "input": [
+            "abc",
+            0
+          ],
+          "output": "..."
+        },
+        {
+          "input": [
+            "hola",
+            4
+          ],
+          "output": "hola"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ultimos-pedidos",
+    "title": "Últimos pedidos",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(pedidos: string[], n: number): string[]",
+    "tags": [
+      "arrays"
+    ],
+    "blockedSabotages": [],
+    "statement": "Los pedidos están en orden cronológico. **Devuelve los últimos n pedidos, el más reciente primero**. Si hay menos de n, devuelve todos.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              "sopa",
+              "flan",
+              "pizza"
+            ],
+            2
+          ],
+          "output": [
+            "pizza",
+            "flan"
+          ]
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b"
+            ],
+            5
+          ],
+          "output": [
+            "b",
+            "a"
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            3
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              "x"
+            ],
+            0
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b",
+              "c",
+              "d"
+            ],
+            1
+          ],
+          "output": [
+            "d"
+          ]
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b",
+              "c",
+              "d"
+            ],
+            4
+          ],
+          "output": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ]
+        },
+        {
+          "input": [
+            [
+              "a",
+              "b",
+              "c"
+            ],
+            3
+          ],
+          "output": [
+            "c",
+            "b",
+            "a"
+          ]
+        },
+        {
+          "input": [
+            [
+              "uno"
+            ],
+            1
+          ],
+          "output": [
+            "uno"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "union-de-recetas",
+    "title": "Juntar recetas",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(a: string[], b: string[]): string[]",
+    "tags": [
+      "arrays",
+      "sorting"
+    ],
+    "blockedSabotages": [],
+    "statement": "Quieres una sola lista de compras con los ingredientes de dos recetas. **Junta ambas listas sin repetidos y ordénala alfabéticamente** (comparación normal con `<`).\n\nTodos los ingredientes están en minúsculas.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            [
+              "harina",
+              "huevo"
+            ],
+            [
+              "leche",
+              "huevo"
+            ]
+          ],
+          "output": [
+            "harina",
+            "huevo",
+            "leche"
+          ]
+        },
+        {
+          "input": [
+            [
+              "sal"
+            ],
+            [
+              "sal"
+            ]
+          ],
+          "output": [
+            "sal"
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            [],
+            []
+          ],
+          "output": []
+        },
+        {
+          "input": [
+            [
+              "b",
+              "a"
+            ],
+            []
+          ],
+          "output": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "input": [
+            [],
+            [
+              "z",
+              "y"
+            ]
+          ],
+          "output": [
+            "y",
+            "z"
+          ]
+        },
+        {
+          "input": [
+            [
+              "c",
+              "c",
+              "a"
+            ],
+            [
+              "b",
+              "a"
+            ]
+          ],
+          "output": [
+            "a",
+            "b",
+            "c"
+          ]
+        },
+        {
+          "input": [
+            [
+              "tomate"
+            ],
+            [
+              "ajo",
+              "cebolla"
+            ]
+          ],
+          "output": [
+            "ajo",
+            "cebolla",
+            "tomate"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "vuelto",
+    "title": "El vuelto",
+    "difficulty": "easy",
+    "author": "jorgesimoes",
+    "signature": "function solve(pago: number, total: number): number[]",
+    "tags": [
+      "math",
+      "loops"
+    ],
+    "blockedSabotages": [],
+    "statement": "El cliente paga `pago` por una cuenta de `total`. **Calcula el vuelto con monedas de 50, 20, 10, 5 y 1**, usando siempre la moneda más grande posible.\n\nDevuelve cuántas monedas de cada tipo, en ese orden. Siempre `pago >= total`.",
+    "cases": {
+      "public": [
+        {
+          "input": [
+            100,
+            60
+          ],
+          "output": [
+            0,
+            2,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            10,
+            10
+          ],
+          "output": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": [
+            0,
+            0
+          ],
+          "output": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            100,
+            0
+          ],
+          "output": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "input": [
+            99,
+            1
+          ],
+          "output": [
+            1,
+            2,
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "input": [
+            7,
+            1
+          ],
+          "output": [
+            0,
+            0,
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "input": [
+            1000,
+            1
+          ],
+          "output": [
+            19,
+            2,
+            0,
+            1,
+            4
+          ]
         }
       ]
     }

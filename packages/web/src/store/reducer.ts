@@ -4,6 +4,8 @@ import { initialState, type GameState, type Toast } from './state.ts';
 
 export const MAX_TOASTS = 5;
 export const MAX_CONDIMENTS = 2;
+/** Mirrors @sharping/game: every this many correct deliveries earn a condiment. */
+export const SOLVES_PER_CONDIMENT = 3;
 
 const nick = (s: GameState, id: string) => s.players.find((p) => p.playerId === id)?.nickname ?? 'Alguien';
 const orderTitle = (s: GameState, id: string) => s.orders.find((o) => o.orderId === id)?.title ?? 'una comanda';

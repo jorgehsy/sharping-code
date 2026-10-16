@@ -115,7 +115,7 @@ describe('GET /games/:code', () => {
       orders: [],
       seq: 7,
       players: [{ playerId: 'p1', nickname: 'Ana', score: 0 }],
-      me: { playerId: 'p1', condiments: 0, sabotage: null },
+      me: { playerId: 'p1', condiments: 0, solved: 0, sabotage: null },
     });
   });
 });
@@ -273,7 +273,7 @@ describe('POST submit', () => {
     deps.repo.getOrder.mockResolvedValue(order());
     deps.repo.getPlayer.mockResolvedValue(player());
     deps.repo.claimDelivery.mockResolvedValue({ ok: true, rank: 1 });
-    deps.repo.applyDelivery.mockResolvedValue({ clearedSabotage: false, condimentEarned: true });
+    deps.repo.applyDelivery.mockResolvedValue({ clearedSabotage: false, condimentsEarned: 1 });
     deps.repo.getScores.mockResolvedValue({ p1: 400 });
   });
 
@@ -290,9 +290,9 @@ describe('POST submit', () => {
 
   it('1st hard delivery: full points, condiment, events in order', async () => {
     const res = await submit();
-    expect(res.json).toEqual({ passed: true, rank: 1, points: 400, scores: { p1: 400 } });
+    expect(res.json).toEqual({ passed: true, rank: 1, points: 400, solved: 1, scores: { p1: 400 } });
     expect(deps.repo.claimDelivery).toHaveBeenCalledWith('ABCDE', 'o1', 'p1', NOW, 3);
-    expect(deps.repo.applyDelivery).toHaveBeenCalledWith('ABCDE', 'p1', { points: 400, condiment: true, now: NOW });
+    expect(deps.repo.applyDelivery).toHaveBeenCalledWith('ABCDE', 'p1', { points: 400, condiments: 1, now: NOW });
     expect(deps.emit).toHaveBeenCalledWith('ABCDE', [
       { type: 'order.delivered', data: { orderId: 'o1', playerId: 'p1', rank: 1, points: 400, scores: { p1: 400 } } },
       { type: 'condiment.earned', data: { playerId: 'p1' } },
@@ -335,10 +335,26 @@ describe('POST submit', () => {
     });
   });
 
+  it('3rd correct delivery earns a condiment on any order; with a hard win it earns two', async () => {
+    deps.repo.getOrder.mockResolvedValue(order({ difficulty: 'easy' }));
+    deps.repo.getPlayer.mockResolvedValue(player({ solved: 2 }));
+    deps.repo.applyDelivery.mockResolvedValue({ clearedSabotage: false, condimentsEarned: 1 });
+    expect((await submit()).json).toMatchObject({ passed: true, solved: 3 });
+    expect(deps.repo.applyDelivery).toHaveBeenCalledWith('ABCDE', 'p1', { points: 100, condiments: 1, now: NOW });
+
+    deps.repo.getOrder.mockResolvedValue(order());
+    deps.repo.getPlayer.mockResolvedValue(player({ solved: 5 }));
+    deps.repo.applyDelivery.mockResolvedValue({ clearedSabotage: false, condimentsEarned: 2 });
+    await submit();
+    expect(deps.repo.applyDelivery).toHaveBeenLastCalledWith('ABCDE', 'p1', { points: 400, condiments: 2, now: NOW });
+    const events = (deps.emit.mock.calls.at(-1) as unknown as [string, { type: string }[]])[1];
+    expect(events.map((e) => e.type)).toEqual(['order.delivered', 'condiment.earned', 'condiment.earned']);
+  });
+
   it('rush hour doubles, rank 2 pays 60%, sabotage cleared event', async () => {
     deps.repo.getMeta.mockResolvedValue(meta({ rushAt: NOW - 1 }));
     deps.repo.claimDelivery.mockResolvedValue({ ok: true, rank: 2 });
-    deps.repo.applyDelivery.mockResolvedValue({ clearedSabotage: true, condimentEarned: false });
+    deps.repo.applyDelivery.mockResolvedValue({ clearedSabotage: true, condimentsEarned: 0 });
     const res = await submit();
     expect(res.json.points).toBe(480);
     const events = (deps.emit.mock.calls[0] as unknown as [string, { type: string }[]])[1];
@@ -347,10 +363,10 @@ describe('POST submit', () => {
 
   it('4th+ correct delivery: 200 passed, rank 4, 0 points, no order.delivered, sabotage still cleared', async () => {
     deps.repo.claimDelivery.mockResolvedValue({ ok: false, reason: 'full' });
-    deps.repo.applyDelivery.mockResolvedValue({ clearedSabotage: true, condimentEarned: false });
+    deps.repo.applyDelivery.mockResolvedValue({ clearedSabotage: true, condimentsEarned: 0 });
     const res = await submit();
     expect(res.json).toMatchObject({ passed: true, rank: 4, points: 0 });
-    expect(deps.repo.applyDelivery).toHaveBeenCalledWith('ABCDE', 'p1', { points: 0, condiment: false, now: NOW });
+    expect(deps.repo.applyDelivery).toHaveBeenCalledWith('ABCDE', 'p1', { points: 0, condiments: 0, now: NOW });
     const events = (deps.emit.mock.calls[0] as unknown as [string, { type: string }[]])[1];
     expect(events.map((e) => e.type)).toEqual(['sabotage.cleared']);
   });

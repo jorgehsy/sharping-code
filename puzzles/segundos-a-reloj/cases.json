@@ -1,0 +1,14 @@
+{
+  "public": [
+    { "input": [75], "output": "01:15" },
+    { "input": [600], "output": "10:00" }
+  ],
+  "hidden": [
+    { "input": [0], "output": "00:00" },
+    { "input": [5], "output": "00:05" },
+    { "input": [59], "output": "00:59" },
+    { "input": [60], "output": "01:00" },
+    { "input": [3599], "output": "59:59" },
+    { "input": [5999], "output": "99:59" }
+  ]
+}

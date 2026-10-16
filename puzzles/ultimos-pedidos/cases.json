@@ -1,0 +1,14 @@
+{
+  "public": [
+    {"input":[["sopa","flan","pizza"],2],"output":["pizza","flan"]},
+    {"input":[["a","b"],5],"output":["b","a"]}
+  ],
+  "hidden": [
+    {"input":[[],3],"output":[]},
+    {"input":[["x"],0],"output":[]},
+    {"input":[["a","b","c","d"],1],"output":["d"]},
+    {"input":[["a","b","c","d"],4],"output":["d","c","b","a"]},
+    {"input":[["a","b","c"],3],"output":["c","b","a"]},
+    {"input":[["uno"],1],"output":["uno"]}
+  ]
+}

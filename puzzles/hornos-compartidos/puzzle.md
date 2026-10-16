@@ -17,8 +17,3 @@ Devuelve, para cada plato **en el orden de la lista original**, el número de ho
 Detalles:
 
 - `inicio < fin`, todos enteros `>= 0`. La lista puede venir desordenada o vacía.
-
-Ejemplos:
-
-- `[[0, 10], [5, 15], [10, 20]]` → `[0, 1, 0]`
-- `[[5, 8], [0, 6]]` → `[1, 0]`

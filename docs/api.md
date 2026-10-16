@@ -17,7 +17,7 @@ Todas las acciones mandan el header `x-player-token`.
 | `POST /games` | Crea partida `{nickname}` | `{code, playerId, playerToken}` |
 | `POST /games/{code}/players` | Unirse `{nickname}` | `{playerId, playerToken}` |
 | `POST /games/{code}/start` | Host inicia; arranca el reloj durable | `204` |
-| `GET /games/{code}` | Snapshot del estado | jugadores, puntajes, comandas abiertas (solo las que no vencieron según el server), tu comanda, tus condimentos, tu sabotaje, timestamps y `seq` |
+| `GET /games/{code}` | Snapshot del estado | jugadores, puntajes, comandas abiertas (solo las que no vencieron según el server), tu comanda, tus condimentos, tus entregas correctas (`solved`), tu sabotaje, timestamps y `seq` |
 | `POST /games/{code}/orders/{id}/take` | Tomar comanda (suelta la anterior) | `TakeOrderResponse`: enunciado, firma, casos públicos (nunca los ocultos) |
 | `POST /games/{code}/orders/{id}/submit` | Entregar `{source}` | ver abajo |
 | `POST /games/{code}/orders/{id}/taste` | Degustar `{source}` (solo casos públicos, gratis) | ver abajo |
@@ -35,9 +35,11 @@ Errores: `401` token ausente/inválido, `404` partida/comanda/objetivo inexisten
 - **Síncrono**: el resultado vuelve en la respuesta HTTP al que entregó. El evento del canal es para que se enteren los demás.
 - **Hay que haber tomado la comanda** (`currentOrderId == id`); si no, `409`. También `409` si la comanda venció, la partida no está `running` o ya entregaste esa comanda (una entrega correcta por jugador y comanda).
 - Un solo instante de servidor (`t`, al recibir la petición) decide vencimiento, hora punta y orden de llegada: la latencia del runner no te quita nada.
-- OK → `{passed: true, rank, points, scores}`. `points` ya incluye hora punta (x2).
+- OK → `{passed: true, rank, points, solved, scores}`. `solved` = tus entregas correctas hasta ahora (esta incluida). `points` ya incluye hora punta (x2).
   - **4ª entrega correcta o posterior**: `200 {passed: true, rank: 4, points: 0}`. No emite `order.delivered`, pero igual limpia tu sabotaje (sirve para escapar de él). Solo existen 3 rangos.
-  - 1ª entrega de una comanda difícil: +1 condimento (tope 2; si ya estás al tope no hay `condiment.earned`).
+  - 1ª entrega de una comanda difícil: +1 condimento.
+  - Cada 3ª entrega correcta (3, 6, 9…, cualquier dificultad y puesto, la 4ª+ incluida): +1 condimento. Se suma al de la difícil (puede dar 2 a la vez).
+  - Tope 2 condimentos: lo que no entra se pierde y no emite `condiment.earned` (un evento por condimento ganado).
   - Si tenías sabotaje, se limpia y se emite `sabotage.cleared`.
 - Falla en caso **público** → `{passed: false, reason, case: {input, expected, actual}, penalty, scores}`.
 - Falla en caso **oculto** → `{passed: false, hidden: true, reason, penalty, scores}`. No se muestran los datos para no filtrar los casos ocultos.

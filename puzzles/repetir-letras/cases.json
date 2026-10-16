@@ -1,0 +1,14 @@
+{
+  "public": [
+    {"input":["hola",2],"output":"hhoollaa"},
+    {"input":["ab",3],"output":"aaabbb"}
+  ],
+  "hidden": [
+    {"input":["",3],"output":""},
+    {"input":["a",1],"output":"a"},
+    {"input":["xyz",0],"output":""},
+    {"input":["a b",2],"output":"aa  bb"},
+    {"input":["pan",1],"output":"pan"},
+    {"input":["z",5],"output":"zzzzz"}
+  ]
+}

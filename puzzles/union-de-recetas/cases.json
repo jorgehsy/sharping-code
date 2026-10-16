@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": [["harina","huevo"],["leche","huevo"]], "output": ["harina","huevo","leche"] },
+    { "input": [["sal"],["sal"]], "output": ["sal"] }
+  ],
+  "hidden": [
+    { "input": [[],[]], "output": [] },
+    { "input": [["b","a"],[]], "output": ["a","b"] },
+    { "input": [[],["z","y"]], "output": ["y","z"] },
+    { "input": [["c","c","a"],["b","a"]], "output": ["a","b","c"] },
+    { "input": [["tomate"],["ajo","cebolla"]], "output": ["ajo","cebolla","tomate"] }
+  ]
+}

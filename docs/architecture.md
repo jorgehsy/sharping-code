@@ -65,7 +65,8 @@ Browser (SPA + Monaco)
 - Un solo stack `SharpingCodeStack` (`infra/lib/stack.ts`) dividido en constructs: Data, Realtime, Runner, Clock, Api.
 - Las Lambdas se empaquetan con la API JS de esbuild en `infra/lib/bundling.ts` (ESM, minify, node24, arm64), no con `NodejsFunction`: este ejecuta `pnpm exec esbuild` desde la raíz y el shim hoisted de pnpm falla.
 - La lambdalith empaqueta `@aws-sdk/client-lambda` (el SDK del runtime podría no conocer `DurableExecutionName`); el resto del SDK es externo.
-- Pendiente: hosting del frontend (S3 + CloudFront) y restringir CORS de la HTTP API a ese dominio.
+- Frontend: bucket S3 privado + CloudFront (OAC, solo HTTPS), en el mismo stack (`infra/lib/web.ts`). `pnpm cdk:deploy` compila la web y sube `dist/` más un `/config.json` con las URLs y la API key de los outputs; la web lo lee al arrancar (pisa lo de `.env.local`). La URL sale en el output `WebUrl`.
+- CORS de la HTTP API: solo el dominio de CloudFront y `localhost:5173/5175` (dev).
 
 ## Rendimiento ("snappy")
 - arm64, bundles chicos (esbuild).

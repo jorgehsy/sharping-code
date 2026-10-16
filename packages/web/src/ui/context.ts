@@ -3,7 +3,7 @@ import { useStore } from 'zustand';
 import type { App } from '../app.ts';
 import type { GameState } from '../store/state.ts';
 
-export const AppContext = createContext<Pick<App, 'store' | 'controller'> | null>(null);
+export const AppContext = createContext<Pick<App, 'store' | 'controller' | 'sound' | 'music'> | null>(null);
 
 export function useApp() {
   const app = useContext(AppContext);

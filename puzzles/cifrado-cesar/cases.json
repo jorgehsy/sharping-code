@@ -1,0 +1,14 @@
+{
+  "public": [
+    { "input": ["abc",1], "output": "bcd" },
+    { "input": ["xyz",3], "output": "abc" }
+  ],
+  "hidden": [
+    { "input": ["",5], "output": "" },
+    { "input": ["hola",0], "output": "hola" },
+    { "input": ["z",1], "output": "a" },
+    { "input": ["Hola Mundo!",2], "output": "Hqnc Mwpfq!" },
+    { "input": ["abc",25], "output": "zab" },
+    { "input": ["a b",13], "output": "n o" }
+  ]
+}

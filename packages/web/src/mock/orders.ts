@@ -13,6 +13,7 @@ import type {
   TakeOrderResponse,
 } from '@sharping/shared';
 import { BASE_POINTS, CATALOG, CLOCK_MS, type FakePuzzle } from './catalog.ts';
+import { MAX_CONDIMENTS, SOLVES_PER_CONDIMENT } from '../store/reducer.ts';
 
 /** Event as produced by the fake server; the realtime decorator stamps `seq`. */
 export type DraftEvent = { [T in EventType]: { type: T; at: number; data: EventPayloads[T] } }[EventType];
@@ -69,6 +70,7 @@ export class MockOrders {
   private me: string | null = null;
   private myOrder: string | null = null;
   private condiments = 0;
+  private solved = 0;
   private sabotaged = false;
   private timing: { startedAt: number; rushAt: number; endsAt: number } | null = null;
   private rushSent = false;
@@ -121,6 +123,7 @@ export class MockOrders {
     if (snap.me) {
       this.me = snap.me.playerId;
       this.condiments = Math.max(this.condiments, snap.me.condiments);
+      this.solved = Math.max(this.solved, snap.me.solved);
     }
   }
 
@@ -147,6 +150,7 @@ export class MockOrders {
       score: this.scores[snap.me.playerId] ?? snap.me.score,
       currentOrderId: mine,
       condiments: this.condiments,
+      solved: this.solved,
       sabotage: this.sabotaged ? CONDIMENT_RULE : null,
     };
     return { players, me };
@@ -294,11 +298,13 @@ export class MockOrders {
       this.sabotaged = false;
       this.emit('sabotage.cleared', { playerId: me });
     }
-    if (o.puzzle.difficulty === 'hard' && rank === 1) {
-      this.condiments = Math.min(2, this.condiments + 1);
+    this.solved++;
+    const earned = (o.puzzle.difficulty === 'hard' && rank === 1 ? 1 : 0) + (this.solved % SOLVES_PER_CONDIMENT === 0 ? 1 : 0);
+    for (let i = 0; i < earned && this.condiments < MAX_CONDIMENTS; i++) {
+      this.condiments++;
       this.emit('condiment.earned', { playerId: me });
     }
-    return { passed: true, rank, points, scores };
+    return { passed: true, rank, points, solved: this.solved, scores };
   }
 
   /** Free run: no events, no scores. Without "return" every case fails with an error; with it, all but the last pass. */

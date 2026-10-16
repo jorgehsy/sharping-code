@@ -15,6 +15,8 @@ export interface ApiProps {
   clockAlias: IAlias;
   /** The clock function itself: callbacks are authorized against `<function arn>:*`. */
   clockFunction: IFunction;
+  /** Browser origins allowed by CORS (the hosted frontend and local dev). */
+  allowOrigins: string[];
 }
 
 /** Lambdalith behind an HTTP API (payload v2). Routes are dispatched by the Powertools Router. */
@@ -59,8 +61,7 @@ export class Api extends Construct {
     this.httpApi = new HttpApi(this, 'HttpApi', {
       apiName: 'sharping-code',
       corsPreflight: {
-        // TODO: restrict to the CloudFront domain once frontend hosting exists.
-        allowOrigins: ['*'],
+        allowOrigins: props.allowOrigins,
         allowMethods: [CorsHttpMethod.GET, CorsHttpMethod.POST, CorsHttpMethod.OPTIONS],
         allowHeaders: ['content-type', 'x-player-token'],
         maxAge: Duration.hours(1),

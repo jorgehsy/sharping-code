@@ -20,24 +20,26 @@ export function Home() {
   };
 
   return (
-    <main className="center">
-      <h1>Sharping Code</h1>
-      <form onSubmit={submitJoin} className="stack">
+    <main className="screen">
+      <form onSubmit={submitJoin} className="card">
+        <h1>Sharping Code</h1>
         <label>
           Apodo
           <input value={nickname} onChange={(e) => setNickname(e.target.value)} maxLength={24} autoFocus />
         </label>
-        <button type="button" disabled={busy || !nick} onClick={() => void run(() => controller.create(nick))}>
+        <button type="button" className="primary" disabled={busy || !nick} onClick={() => void run(() => controller.create(nick))}>
           Crear partida
         </button>
         <hr />
-        <label>
-          Código de partida
-          <input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} maxLength={8} />
-        </label>
-        <button type="submit" disabled={busy || !nick || !code.trim()}>
-          Unirse
-        </button>
+        <section>
+          <label>
+            Código de partida
+            <input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} maxLength={8} />
+          </label>
+          <button type="submit" disabled={busy || !nick || !code.trim()}>
+            Unirse
+          </button>
+        </section>
         {error && <p className="error">{error}</p>}
       </form>
     </main>

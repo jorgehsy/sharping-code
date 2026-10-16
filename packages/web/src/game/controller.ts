@@ -233,6 +233,7 @@ export function createGameController({ api, realtime, store, sessions, now = Dat
         ...s,
         submitting: false,
         lastSubmit: result ? { orderId: taken.orderId, result } : s.lastSubmit,
+        me: result?.passed && s.me ? { ...s.me, solved: result.solved } : s.me,
       }));
     },
     /** Free run of the public cases. One at a time; a second call while one is in flight is ignored. */

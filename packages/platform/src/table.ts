@@ -35,6 +35,8 @@ export interface PlayerItem extends Key {
   joinedAt: number;
   currentOrderId?: string;
   condiments: number;
+  /** Correct deliveries so far (any rank). Absent on players created before it existed. */
+  solved?: number;
   sabotage?: string;
   /** Epoch ms of the last score change (tie-break: who reached the score first). */
   scoreUpdatedAt?: number;

@@ -1,13 +1,15 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createApp } from './app.ts';
+import { fetchRuntimeConfig, withRuntimeConfig } from './config.ts';
 import { App } from './ui/App.tsx';
 import { AppContext } from './ui/context.ts';
 import './ui/styles.css';
 
 const root = createRoot(document.getElementById('root')!);
+const runtime = await fetchRuntimeConfig();
 try {
-  const app = createApp();
+  const app = createApp(withRuntimeConfig(import.meta.env, runtime));
   app.controller.resume();
   root.render(
     <StrictMode>

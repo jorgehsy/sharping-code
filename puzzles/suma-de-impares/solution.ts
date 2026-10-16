@@ -1,0 +1,3 @@
+export function solve(nums: number[]): number {
+  return nums.filter((n) => n % 2 !== 0).reduce((a, b) => a + b, 0);
+}

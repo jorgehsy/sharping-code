@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["sopa de tomate"], "output": "tomate" },
+    { "input": ["pan con ajo"], "output": "pan" }
+  ],
+  "hidden": [
+    { "input": [""], "output": "" },
+    { "input": ["hola"], "output": "hola" },
+    { "input": ["uno dos tres"], "output": "tres" },
+    { "input": ["ab cd ef"], "output": "ab" },
+    { "input": ["a bb ccc dd eee"], "output": "ccc" }
+  ]
+}

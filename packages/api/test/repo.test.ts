@@ -94,20 +94,32 @@ describe('claimDelivery', () => {
 });
 
 describe('applyDelivery', () => {
-  it('adds points, clears the sabotage and reports it', async () => {
+  it('adds points, counts the solve, clears the sabotage and reports it', async () => {
     send.mockResolvedValue({ Attributes: { sabotage: 'no-loops' } });
-    expect(await repo.applyDelivery('ABCDE', 'p1', { points: 100, condiment: false, now: 1 })).toEqual({
+    expect(await repo.applyDelivery('ABCDE', 'p1', { points: 100, condiments: 0, now: 1 })).toEqual({
       clearedSabotage: true,
-      condimentEarned: false,
+      condimentsEarned: 0,
     });
-    expect((send.mock.calls[0]![0] as UpdateCommand).input.UpdateExpression).toContain('REMOVE sabotage');
+    const expr = (send.mock.calls[0]![0] as UpdateCommand).input.UpdateExpression;
+    expect(expr).toContain('solved :one');
+    expect(expr).toContain('REMOVE sabotage');
   });
 
-  it('retries without the condiment when the cap was hit meanwhile', async () => {
+  it('grants as many condiments as fit under the cap', async () => {
     send.mockRejectedValueOnce(condFail).mockResolvedValueOnce({ Attributes: {} });
-    expect(await repo.applyDelivery('ABCDE', 'p1', { points: 400, condiment: true, now: 1 })).toEqual({
+    expect(await repo.applyDelivery('ABCDE', 'p1', { points: 400, condiments: 2, now: 1 })).toEqual({
       clearedSabotage: false,
-      condimentEarned: false,
+      condimentsEarned: 1,
+    });
+    const second = (send.mock.calls[1]![0] as UpdateCommand).input;
+    expect(second.ExpressionAttributeValues).toMatchObject({ ':n': 1, ':room': 1 });
+  });
+
+  it('retries without condiments when the cap was hit meanwhile', async () => {
+    send.mockRejectedValueOnce(condFail).mockResolvedValueOnce({ Attributes: {} });
+    expect(await repo.applyDelivery('ABCDE', 'p1', { points: 400, condiments: 1, now: 1 })).toEqual({
+      clearedSabotage: false,
+      condimentsEarned: 0,
     });
     expect(send).toHaveBeenCalledTimes(2);
   });

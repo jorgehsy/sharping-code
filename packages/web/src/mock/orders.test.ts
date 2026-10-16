@@ -14,7 +14,7 @@ function setup() {
   const mock = new MockOrders({ now: () => now, defer: (f) => f(), openTarget: 3 });
   const events: DraftEvent[] = [];
   mock.onEvent((e) => events.push(e));
-  mock.observe({ players: [{ playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, sabotage: null }], me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, condiments: 0, sabotage: null } });
+  mock.observe({ players: [{ playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, sabotage: null }], me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, condiments: 0, solved: 0, sabotage: null } });
   return { mock, events, setNow: (n: number) => (now = n) };
 }
 
@@ -64,7 +64,7 @@ describe('MockOrders', () => {
     mock.ensureRunning(timing);
     const o = mock.orders()[0]!;
     const a = mock.submit(o.orderId, 'return 1');
-    mock.observe({ players: [], me: { playerId: 'p2', nickname: 'Bo', score: 0, currentOrderId: null, condiments: 0, sabotage: null } });
+    mock.observe({ players: [], me: { playerId: 'p2', nickname: 'Bo', score: 0, currentOrderId: null, condiments: 0, solved: 0, sabotage: null } });
     const b = mock.submit(o.orderId, 'return 1');
     expect(a).toMatchObject({ passed: true, rank: 1, points: o.basePoints });
     expect(b).toMatchObject({ passed: true, rank: 2, points: Math.round(o.basePoints * 0.6) });
@@ -119,7 +119,7 @@ describe('MockOrders bots', () => {
     const mock = new MockOrders({ now: () => now, defer: (f) => f(), openTarget: 3, bots: 3, random: () => 0.5 });
     const events: DraftEvent[] = [];
     mock.onEvent((e) => events.push(e));
-    const real = { players: [{ playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, sabotage: null }], me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, condiments: 0, sabotage: null } };
+    const real = { players: [{ playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, sabotage: null }], me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, condiments: 0, solved: 0, sabotage: null } };
     mock.observe(real);
     return { mock, events, real, setNow: (n: number) => (now = n) };
   }
@@ -153,7 +153,7 @@ describe('MockOrders bots', () => {
   it('a bot that gets cursed is cleared by its next delivery', () => {
     const { mock, events, setNow } = botSetup();
     mock.ensureRunning(timing);
-    mock.observe({ players: [], me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, condiments: 1, sabotage: null } });
+    mock.observe({ players: [], me: { playerId: 'p1', nickname: 'Ana', score: 0, currentOrderId: null, condiments: 1, solved: 0, sabotage: null } });
     mock.sabotage('bot-1');
     setNow(T0 + 10_000);
     mock.advance();

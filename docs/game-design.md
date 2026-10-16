@@ -39,7 +39,9 @@ Términos definidos en [CONTEXT.md](../CONTEXT.md).
 
 ## Sabotaje
 
-- Solo las comandas **difíciles** dan condimento, y solo a la **1ª entrega** _(supuesto, por confirmar)_.
+- Formas de ganar un condimento:
+  - Ser el **1º en entregar** una comanda **difícil** _(supuesto, por confirmar)_.
+  - Cada **3 entregas correctas** (de cualquier dificultad y puesto). Se acumula con la anterior.
 - Máximo 2 condimentos guardados.
 - El sabotaje se **pega al jugador** hasta su próxima entrega correcta, cocine la comanda que cocine. Cambiar de comanda no lo quita.
 - Un jugador puede tener como máximo 1 sabotaje activo a la vez.

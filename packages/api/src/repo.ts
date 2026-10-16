@@ -235,43 +235,42 @@ export const repo = {
   },
 
   /**
-   * Apply a correct delivery to the player: add points, optionally a condiment (capped), clear the sabotage.
-   * Returns whether a sabotage was cleared and whether the condiment was granted.
+   * Apply a correct delivery to the player: add points, count the solve, add `condiments` (as many as fit under the
+   * cap), clear the sabotage. Returns whether a sabotage was cleared and how many condiments were granted.
    */
   async applyDelivery(
     code: string,
     playerId: string,
-    d: { points: number; condiment: boolean; now: number },
-  ): Promise<{ clearedSabotage: boolean; condimentEarned: boolean }> {
-    const run = (withCondiment: boolean) =>
+    d: { points: number; condiments: number; now: number },
+  ): Promise<{ clearedSabotage: boolean; condimentsEarned: number }> {
+    const run = (n: number) =>
       getDocClient().send(
         new UpdateCommand({
           TableName: tableName(),
           Key: playerKey(code, playerId),
           UpdateExpression:
-            `ADD score :pts${withCondiment ? ', condiments :one' : ''} ` +
+            `ADD score :pts, solved :one${n > 0 ? ', condiments :n' : ''} ` +
             `SET scoreUpdatedAt = ${d.points !== 0 ? ':now' : 'if_not_exists(scoreUpdatedAt, :now)'} REMOVE sabotage`,
-          ConditionExpression: withCondiment
-            ? 'attribute_exists(pk) AND (attribute_not_exists(condiments) OR condiments < :cap)'
-            : 'attribute_exists(pk)',
+          ConditionExpression:
+            n > 0 ? 'attribute_exists(pk) AND (attribute_not_exists(condiments) OR condiments <= :room)' : 'attribute_exists(pk)',
           ExpressionAttributeValues: {
             ':pts': d.points,
+            ':one': 1,
             ':now': d.now,
-            ...(withCondiment ? { ':one': 1, ':cap': MAX_CONDIMENTS } : {}),
+            ...(n > 0 ? { ':n': n, ':room': MAX_CONDIMENTS - n } : {}),
           },
           ReturnValues: 'ALL_OLD',
         }),
       );
-    let old;
-    let condimentEarned = d.condiment;
-    try {
-      old = (await run(d.condiment)).Attributes as Partial<PlayerItem> | undefined;
-    } catch (e) {
-      if (!d.condiment || !isConditionFailure(e)) throw e;
-      condimentEarned = false; // already at the cap
-      old = (await run(false)).Attributes as Partial<PlayerItem> | undefined;
+    // Try the full grant, then one less each time the cap refuses it (n <= 2: at most 3 writes).
+    for (let n = d.condiments; ; n--) {
+      try {
+        const old = (await run(n)).Attributes as Partial<PlayerItem> | undefined;
+        return { clearedSabotage: old?.sabotage !== undefined, condimentsEarned: n };
+      } catch (e) {
+        if (n <= 0 || !isConditionFailure(e)) throw e;
+      }
     }
-    return { clearedSabotage: old?.sabotage !== undefined, condimentEarned };
   },
 
   /** Subtract the burned-dish penalty. */

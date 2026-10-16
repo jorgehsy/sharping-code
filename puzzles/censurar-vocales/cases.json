@@ -1,0 +1,13 @@
+{
+  "public": [
+    { "input": ["hola"], "output": "h*l*" },
+    { "input": ["Tortilla de patatas"], "output": "T*rt*ll* d* p*t*t*s" }
+  ],
+  "hidden": [
+    { "input": [""], "output": "" },
+    { "input": ["xyz"], "output": "xyz" },
+    { "input": ["AEIOU"], "output": "*****" },
+    { "input": ["queso"], "output": "q**s*" },
+    { "input": ["Sin Vocales? no"], "output": "S*n V*c*l*s? n*" }
+  ]
+}

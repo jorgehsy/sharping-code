@@ -5,12 +5,23 @@ import { Clock } from './clock.ts';
 import { Data } from './data.ts';
 import { Realtime } from './realtime.ts';
 import { Runner } from './runner.ts';
+import { REPO_ROOT } from './bundling.ts';
+import { Web } from './web.ts';
+import { join } from 'node:path';
 
-// TODO(frontend): S3 + CloudFront hosting (framework still undecided). Then restrict API CORS to its domain.
+export interface SharpingCodeStackProps extends StackProps {
+  /** Built frontend. Default: packages/web/dist. */
+  webDistDir?: string;
+}
+
+/** Vite dev servers (see .claude/launch.json) keep working against the deployed API. */
+const DEV_ORIGINS = ['http://localhost:5173', 'http://localhost:5175'];
+
 export class SharpingCodeStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: SharpingCodeStackProps = {}) {
     super(scope, id, props);
 
+    const web = new Web(this, 'Web', { distDir: props.webDistDir ?? join(REPO_ROOT, 'packages', 'web', 'dist') });
     const data = new Data(this, 'Data');
     const realtime = new Realtime(this, 'Realtime');
     const runner = new Runner(this, 'Runner');
@@ -21,6 +32,13 @@ export class SharpingCodeStack extends Stack {
       runner: runner.fn,
       clockAlias: clock.alias,
       clockFunction: clock.fn,
+      allowOrigins: [web.url, ...DEV_ORIGINS],
+    });
+    web.deploy({
+      apiUrl: api.httpApi.apiEndpoint,
+      eventsHttpDns: realtime.api.httpDns,
+      eventsRealtimeDns: realtime.api.realtimeDns,
+      eventsApiKey: realtime.apiKey,
     });
 
     new CfnOutput(this, 'HttpApiUrl', { value: api.httpApi.apiEndpoint });

@@ -18,3 +18,5 @@ export const ORDER_CLOCK_MS: Record<Difficulty, number> = {
 export const MAX_CONDIMENTS = 2;
 /** Assumption pending confirmation: only the 1st delivery of a hard order earns a condiment. */
 export const CONDIMENT_ON_FIRST_HARD_ONLY = true;
+/** Every this many correct deliveries (any difficulty, any rank) earn a condiment, on top of the hard-order one. */
+export const SOLVES_PER_CONDIMENT = 3;
